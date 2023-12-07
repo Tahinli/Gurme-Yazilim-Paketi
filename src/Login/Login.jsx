@@ -7,11 +7,13 @@ import React, { useState } from "react";
 function Login() {
   // Use state to manage the password
   const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
+
   let isAuthenticated = false;
-  function controlPassword() {
-    if (password === "123") {
+  function controlLogin() {
+    if (password === "123" && username === "admin") {
       isAuthenticated = true;
-      alert(isAuthenticated);
+      alert("Giriş Başarılı");
     } else {
       isAuthenticated = false;
       alert("Giriş Başarısız");
@@ -30,6 +32,9 @@ function Login() {
             id="outlined-basic"
             label="Kullanıcı Adı"
             variant="outlined"
+            value={username}
+            onChange={(e) => setUsername(e.target.value)}
+            required
           />
           <br />
           <TextField
@@ -39,7 +44,7 @@ function Login() {
             label="Şifre"
             variant="outlined"
             value={password}
-            onChange={(e) => setPassword(e.target.value)} // Update the password state on input change
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
         </div>
@@ -48,7 +53,7 @@ function Login() {
           <Button
             variant="contained"
             className="submitButton"
-            onClick={controlPassword}
+            onClick={controlLogin}
           >
             Giriş Yap
           </Button>
