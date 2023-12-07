@@ -1,0 +1,43 @@
+#root {
+  max-width: 1280px;
+  margin: 0 auto;
+
+  text-align: center;
+}
+
+@media screen and (max-width: 600px) {
+  body {
+    min-width: 100%;
+    min-height: 100%;
+  }
+  .loginDiv {
+    margin-top: 300px !important;
+    width: 450px !important;
+  }
+  .mainDiv {
+    padding: 0 0px;
+  }
+  .submitButton {
+    width: 60%;
+  }
+}
+
+@media screen and (max-width: 450px) {
+  body {
+    min-width: 100%;
+    min-height: 100%;
+  }
+  .loginDiv {
+    width: 300px !important;
+    height: 400px !important;
+  }
+  .mainDiv {
+    padding: 0 0px !important;
+  }
+  .submitButton {
+    width: 60% !important;
+  }
+  .textfield {
+    padding: 0 50px !important;
+  }
+}

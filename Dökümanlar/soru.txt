@@ -1,0 +1,13 @@
+1- Neye İhtiyacınız Var
+2- Neden Excelden Bir Web Uygulamasına Geçmek İstiyorsunuz
+3- Tam Olarak Ne Bekliyorsunuz
+4- Kalori Nasıl Hesaplanır
+5- İşlerin Yoğun Olduğu Zamanlar
+6- Programı Kimler Kullanacak
+7- Programı Kaç Kişi Aynı Anda Kullanacak
+8- Halihazırda Kullandığınız Yapılar Var mı (Excel Dışında)
+9- Excel İhtiyaçlarınızı Tam Olarak Karşılıyor muydu
+10- Şuanki Çalışma Modelinizi Değiştirmeyi Düşünüyor musunuz
+11- Devamlı İletişime Geçebileceğimiz Kişi
+12- Gelecek Toplantı Zamanı
+13- Stok Takipte Tutulacak Ürünlerin Birimleri
