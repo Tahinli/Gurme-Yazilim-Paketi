@@ -2,23 +2,39 @@ import "./Login.css";
 import TextField from "@mui/material/TextField";
 import logo from "../assets/img/logo.png";
 import Button from "@mui/material/Button";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react"; // Add useEffect here
+import { useNavigate } from "react-router-dom";
+import backgroundImage from "../assets/img/photo.jpg";
+import Popup from "reactjs-popup";
+import "reactjs-popup/dist/index.css";
 
 function Login() {
-  // Use state to manage the password
+  useEffect(() => {
+    document.body.style.backgroundImage = `url(${backgroundImage})`;
+    return () => {
+      document.body.style.backgroundImage = "none";
+    };
+  }, []);
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
+  const [loginstate, setLoginState] = useState("false");
 
-  let isAuthenticated = false;
+  const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
+
   function controlLogin() {
     if (password === "123" && username === "admin") {
-      isAuthenticated = true;
-      alert("Giriş Başarılı");
+      setLoginState("Giriş Başarılı");
     } else {
-      isAuthenticated = false;
-      alert("Giriş Başarısız");
+      setLoginState("Giriş Başarısız");
     }
   }
+
+  const handleButtonClick = async () => {
+    // Set the login state here
+    await controlLogin();
+    setIsOpen(true);
+  };
 
   return (
     <div className="loginDiv">
@@ -53,9 +69,19 @@ function Login() {
           <Button
             variant="contained"
             className="submitButton"
-            onClick={controlLogin}
+            onClick={handleButtonClick}
           >
             Giriş Yap
+            <Popup
+              open={isOpen}
+              closeOnDocumentClick
+              onClose={() => {
+                setIsOpen(false);
+                navigate("/home");
+              }}
+            >
+              <div className="popup">{loginstate}</div>
+            </Popup>
           </Button>
         </div>
       </div>
