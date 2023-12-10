@@ -1,18 +1,17 @@
 #root {
   max-width: 1280px;
-  margin: 0 auto;
+  margin: auto;
 
   text-align: center;
 }
 
-@media screen and (max-width: 600px) {
-  body {
-    min-width: 100%;
-    min-height: 100%;
+@media screen and (max-width: 650px) {
+  .imglogo {
+    width: 40% !important;
   }
+
   .loginDiv {
-    margin-top: 300px !important;
-    width: 450px !important;
+    width: 100% !important;
   }
   .mainDiv {
     padding: 0 0px;
@@ -20,24 +19,7 @@
   .submitButton {
     width: 60%;
   }
-}
-
-@media screen and (max-width: 450px) {
-  body {
-    min-width: 100%;
-    min-height: 100%;
-  }
-  .loginDiv {
-    width: 300px !important;
-    height: 400px !important;
-  }
-  .mainDiv {
-    padding: 0 0px !important;
-  }
-  .submitButton {
-    width: 60% !important;
-  }
   .textfield {
-    padding: 0 50px !important;
+    padding: 0 60px !important;
   }
 }
