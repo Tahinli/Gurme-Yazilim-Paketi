@@ -1,36 +1,47 @@
 use axum::{routing::get, extract::Path, Router, Json, http::StatusCode, response::IntoResponse};
+use mongodb::{Client, options::ClientOptions, Database};
+use serde::{Serialize, Deserialize};
 
-async fn urun(Path(id):Path<u32>) -> impl IntoResponse
+const DB_NAME:&str = "gurme";
+
+#[derive(Serialize, Deserialize)]
+struct Urun
     {
-        let urun_json = serde_json::json!({
-            "id" : id,
-            "isim" : "mantı"
-        });
-        (StatusCode::OK, Json(urun_json))
+        id:Option<u16>,
+        isim:Option<String>,
     }
-async fn urun_sil(Path(id):Path<u32>) -> impl IntoResponse
+impl Urun 
     {
-        let urun_json = serde_json::json!({
-            "id" : id,
-            "isim" : "mantı"
-        });
-        (StatusCode::OK, Json(urun_json))
+        fn urun() -> Urun
+            {
+                Urun { id: None, isim: None }
+            }
     }
-async fn urun_ekle(Path((id, isim)):Path<(u32, String)>) -> impl IntoResponse
+async fn urun(Path(id):Path<u16>) -> impl IntoResponse
     {
-        let urun_json = serde_json::json!({
-            "id" : id,
-            "isim" : isim
-        });
-        (StatusCode::OK, Json(urun_json))
+        let mut urun = Urun::urun();
+        urun.id = Some(id);
+        (StatusCode::OK, Json(serde_json::json!(urun)))
     }
-async fn urun_duzenle(Path((id, yeni_isim)):Path<(u32, String)>) -> impl IntoResponse
+async fn urun_sil(Path(id):Path<u16>) -> impl IntoResponse
     {
-        let urun_json = serde_json::json!({
-            "id" : id,
-            "isim" : yeni_isim
-        });
-        (StatusCode::OK, Json(urun_json))
+        let mut urun = Urun::urun();
+        urun.id = Some(id);
+        (StatusCode::OK, Json(serde_json::json!(urun)))
+    }
+async fn urun_ekle(Path((id, isim)):Path<(u16, String)>) -> impl IntoResponse
+    {
+        let mut urun = Urun::urun();
+        urun.id = Some(id);
+        urun.isim = Some(isim);
+        (StatusCode::OK, Json(serde_json::json!(urun)))
+    }
+async fn urun_duzenle(Path((id, yeni_isim)):Path<(u16, String)>) -> impl IntoResponse
+    {
+        let mut urun = Urun::urun();
+        urun.id = Some(id);
+        urun.isim = Some(yeni_isim);
+        (StatusCode::OK, Json(serde_json::json!(urun)))
     }
 async fn alive_handler() -> impl IntoResponse
     {
@@ -40,16 +51,32 @@ async fn alive_handler() -> impl IntoResponse
         });
         (StatusCode::OK, Json(alive_json))
     }
+
+async fn create_db_structure(db:Database)
+    {
+        db.create_collection("kullanicilar", None).await.unwrap();
+        db.create_collection("gunluk", None).await.unwrap();
+        db.create_collection("urunler", None).await.unwrap();
+        db.create_collection("kategoriler", None).await.unwrap();
+    }
 #[tokio::main]
 async fn main()
     {
         println!("Hello World\n");
+
+        let client_options = ClientOptions::parse("mongodb://172.17.0.2:27017").await.unwrap();
+        let client = Client::with_options(client_options).unwrap();
+        let db = client.database(DB_NAME);
+        create_db_structure(db).await;
+        
+
+
         let app = Router::new()
             .route("/", get(alive_handler))
             .route("/urun/:id", get(urun))
             .route("/urun-sil/:id", get(urun_sil))
             .route("/urun-ekle/:id/:isim", get(urun_ekle))
             .route("/urun-duzenle/:id/:yeniisim", get(urun_duzenle));
-        let listener = tokio::net::TcpListener::bind("localhost:80").await.unwrap();
+        let listener = tokio::net::TcpListener::bind("127.0.0.1:2000").await.unwrap();
         axum::serve(listener, app).await.unwrap();
     }
