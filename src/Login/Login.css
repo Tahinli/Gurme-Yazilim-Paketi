@@ -1,6 +1,6 @@
 .loginDiv {
   width: 560px;
-  height: 480px;
+  height: 450px;
   border-radius: 20px;
   background: rgba(255, 255, 255, 1);
 }
@@ -18,11 +18,60 @@
   align-items: center;
 }
 .imglogo {
-  width: 24%;
-  height: 5rem;
+  width: 23%;
   padding-top: 50px;
   padding-bottom: 40px;
 }
 .popup {
-  text-align: center;
+  display: flex;
+  background: none;
+  border: 0px;
+  width: 200px;
+  height: 80px;
+  background-color: rgba(255, 255, 255, 0.1) !important;
+  align-items: center;
+  padding: 0 30px;
+}
+.popup-content {
+  background: rgba(255, 255, 255, 0.75) !important;
+  width: auto !important;
+  border: 1x solid black !important;
+  border-radius: 20px !important;
+}
+.lds-ring {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  position: relative;
+  width: 80px;
+  height: 80px;
+}
+.lds-ring div {
+  box-sizing: border-box;
+  display: block;
+  position: absolute;
+  width: 32px;
+  height: 32px;
+  margin: 8px;
+  border: 8px solid black;
+  border-radius: 50%;
+  animation: lds-ring 1.2s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+  border-color: black transparent transparent transparent;
+}
+.lds-ring div:nth-child(1) {
+  animation-delay: -0.45s;
+}
+.lds-ring div:nth-child(2) {
+  animation-delay: -0.3s;
+}
+.lds-ring div:nth-child(3) {
+  animation-delay: -0.15s;
+}
+@keyframes lds-ring {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }

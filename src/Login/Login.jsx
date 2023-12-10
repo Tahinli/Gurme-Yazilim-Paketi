@@ -17,23 +17,27 @@ function Login() {
   }, []);
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [loginstate, setLoginState] = useState("false");
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [loginstate, setLoginState] = useState("false");
+  const [isVerified, setIsVerified] = useState(false);
+
   const navigate = useNavigate();
 
-  function controlLogin() {
-    if (password === "123" && username === "admin") {
+  async function controlLogin2() {
+    await setTimeout(() => {
+      navigate("/home");
+    }, 1000);
+  }
+
+  async function controlLogin() {
+    if (username === "admin" && password === "123") {
       setLoginState("Giriş Başarılı");
-    } else {
-      setLoginState("Giriş Başarısız");
+      setIsVerified(true);
     }
   }
 
   const handleButtonClick = async () => {
-    // Set the login state here
     await controlLogin();
-    setIsOpen(true);
   };
 
   return (
@@ -73,14 +77,25 @@ function Login() {
           >
             Giriş Yap
             <Popup
-              open={isOpen}
+              open={isVerified}
+              onOpen={controlLogin2}
               closeOnDocumentClick
+              closeOnEscape
               onClose={() => {
-                setIsOpen(false);
                 navigate("/home");
               }}
             >
-              <div className="popup">{loginstate}</div>
+              <div className="popup">
+                <div class="lds-ring">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+                <div>
+                  <p>{loginstate}</p>
+                </div>
+              </div>
             </Popup>
           </Button>
         </div>
