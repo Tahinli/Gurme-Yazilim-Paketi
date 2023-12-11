@@ -1,55 +1,37 @@
 use axum::{routing::get, extract::Path, Router, Json, http::StatusCode, response::IntoResponse};
-use mongodb::{Client, options::ClientOptions, Database};
+use mongodb::{Client, options::{ClientOptions, IndexOptions}, Database, IndexModel, bson::doc, Collection};
 use serde::{Serialize, Deserialize};
 
 const DB_NAME:&str = "gurme";
 
-#[derive(Serialize, Deserialize)]
+#[derive(Debug, Serialize, Deserialize)]
 struct Urun
     {
-        id:Option<u16>,
-        isim:Option<String>,
+        isim:String,
+        kategori:Kategori,
     }
-impl Urun 
+#[derive(Debug, Serialize, Deserialize)]
+struct Kullanici
     {
-        fn urun() -> Urun
-            {
-                Urun { id: None, isim: None }
-            }
+        isim:String,
+        soyisim:String,
+        id:String,
+        sifre:String,
     }
-async fn urun(Path(id):Path<u16>) -> impl IntoResponse
+#[derive(Debug, Serialize, Deserialize)]
+struct Gunluk
     {
-        let mut urun = Urun::urun();
-        urun.id = Some(id);
-        (StatusCode::OK, Json(serde_json::json!(urun)))
+        urun:Urun,
+        personel_sayisi:u64,
+        hedeflenen:u64,
+        ulasilan:u64,
+        atilan:u64,
     }
-async fn urun_sil(Path(id):Path<u16>) -> impl IntoResponse
+#[derive(Debug, Serialize, Deserialize)]
+struct Kategori
     {
-        let mut urun = Urun::urun();
-        urun.id = Some(id);
-        (StatusCode::OK, Json(serde_json::json!(urun)))
-    }
-async fn urun_ekle(Path((id, isim)):Path<(u16, String)>) -> impl IntoResponse
-    {
-        let mut urun = Urun::urun();
-        urun.id = Some(id);
-        urun.isim = Some(isim);
-        (StatusCode::OK, Json(serde_json::json!(urun)))
-    }
-async fn urun_duzenle(Path((id, yeni_isim)):Path<(u16, String)>) -> impl IntoResponse
-    {
-        let mut urun = Urun::urun();
-        urun.id = Some(id);
-        urun.isim = Some(yeni_isim);
-        (StatusCode::OK, Json(serde_json::json!(urun)))
-    }
-async fn alive_handler() -> impl IntoResponse
-    {
-        let alive_json = serde_json::json!({
-            "status" : "success",
-            "message" : "Hello World"
-        });
-        (StatusCode::OK, Json(alive_json))
+        isim:String,
+        ust_kategori:Option<Box<Kategori>>,
     }
 
 async fn create_db_structure(db:Database)
@@ -58,6 +40,13 @@ async fn create_db_structure(db:Database)
         db.create_collection("gunluk", None).await.unwrap();
         db.create_collection("urunler", None).await.unwrap();
         db.create_collection("kategoriler", None).await.unwrap();
+
+        let benzersiz:IndexOptions = IndexOptions::builder().unique(true).build();
+        let kullanicilar_kisitlama:IndexModel = IndexModel::builder()
+                                                            .keys(doc! {"id" : 1})
+                                                            .options(benzersiz)
+                                                            .build();
+        let kullanicilar_collection:Collection<Kullanici> = db.collection("kullanicilar");
     }
 #[tokio::main]
 async fn main()
@@ -79,4 +68,28 @@ async fn main()
             .route("/urun-duzenle/:id/:yeniisim", get(urun_duzenle));
         let listener = tokio::net::TcpListener::bind("127.0.0.1:2000").await.unwrap();
         axum::serve(listener, app).await.unwrap();
+    }
+    async fn urun(Path(id):Path<u16>) -> impl IntoResponse
+    {
+        //(StatusCode::OK, Json(serde_json::json!(urun)))
+    }
+async fn urun_sil(Path(id):Path<u16>) -> impl IntoResponse
+    {
+        //(StatusCode::OK, Json(serde_json::json!(urun)))
+    }
+async fn urun_ekle(Path((id, isim)):Path<(u16, String)>) -> impl IntoResponse
+    {
+        //(StatusCode::OK, Json(serde_json::json!(urun)))
+    }
+async fn urun_duzenle(Path((id, yeni_isim)):Path<(u16, String)>) -> impl IntoResponse
+    {
+        //(StatusCode::OK, Json(serde_json::json!(urun)))
+    }
+async fn alive_handler() -> impl IntoResponse
+    {
+        let alive_json = serde_json::json!({
+            "status" : "success",
+            "message" : "Hello World"
+        });
+        (StatusCode::OK, Json(alive_json))
     }
