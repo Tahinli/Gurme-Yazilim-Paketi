@@ -7,10 +7,10 @@ import { useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/img/photo.jpg";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
+let isVerified;
 
 function Login() {
   useEffect(() => {
-
     document.body.style.alignItems = "center";
 
     document.body.style.minWidth = "320px";
@@ -34,7 +34,7 @@ function Login() {
 
   async function controlLogin2() {
     await setTimeout(() => {
-      navigate("/home");
+      navigate("/");
     }, 1000);
   }
 
@@ -90,16 +90,14 @@ function Login() {
             className="submitButton"
             onClick={handleButtonClick}
           >
-            Giriş Yap
+            Giriş Yap ;
             <Popup
               open={isVerified}
               onOpen={controlLogin2}
               closeOnDocumentClick
               closeOnEscape
               onClose={() => {
-
                 navigate("/");
-
               }}
             >
               <div className="popup">
@@ -122,3 +120,4 @@ function Login() {
 }
 
 export default Login;
+export { isVerified };
