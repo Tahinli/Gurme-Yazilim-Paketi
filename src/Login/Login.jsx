@@ -10,6 +10,12 @@ import "reactjs-popup/dist/index.css";
 
 function Login() {
   useEffect(() => {
+    document.body.style.margin = "auto";
+    document.body.style.minWidth = "320px";
+    document.body.style.minHeight = "100vh";
+    document.body.style.display = "flex";
+    document.body.style.textAlign = "center";
+    document.body.style.justifyContent = "center";
     document.body.style.backgroundImage = `url(${backgroundImage})`;
     return () => {
       document.body.style.backgroundImage = "none";
