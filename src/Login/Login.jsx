@@ -25,7 +25,8 @@ function Login() {
   const [username, setUsername] = useState("");
 
   const [loginstate, setLoginState] = useState("false");
-  const [isVerified, setIsVerified] = useState(false);
+  const [isVerified, setIsVerified] = useState();
+  const [isntVerified, setIsntVerified] = useState(true);
 
   const navigate = useNavigate();
 
@@ -39,6 +40,8 @@ function Login() {
     if (username === "admin" && password === "123") {
       setLoginState("Giriş Başarılı");
       setIsVerified(true);
+    } else {
+      setIsntVerified(false);
     }
   }
 
@@ -51,6 +54,10 @@ function Login() {
       <div className="mainDiv">
         <div className="logodiv">
           <img className="imglogo" src={logo} alt="Logo" />
+          {!isntVerified && (
+            <h4>* Kullanıcı adı veya şifre yanlış girildi *</h4>
+          )}
+          {isntVerified && <h1></h1>}
         </div>
         <div className="textfield">
           <TextField
