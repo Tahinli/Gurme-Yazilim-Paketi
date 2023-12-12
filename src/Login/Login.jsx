@@ -10,6 +10,12 @@ import "reactjs-popup/dist/index.css";
 
 function Login() {
   useEffect(() => {
+    document.body.style.margin = "auto";
+    document.body.style.minWidth = "320px";
+    document.body.style.minHeight = "100vh";
+    document.body.style.display = "flex";
+    document.body.style.textAlign = "center";
+    document.body.style.justifyContent = "center";
     document.body.style.backgroundImage = `url(${backgroundImage})`;
     return () => {
       document.body.style.backgroundImage = "none";
@@ -17,23 +23,30 @@ function Login() {
   }, []);
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
-  const [loginstate, setLoginState] = useState("false");
 
-  const [isOpen, setIsOpen] = useState(false);
+  const [loginstate, setLoginState] = useState("false");
+  const [isVerified, setIsVerified] = useState();
+  const [isntVerified, setIsntVerified] = useState(true);
+
   const navigate = useNavigate();
 
-  function controlLogin() {
-    if (password === "123" && username === "admin") {
+  async function controlLogin2() {
+    await setTimeout(() => {
+      navigate("/home");
+    }, 1000);
+  }
+
+  async function controlLogin() {
+    if (username === "admin" && password === "123") {
       setLoginState("Giriş Başarılı");
+      setIsVerified(true);
     } else {
-      setLoginState("Giriş Başarısız");
+      setIsntVerified(false);
     }
   }
 
   const handleButtonClick = async () => {
-    // Set the login state here
     await controlLogin();
-    setIsOpen(true);
   };
 
   return (
@@ -41,6 +54,10 @@ function Login() {
       <div className="mainDiv">
         <div className="logodiv">
           <img className="imglogo" src={logo} alt="Logo" />
+          {!isntVerified && (
+            <h4>* Kullanıcı adı veya şifre yanlış girildi *</h4>
+          )}
+          {isntVerified && <h1></h1>}
         </div>
         <div className="textfield">
           <TextField
@@ -73,14 +90,25 @@ function Login() {
           >
             Giriş Yap
             <Popup
-              open={isOpen}
+              open={isVerified}
+              onOpen={controlLogin2}
               closeOnDocumentClick
+              closeOnEscape
               onClose={() => {
-                setIsOpen(false);
                 navigate("/home");
               }}
             >
-              <div className="popup">{loginstate}</div>
+              <div className="popup">
+                <div class="lds-ring">
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                  <div></div>
+                </div>
+                <div>
+                  <p>{loginstate}</p>
+                </div>
+              </div>
             </Popup>
           </Button>
         </div>
