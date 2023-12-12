@@ -10,7 +10,7 @@ import "reactjs-popup/dist/index.css";
 
 function Login() {
   useEffect(() => {
-    document.body.style.margin = "auto";
+    document.body.style.alignItems = "center";
     document.body.style.minWidth = "320px";
     document.body.style.minHeight = "100vh";
     document.body.style.display = "flex";
