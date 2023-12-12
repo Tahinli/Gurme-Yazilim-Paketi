@@ -1,36 +1,18 @@
-use axum::{routing::get, extract::Path, Router, Json, http::StatusCode, response::IntoResponse};
-use mongodb::{Client, options::{ClientOptions, IndexOptions}, Database, IndexModel, bson::{doc, Document, DateTime}, Collection};
+use axum::{routing::get, extract::{Path, State}, Router, Json, http::StatusCode, response::IntoResponse};
+use mongodb::{Client, options::{ClientOptions, IndexOptions}, Database, IndexModel, bson::{doc, DateTime}, Collection};
 use serde::{Serialize, Deserialize};
 
 const DB_NAME:&str = "gurme";
-
-#[derive(Debug, Serialize, Deserialize)]
-struct Urun
+const CONNECTION_STRING:&str = "mongodb://172.17.0.2:27017";
+#[derive(Debug, Clone)]
+struct AppState
     {
-        isim:String,
-        kategori:Kategori,
+        kullanici_collection:Collection<Kullanici>,
+        kategori_collection:Collection<Kategori>,
+        urun_collection:Collection<Urun>,
+        gunluk_collection:Collection<Gunluk>,
     }
-impl Urun 
-    {
-        async fn urun(Path(isim):Path<String>) -> impl IntoResponse
-            {
-                //(StatusCode::OK, Json(serde_json::json!(urun)))
-            }
-        async fn urun_sil(Path(isim):Path<String>) -> impl IntoResponse
-            {
-                //(StatusCode::OK, Json(serde_json::json!(urun)))
-            }
-        async fn urun_ekle(Path((isim, kategori)):Path<(String, Kategori)>, urunler_collection:Collection<Urun>) -> impl IntoResponse
-            {
-                urunler_collection.insert_one(ahmet, None).await.unwrap();
-                //(StatusCode::OK, Json(serde_json::json!(urun)))
-            }
-        async fn urun_duzenle(Path((isim, yeni_isim)):Path<(String, String)>) -> impl IntoResponse
-            {
-                //(StatusCode::OK, Json(serde_json::json!(urun)))
-            }
-    }
-#[derive(Debug, Clone,Serialize, Deserialize)]
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct Kullanici
     {
         isim:String,
@@ -38,7 +20,46 @@ struct Kullanici
         id:String,
         sifre:String,
     }
-#[derive(Debug, Serialize, Deserialize)]
+impl Kullanici 
+    {
+        async fn kullanici(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+            {
+                println!("{}", isim);
+                let aranan_kullanici = state.kullanici_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
+                (StatusCode::OK, Json(serde_json::json!(aranan_kullanici)))
+            }
+    }
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct Kategori
+    {
+        isim:String,
+        ust_kategori:Option<Box<Kategori>>,
+    }
+impl Kategori 
+    {
+        async fn kategori(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+            {
+                println!("{}", isim);
+                let aranan_kategori = state.kategori_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
+                (StatusCode::OK, Json(serde_json::json!(aranan_kategori)))
+            }
+    }
+#[derive(Debug, Clone, Serialize, Deserialize)]
+struct Urun
+    {
+        isim:String,
+        kategori:Kategori,
+    }
+impl Urun 
+    {
+        async fn urun(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+            {
+                println!("{}", isim);
+                let aranan_kategori = state.urun_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
+                (StatusCode::OK, Json(serde_json::json!(aranan_kategori)))
+            }
+    }
+#[derive(Debug, Clone, Serialize, Deserialize)]
 struct Gunluk
     {
         urun:Urun,
@@ -48,11 +69,16 @@ struct Gunluk
         atilan:u64,
         tarih:DateTime,
     }
-#[derive(Debug, Serialize, Deserialize)]
-struct Kategori
+impl Gunluk 
     {
-        isim:String,
-        ust_kategori:Option<Box<Kategori>>,
+        async fn gunluk(Path(tarih):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+            {
+                println!("{}", tarih);
+                //TODO DATETIME
+                let tarih:DateTime = tarih.parse().unwrap();
+                let aranan_gunluk = state.gunluk_collection.find_one(doc! {"tarih":isim}, None).await.unwrap().unwrap();
+                (StatusCode::OK, Json(serde_json::json!(aranan_gunluk)))
+            }
     }
 async fn urunler_collection_structure(db:Database) -> Collection<Urun>
     {
@@ -125,19 +151,25 @@ async fn main()
     {
         println!("Hello World\n");
 
-        let client_options = ClientOptions::parse("mongodb://172.17.0.2:27017").await.unwrap();
+        let client_options = ClientOptions::parse(CONNECTION_STRING).await.unwrap();
         let client = Client::with_options(client_options).unwrap();
         let db = client.database(DB_NAME);
         let collections = create_db_structure(db).await;
-        
-
-
+        let state = AppState
+            {
+                kullanici_collection:collections.0,
+                kategori_collection:collections.1,
+                urun_collection:collections.2,
+                gunluk_collection:collections.3,
+                
+            };
         let app = Router::new()
             .route("/", get(alive_handler))
+            .route("/kullanici/:kullanici", get(Kullanici::kullanici))
+            .route("/kategori/:isim", get(Kategori::kategori))
             .route("/urun/:isim", get(Urun::urun))
-            .route("/urun-sil/:isim", get(Urun::urun_sil))
-            .route("/urun-ekle/:kategori/:isim", get(Urun::urun_ekle)).with_state(collections.2.clone())
-            .route("/urun-duzenle/:isim/:yeniisim", get(Urun::urun_duzenle));
+            .route("/gunluk/:tarih", get(Gunluk::gunluk))
+            .with_state(state);
         let listener = tokio::net::TcpListener::bind("127.0.0.1:2000").await.unwrap();
         axum::serve(listener, app).await.unwrap();
     }
