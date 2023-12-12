@@ -95,7 +95,7 @@ function Login() {
               closeOnDocumentClick
               closeOnEscape
               onClose={() => {
-                navigate("/home");
+                navigate("/");
               }}
             >
               <div className="popup">
