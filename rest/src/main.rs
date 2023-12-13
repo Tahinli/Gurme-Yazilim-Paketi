@@ -71,12 +71,16 @@ struct Gunluk
     }
 impl Gunluk 
     {
-        async fn gunluk(Path(tarih):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+        async fn gunluk(Path(tarih_string):Path<String>, State(state):State<AppState>) -> impl IntoResponse
             {
-                println!("{}", tarih);
-                //TODO DATETIME
-                let tarih:DateTime = tarih.parse().unwrap();
-                let aranan_gunluk = state.gunluk_collection.find_one(doc! {"tarih":isim}, None).await.unwrap().unwrap();
+                println!("{}", tarih_string);
+                let tarih_vector:Vec<&str> = tarih_string.split(".").collect();
+                let tarih_builder = DateTime::builder()
+                                                                        .day(tarih_vector[0].parse().unwrap())
+                                                                        .month(tarih_vector[1].parse().unwrap())
+                                                                        .year(tarih_vector[2].parse().unwrap());
+                let tarih = tarih_builder.build().unwrap();
+                let aranan_gunluk = state.gunluk_collection.find_one(doc! {"tarih":tarih}, None).await.unwrap().unwrap();
                 (StatusCode::OK, Json(serde_json::json!(aranan_gunluk)))
             }
     }
