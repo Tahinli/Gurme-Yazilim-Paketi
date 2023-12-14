@@ -23,23 +23,49 @@ struct Kullanici
     }
 impl Kullanici 
     {
-        async fn kullanici(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+        async fn kullanici(Path(id):Path<String>, State(state):State<AppState>) -> impl IntoResponse
             {
-                println!("{}", isim);
-                let aranan_kullanici = state.kullanici_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
+                println!("{}", id);
+                let aranan_kullanici = state.kullanici_collection.find_one(doc! {"id":id}, None).await.unwrap().unwrap();
                 (StatusCode::OK, Json(serde_json::json!(aranan_kullanici)))
             }
         async fn ekle(Path((isim, soyisim, id, sifre)):Path<(String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
-                
+                println!("{}", isim);
+                println!("{}", soyisim);
+                println!("{}", id);
+                println!("{}", sifre);
+                //TO-DO var olan kullanıcıyı ekleme
+                let kullanici = Kullanici
+                    {
+                        isim,
+                        soyisim,
+                        id,
+                        sifre,
+                    };
+                state.kullanici_collection.insert_one(kullanici, None).await.unwrap();
             }
         async fn sil(Path(id):Path<String>, State(state):State<AppState>) -> impl IntoResponse
             {
-
+                println!("{}", id);
+                state.kullanici_collection.find_one_and_delete(doc! {"id":id}, None).await.unwrap();
             }
         async fn duzenle(Path((id, yeni_isim, yeni_soyisim, yeni_id, yeni_sifre)):Path<(String, String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
-
+                println!("{}", id);
+                println!("{}", yeni_isim);
+                println!("{}", yeni_soyisim);
+                println!("{}", yeni_id);
+                println!("{}", yeni_sifre);
+                //TO-DO kullanıcı ya yoksa ?
+                let yeni_kullanici = Kullanici
+                    {
+                        isim:yeni_isim,
+                        soyisim:yeni_soyisim,
+                        id:yeni_id,
+                        sifre:yeni_sifre,
+                    };
+                state.kullanici_collection.find_one_and_replace(doc! {"id":id}, yeni_kullanici, None).await.unwrap();
             }
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -79,11 +105,32 @@ impl Kategori
             }
         async fn sil(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
             {
+                println!("{}", isim);
 
+                //TO-DO ya kategori yoksa
+                state.kategori_collection.find_one_and_delete(doc! {"isim":isim}, None).await.unwrap();
             }
         async fn duzenle(Path((isim, yeni_isim, yeni_ust_kategori)):Path<(String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
+                println!("{}", isim);
+                println!("{}", yeni_isim);
+                println!("{}", yeni_ust_kategori);
 
+                let mut yeni_kategori:Kategori = Kategori
+                    {
+                        isim:yeni_isim,
+                        ust_kategori:None,
+                    };
+                let ust_kategori = state.kategori_collection.find_one(doc! {"isim": yeni_ust_kategori}, None).await.unwrap();
+                match ust_kategori 
+                    {
+                        Some(var) =>
+                            {
+                                yeni_kategori.ust_kategori = Some(Box::new(var));
+                            }
+                        None =>{}
+                    }
+                state.kategori_collection.find_one_and_replace(doc!{"isim":isim}, yeni_kategori, None).await.unwrap();
             }
 
     }
@@ -119,11 +166,27 @@ impl Urun
             }
         async fn sil(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
             {
-
+                println!("{}", isim);
+                //TO-DO ya yoksa?
+                state.urun_collection.find_one_and_delete(doc!{"isim":isim}, None).await.unwrap();
             }
         async fn duzenle(Path((isim, yeni_isim, yeni_kategori)):Path<(String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
+                println!("{}", isim);
+                println!("{}", yeni_isim);
+                println!("{}", yeni_kategori);
+                
+                //TO-DO ya ürün ya da kategori yoksa
+                let aranan_kategori = state.kategori_collection.find_one(doc! {"isim":yeni_kategori}, None).await.unwrap().unwrap();
 
+                let yeni_urun = Urun
+                    {
+                        isim:yeni_isim,
+                        kategori:aranan_kategori.clone(),
+                        kategori_isim:aranan_kategori.isim,
+                    };
+                
+                state.urun_collection.find_one_and_replace(doc! {"isim":isim}, yeni_urun, None).await.unwrap();
             }
 
 
@@ -182,11 +245,37 @@ impl Gunluk
             }
         async fn sil(Path((urun_string, tarih_string)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
+                println!("{}", urun_string);
+                println!("{}", tarih_string);
 
+                //TO-DO ya ürün yoksa ?
+                state.urun_collection.find_one_and_delete(doc! {"urun_isim":urun_string, "tarih":tarih_string}, None).await.unwrap();
             }
         async fn duzenle(Path((urun_string, tarih_string, yeni_urun_string, yeni_personel_sayisi_string, yeni_hedeflenen_string, yeni_ulasilan_string, yeni_atilan_string, yeni_tarih_string)):Path<(String, String, String, String, String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
-                
+                println!("{}", urun_string);
+                println!("{}", tarih_string);
+                println!("{}", yeni_urun_string);
+                println!("{}", yeni_personel_sayisi_string);
+                println!("{}", yeni_hedeflenen_string);
+                println!("{}", yeni_ulasilan_string);
+                println!("{}", yeni_atilan_string);
+                println!("{}", yeni_tarih_string);
+
+                let yeni_urun = state.urun_collection
+                                .find_one(doc! {"isim": yeni_urun_string}
+                                , None).await.unwrap().unwrap();
+                let yeni_gunluk = Gunluk
+                    {
+                        urun:yeni_urun.clone(),
+                        urun_isim:yeni_urun.isim,
+                        personel_sayisi:yeni_personel_sayisi_string.parse().unwrap(),
+                        hedeflenen:yeni_hedeflenen_string.parse().unwrap(),
+                        ulasilan:yeni_ulasilan_string.parse().unwrap(),
+                        atilan:yeni_atilan_string.parse().unwrap(),
+                        tarih:yeni_tarih_string,
+                    };
+                state.gunluk_collection.find_one_and_replace(doc! {"urun_isim":urun_string, "tarih":tarih_string}, yeni_gunluk, None).await.unwrap();
             }
 
 
