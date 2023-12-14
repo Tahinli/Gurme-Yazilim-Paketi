@@ -187,7 +187,7 @@ async fn gunluk_collection_structure(db:Database) -> Collection<Gunluk>
     {
         let benzersiz:IndexOptions = IndexOptions::builder().unique(true).build();
         let gunluk_kisitlama:IndexModel = IndexModel::builder()
-                                                            .keys(doc! {"tarih" : 1})
+                                                            .keys(doc! {"tarih":1, "urun":2, "urun_isim":3})
                                                             .options(benzersiz)
                                                             .build();
         let gunluk_collection:Collection<Gunluk> = db.collection("gunlukler");
