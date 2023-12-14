@@ -1,0 +1,42 @@
+.autocomplete{
+    width: 16%;
+    margin-bottom: 5rem;
+    margin-right: 1rem;
+}
+.table{
+    height: 400px;
+    width: 82%;
+}
+.auto{
+   display: flex;
+}
+
+*{
+    font-size: 15px;
+}
+
+.add{
+    padding-top: 1.25rem;
+}
+
+.input_part{
+    display: flex;
+    padding-bottom: 2rem;  
+}
+
+.textfield{
+    width: 13%;
+}
+
+.field_btn{
+    display: flex;
+    padding-left: 0.75rem;
+    padding-top: 1.20rem;
+}
+
+.date_picker{
+width: 40%;
+margin-top: 0rem;
+margin-bottom: 2rem;
+}
+

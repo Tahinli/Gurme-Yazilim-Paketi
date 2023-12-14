@@ -50,12 +50,12 @@ const Navbar = () => {
                       <Avatar
                         className="login_btn"
                         sx={{
-                          width: 38,
-                          height: 38,
+                          width: 40,
+                          height: 40,
                           backgroundColor: "#305630",
                         }}
                       >
-                        S
+                        
                       </Avatar>
                     </IconButton>
                   </Box>
