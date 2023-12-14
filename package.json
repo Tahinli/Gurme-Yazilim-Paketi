@@ -26,7 +26,7 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.20.1",
-    "safe-buffer": "^5.2.1"
+    "safe-buffer": "^5.2.1",
     "react-virtuoso": "^4.6.2",
     "reactjs-popup": "^2.0.6",
     "styled-components": "^6.1.1"
