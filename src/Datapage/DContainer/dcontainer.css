@@ -1,11 +1,15 @@
+.input_card{
+    transition: 'all 1s ease-out';
+}
 .autocomplete{
-    width: 16%;
-    margin-bottom: 5rem;
-    margin-right: 1rem;
+    display: flex;
+    width: 42%;
+    margin-bottom: 1rem;
+    margin-right: 1rem;  
 }
 .table{
-    height: 400px;
-    width: 82%;
+    height: 470px;
+    width: 78%;
 }
 .auto{
    display: flex;
@@ -16,27 +20,50 @@
 }
 
 .add{
-    padding-top: 1.25rem;
+   padding-right: 1rem;
+   margin-right: 0.50rem;
 }
 
 .input_part{
     display: flex;
-    padding-bottom: 2rem;  
-}
-
-.textfield{
-    width: 13%;
+    padding-bottom: 7rem;  
+    padding-left: 0rem;
+    transition: .5s;
 }
 
 .field_btn{
-    display: flex;
     padding-left: 0.75rem;
-    padding-top: 1.20rem;
+    padding-top: 1.4rem;
+    margin-left: -0.5rem;
 }
 
 .date_picker{
 width: 40%;
-margin-top: 0rem;
-margin-bottom: 2rem;
+margin-top: -5rem;
+margin-bottom: 3rem;
+margin-left: -0.4rem;
+padding-top: 7rem;
 }
 
+.add_table{
+    display: flex;
+    margin-left: -2rem;
+}
+.close_btn{
+    margin-top: 1rem;
+}
+.close_btn:hover{
+    color: red;
+}
+
+.input_header{
+    display: flex;
+}
+
+.input_header h4{
+    padding-left: 1rem;
+}
+
+.add_btn{
+    margin-left: 1rem;
+}

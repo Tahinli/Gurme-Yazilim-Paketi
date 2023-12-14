@@ -14,12 +14,16 @@ import LoupeIcon from '@mui/icons-material/Loupe';
 import Button from '@mui/material/Button';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
+
 import dayjs from 'dayjs';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 
+import { useState } from 'react';
+import Card from '@mui/joy/Card';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const sample = [
   ['Frozen yoghurt', 159, 6.0, 24, 4.0],
@@ -27,6 +31,13 @@ const sample = [
   ['Eclair', 262, 16.0, 24, 6.0],
   ['Cupcake', 305, 3.7, 67, 4.3],
   ['Gingerbread', 356, 16.0, 49, 3.9],
+];
+const sample2 = [
+  ['Frozen yoghurt'],
+  ['Ice cream sandwich'],
+  ['Eclair'],
+  ['Cupcake'],
+  ['Gingerbread'],
 ];
 
 function createData(id, dessert, calories, fat, carbs, protein) {
@@ -120,57 +131,84 @@ function rowContent(_index, row) {
 }
 
 export default function DContainer() {
-  const [value, setValue] = React.useState([
+  const [value, setValue] = useState([
     dayjs('2022-04-17'),
     dayjs('2022-04-21'),
   ]);
 
+   const [showInputPart,setShow]= useState(false); 
+
+   const show_input_part = () => {
+    setShow(true);
+   }
+   const close_input_part = () => {
+    setShow(false);
+   }
+
   return (
 <div>
-      
-  {/* AUTOCOMPLETE*/}
-          <div className="auto">
-            <Autocomplete className="autocomplete"
-              disablePortal
-              options={sample}
-              renderInput={(params) => <TextField {...params} label="Ürün Katagorisi" />}
-            />
-            <Autocomplete className="autocomplete"
-              disablePortal
-              options={sample}
-              renderInput={(params) => <TextField {...params} label="Ürünler" />}
-            />
-
-  {/* ADDİNG-BUTTON*/}
-            <Stack className="add" >
-               <Fab color="primary" aria-label="add" sx={{ width :30 , height:5}}>
-               <AddIcon />
-               </Fab>
-            </Stack>
     
-  </div>
 
   
   {/* INPUT TEXT_FİELDS*/}
-        <div className='input_part'>
-          <TextField className='textfield' label="Hedef Miktar" variant="filled" />
-          <TextField className='textfield' label="Tamamlanan Miktar" variant="filled" />
-          <TextField className='textfield' label="Fire Miktarı" variant="filled" />
-          <TextField className='textfield' label="Sevk Edilecek Miktar" variant="filled" />
+
+  {showInputPart && <Card className='input_card'
+  color='success'
+  orientation="horizontal"
+  size="lg"
+  variant='outlined'
+  sx={{height:300, width:1350}} 
+  >
+
+<div>
+<div className='input_header'>             
+          <CancelIcon  className="close_btn" onClick={close_input_part} />    
+          <h4>VERİ GİRİŞİ</h4>
+      </div>
           
-          <Stack className="field_btn">
-              <Button className="save" variant="outlined" endIcon={<LoupeIcon />}>
-                Kaydet
-              </Button>
-            </Stack>
-            <Stack className="field_btn">
-              <Button className="reset" variant="outlined" endIcon={<LoupeIcon />}>
-                Sıfırla
-              </Button>
-            </Stack>
-            
-        </div>
-{/* DATE TİME PİCKER*/}
+{/* AUTOCOMPLETE*/}
+<div className="autocomplete">
+          <Autocomplete className="autocomplete" 
+              disablePortal
+              options={sample2}
+              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürün Katagorisi" />}
+          />
+          <Autocomplete className="autocomplete"
+              disablePortal
+              options={sample2}
+              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürünler" />}
+          />
+  </div>
+  
+    <div className='input_part'> 
+    <TextField sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" />
+    <TextField sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" />
+    <TextField sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" />
+    <TextField sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" />
+      
+        <Stack  className="field_btn" >
+        <Button className="save" color="error" variant="outlined" size='medium' endIcon={<LoupeIcon />}>
+          Kaydet
+        </Button>
+      </Stack>
+
+      <Stack  className="field_btn">
+        <Button className="reset" color="error" variant="outlined" endIcon={<LoupeIcon />}>
+          Sıfırla
+        </Button>
+      </Stack>
+      
+       </div>       
+</div>
+  </Card>}
+
+
+        
+
+
+{/* TABLE */}
+      <div>
+        {/* DATE TİME PİCKER*/}
 
       <div className="date_picker">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
@@ -186,10 +224,13 @@ export default function DContainer() {
 
             </DemoContainer>
           </LocalizationProvider>
-
       </div>
 
-    <Paper className="table">
+
+      <div  className='add_table' >
+        {/* ADD-BUTTON*/}
+      <Stack className="add" sx={{backgroundColor:'#28342b'}}></Stack>
+      <Paper className="table">
       <TableVirtuoso 
         data={rows}
         components={VirtuosoTableComponents}
@@ -197,6 +238,16 @@ export default function DContainer() {
         itemContent={rowContent}
       />
     </Paper>
+    <Stack className='add_btn'>
+    <Fab color="error" aria-label="add" sx={{ width :35 , height:0}}>
+               <AddIcon  onClick={show_input_part} />
+               </Fab>
+    </Stack>
+      </div>
+  
+    
+  </div>
+    
     </div>
     
   );

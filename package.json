@@ -12,6 +12,7 @@
     "@emotion/react": "^11.11.1",
     "@emotion/styled": "^11.11.0",
     "@mui/icons-material": "^5.15.0",
+    "@mui/joy": "^5.0.0-beta.18",
     "@mui/material": "^5.15.0",
     "@mui/styled-engine-sc": "^6.0.0-alpha.8",
     "@mui/system": "^5.15.0",
@@ -26,9 +27,9 @@
     "react": "^18.0.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.20.1",
-    "safe-buffer": "^5.2.1",
     "react-virtuoso": "^4.6.2",
     "reactjs-popup": "^2.0.6",
+    "safe-buffer": "^5.2.1",
     "styled-components": "^6.1.1"
   },
   "devDependencies": {
