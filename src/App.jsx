@@ -3,11 +3,13 @@ import Login from "../src/Login/Login";
 
 import HomePage from "../src/HomePage/Homepage";
 
+
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Datapage from "./Datapage/datapage";
 import Stockpage from "./Stockpage/stockpage";
 import Transportationpage from "./Transportationpage/transportationpage";
 import { isVerified } from "./Login/Login";
+
 function App() {
   return (
     <div className="App">

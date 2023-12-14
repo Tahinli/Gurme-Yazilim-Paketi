@@ -13,7 +13,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import PlagiarismIcon from "@mui/icons-material/Plagiarism";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Container from "../../HomePage/Container/Container";
+import SContainer from "../../SendingPage/SendContainer/SContainer";
 
 const drawerWidth = 270;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -83,7 +83,7 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function SideNavbar() { 
+export default function DSide_Navbar() { 
   const [open, setOpen] = React.useState(false)
 
   const handleClick1 = () => {
@@ -174,7 +174,7 @@ export default function SideNavbar() {
         </Drawer>
 
         <Main open={open}>
-          <Container className="home"/>          
+          <SContainer/>
         </Main>
       </Box>
     </div>
