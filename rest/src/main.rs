@@ -29,6 +29,18 @@ impl Kullanici
                 let aranan_kullanici = state.kullanici_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
                 (StatusCode::OK, Json(serde_json::json!(aranan_kullanici)))
             }
+        async fn ekle(Path((isim, soyisim, id, sifre)):Path<(String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+            {
+                
+            }
+        async fn sil(Path(id):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+            {
+
+            }
+        async fn duzenle(Path((id, yeni_isim, yeni_soyisim, yeni_id, yeni_sifre)):Path<(String, String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+            {
+
+            }
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Kategori
@@ -44,7 +56,7 @@ impl Kategori
                 let aranan_kategori = state.kategori_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
                 (StatusCode::OK, Json(serde_json::json!(aranan_kategori)))
             }
-        async fn kategori_ekle(Path((isim, ust_kategori)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn ekle(Path((isim, ust_kategori)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
                 println!("Kategori Ekle");
                 println!("{}", isim);
@@ -65,6 +77,15 @@ impl Kategori
                     }
                 state.kategori_collection.insert_one(kategori, None).await.unwrap();
             }
+        async fn sil(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+            {
+
+            }
+        async fn duzenle(Path((isim, yeni_isim, yeni_ust_kategori)):Path<(String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+            {
+
+            }
+
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Urun
@@ -81,7 +102,7 @@ impl Urun
                 let aranan_urun = state.urun_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
                 (StatusCode::OK, Json(serde_json::json!(aranan_urun)))
             }
-        async fn urun_ekle(Path((isim, kategori)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn ekle(Path((isim, kategori)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
                 println!("{}", isim);
                 println!("{}", kategori);
@@ -96,6 +117,16 @@ impl Urun
                     };
                 state.urun_collection.insert_one(urun, None).await.unwrap();
             }
+        async fn sil(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+            {
+
+            }
+        async fn duzenle(Path((isim, yeni_isim, yeni_kategori)):Path<(String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+            {
+
+            }
+
+
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Gunluk
@@ -123,7 +154,7 @@ impl Gunluk
                                             ,None).await.unwrap().unwrap();
                 (StatusCode::OK, Json(serde_json::json!(aranan_gunluk)))
             }
-        async fn gunluk_ekle(Path((urun_string, personel_sayisi_string, hedeflenen_string, ulasilan_string, atilan_string, tarih_string)):Path<(String, String, String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn ekle(Path((urun_string, personel_sayisi_string, hedeflenen_string, ulasilan_string, atilan_string, tarih_string)):Path<(String, String, String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
                 println!("{}", urun_string);
                 println!("{}", personel_sayisi_string);
@@ -149,6 +180,16 @@ impl Gunluk
                     };
                 state.gunluk_collection.insert_one(gunluk, None).await.unwrap();
             }
+        async fn sil(Path((urun_string, tarih_string)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
+            {
+
+            }
+        async fn duzenle(Path((urun_string, tarih_string, yeni_urun_string, yeni_personel_sayisi_string, yeni_hedeflenen_string, yeni_ulasilan_string, yeni_atilan_string, yeni_tarih_string)):Path<(String, String, String, String, String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+            {
+                
+            }
+
+
     }
 async fn kullanicilar_collection_structure(db:Database) -> Collection<Kullanici>
     {
@@ -216,6 +257,41 @@ async fn create_db_structure(db:Database)
         //println!("{:#?}", kullanicilar_collection.find_one_and_delete(doc! {"id":"Tahinli"}, None).await.unwrap());
         //kullanicilar_collection.find_one_and_replace(doc! {"id":"Tahinli"}, ahmet, None).await.unwrap();
     }
+async fn routing(State(state): State<AppState>) -> Router
+    {
+        let kullanici_routers = Router::new()
+        .route("/:id", get(Kullanici::kullanici))
+        .route("/ekle/:isim/:soyisim/:id/:sifre", get(Kullanici::ekle))
+        .route("/sil/:id", get(Kullanici::sil))
+        .route("/duzenle/:id/:yeni_isim/:yeni_soyisim/:yeni_id/:yeni_sifre", get(Kullanici::duzenle));
+
+        let kategori_routers = Router::new()
+        .route("/:isim", get(Kategori::kategori))
+        .route("/ekle/:isim/:ust_kategori", get(Kategori::ekle))
+        .route("/sil/:isim", get(Kategori::sil))
+        .route("/duzenle/:isim/:yeni_isim/:yeni_ust_kategori", get(Kategori::duzenle));
+
+        let urun_routers = Router::new()
+        .route("/:isim", get(Urun::urun))
+        .route("/ekle/:isim/:kategori", get(Urun::ekle))
+        .route("/sil/:isim", get(Urun::sil))
+        .route("/duzenle/:isim/:yeni_isim/:yeni_kategori", get(Urun::duzenle));
+
+        let gunluk_routers = Router::new()
+        .route("/:urun/:tarih", get(Gunluk::gunluk))
+        .route("/ekle/:urun/:personel_sayisi/:hedeflenen/:ulasilan/:atilan/:tarih", get(Gunluk::ekle))
+        .route("/sil/:urun/:tarih", get(Gunluk::sil))
+        .route("/duzenle/:urun/:tarih/:yeni_urun/:yeni_personel_sayisi/:yeni_hedeflenen/:yeni_ulasilan/:yeni_atilan/:yeni_tarih", get(Gunluk::duzenle));
+
+        let app = Router::new()
+            .route("/", get(alive_handler))
+            .nest("/kullanici", kullanici_routers)
+            .nest("/kategori", kategori_routers)
+            .nest("/urun", urun_routers)
+            .nest("/gunluk", gunluk_routers)
+            .with_state(state.clone());
+        app
+    }
 #[tokio::main]
 async fn main()
     {
@@ -232,16 +308,9 @@ async fn main()
                 urun_collection:collections.2,
                 gunluk_collection:collections.3,
             };
-        let app = Router::new()
-            .route("/", get(alive_handler))
-            .route("/kullanici/:id", get(Kullanici::kullanici))
-            .route("/kategori/:isim", get(Kategori::kategori))
-            .route("/kategori/ekle/:isim/:ust_kategori", get(Kategori::kategori_ekle))
-            .route("/urun/:isim", get(Urun::urun))
-            .route("/urun/ekle/:isim/:kategori", get(Urun::urun_ekle))
-            .route("/gunluk/:urun/:tarih", get(Gunluk::gunluk))
-            .route("/gunluk/ekle/:urun/:personel_sayisi/:hedeflenen/:ulasilan/:atilan/:tarih", get(Gunluk::gunluk_ekle))
-            .with_state(state);
+        let app = routing(axum::extract::State(state)).await;
+        
+
         let listener = tokio::net::TcpListener::bind(BIND_STRING).await.unwrap();
         axum::serve(listener, app).await.unwrap();
     }
