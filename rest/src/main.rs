@@ -1,9 +1,10 @@
 use axum::{routing::get, extract::{Path, State}, Router, Json, http::StatusCode, response::IntoResponse};
-use mongodb::{Client, options::{ClientOptions, IndexOptions}, Database, IndexModel, bson::{doc, DateTime}, Collection};
+use mongodb::{Client, options::{ClientOptions, IndexOptions}, Database, IndexModel, bson::doc, Collection};
 use serde::{Serialize, Deserialize};
 
 const DB_NAME:&str = "gurme";
 const CONNECTION_STRING:&str = "mongodb://172.17.0.2:27017";
+const BIND_STRING:&str = "127.0.0.1:2001";
 #[derive(Debug, Clone)]
 struct AppState
     {
@@ -43,68 +44,111 @@ impl Kategori
                 let aranan_kategori = state.kategori_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
                 (StatusCode::OK, Json(serde_json::json!(aranan_kategori)))
             }
+        async fn kategori_ekle(Path((isim, ust_kategori)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
+            {
+                println!("Kategori Ekle");
+                println!("{}", isim);
+                println!("{}", ust_kategori);
+                let ust_kategori = state.kategori_collection.find_one(doc! {"isim": ust_kategori}, None).await.unwrap();
+                let mut kategori:Kategori = Kategori
+                    {
+                        isim,
+                        ust_kategori:None,
+                    };
+                match ust_kategori 
+                    {
+                        Some(var) =>
+                            {
+                                kategori.ust_kategori = Some(Box::new(var));
+                            }
+                        None =>{}
+                    }
+                state.kategori_collection.insert_one(kategori, None).await.unwrap();
+            }
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Urun
     {
         isim:String,
         kategori:Kategori,
+        kategori_isim:String,
     }
 impl Urun 
     {
         async fn urun(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
             {
                 println!("{}", isim);
-                let aranan_kategori = state.urun_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
-                (StatusCode::OK, Json(serde_json::json!(aranan_kategori)))
+                let aranan_urun = state.urun_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
+                (StatusCode::OK, Json(serde_json::json!(aranan_urun)))
+            }
+        async fn urun_ekle(Path((isim, kategori)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
+            {
+                println!("{}", isim);
+                println!("{}", kategori);
+
+                let aranan_kategori = state.kategori_collection.find_one(doc! {"isim":kategori}, None).await.unwrap().unwrap();
+
+                let urun = Urun
+                    {
+                        isim,
+                        kategori:aranan_kategori.clone(),
+                        kategori_isim:aranan_kategori.isim,
+                    };
+                state.urun_collection.insert_one(urun, None).await.unwrap();
             }
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Gunluk
     {
         urun:Urun,
+        urun_isim:String,
         personel_sayisi:u64,
         hedeflenen:u64,
         ulasilan:u64,
         atilan:u64,
-        tarih:DateTime,
+        tarih:String,
     }
 impl Gunluk 
     {
-        async fn gunluk(Path(tarih_string):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+        async fn gunluk(Path((urun_string, tarih_string)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
+                println!("{}", urun_string);
                 println!("{}", tarih_string);
-                let tarih_vector:Vec<&str> = tarih_string.split(".").collect();
-                let tarih_builder = DateTime::builder()
-                                                                        .day(tarih_vector[0].parse().unwrap())
-                                                                        .month(tarih_vector[1].parse().unwrap())
-                                                                        .year(tarih_vector[2].parse().unwrap());
-                let tarih = tarih_builder.build().unwrap();
-                let aranan_gunluk = state.gunluk_collection.find_one(doc! {"tarih":tarih}, None).await.unwrap().unwrap();
+                //TO-DO tarihi tarih mi diye bak
+                let urun = state.urun_collection
+                                                            .find_one(doc! {"isim": urun_string}
+                                                            , None).await.unwrap().unwrap();
+                let aranan_gunluk = state.gunluk_collection
+                                            .find_one(doc! {"tarih":tarih_string, "urun_isim":urun.isim}
+                                            ,None).await.unwrap().unwrap();
                 (StatusCode::OK, Json(serde_json::json!(aranan_gunluk)))
             }
-    }
-async fn urunler_collection_structure(db:Database) -> Collection<Urun>
-    {
-        let benzersiz:IndexOptions = IndexOptions::builder().unique(true).build();
-        let urunler_kisitlama:IndexModel = IndexModel::builder()
-                                                            .keys(doc! {"isim" : 1})
-                                                            .options(benzersiz)
-                                                            .build();
-        let urunler_collection:Collection<Urun> = db.collection("kullanicilar");
-        urunler_collection.create_index(urunler_kisitlama, None).await.unwrap();
-        urunler_collection
-    }
-async fn kategoriler_collection_structure(db:Database) -> Collection<Kategori>
-    {
-        let benzersiz:IndexOptions = IndexOptions::builder().unique(true).build();
-        let kategoriler_kisitlama:IndexModel = IndexModel::builder()
-                                                            .keys(doc! {"isim" : 1})
-                                                            .options(benzersiz)
-                                                            .build();
-        let kategoriler_collection:Collection<Kategori> = db.collection("kullanicilar");
-        kategoriler_collection.create_index(kategoriler_kisitlama, None).await.unwrap();
-        kategoriler_collection
+        async fn gunluk_ekle(Path((urun_string, personel_sayisi_string, hedeflenen_string, ulasilan_string, atilan_string, tarih_string)):Path<(String, String, String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+            {
+                println!("{}", urun_string);
+                println!("{}", personel_sayisi_string);
+                println!("{}", hedeflenen_string);
+                println!("{}", ulasilan_string);
+                println!("{}", atilan_string);
+                println!("{}", tarih_string);
+                
+                //TO-DO tarihi tarih mi diye bak
+
+                let urun = state.urun_collection
+                                .find_one(doc! {"isim": urun_string}
+                                , None).await.unwrap().unwrap();
+                let gunluk = Gunluk
+                    {
+                        urun:urun.clone(),
+                        urun_isim:urun.isim,
+                        personel_sayisi:personel_sayisi_string.parse().unwrap(),
+                        hedeflenen:hedeflenen_string.parse().unwrap(),
+                        ulasilan:ulasilan_string.parse().unwrap(),
+                        atilan:atilan_string.parse().unwrap(),
+                        tarih:tarih_string,
+                    };
+                state.gunluk_collection.insert_one(gunluk, None).await.unwrap();
+            }
     }
 async fn kullanicilar_collection_structure(db:Database) -> Collection<Kullanici>
     {
@@ -117,6 +161,28 @@ async fn kullanicilar_collection_structure(db:Database) -> Collection<Kullanici>
         kullanicilar_collection.create_index(kullanicilar_kisitlama, None).await.unwrap();
         kullanicilar_collection
     }
+async fn kategoriler_collection_structure(db:Database) -> Collection<Kategori>
+    {
+        let benzersiz:IndexOptions = IndexOptions::builder().unique(true).build();
+        let kategoriler_kisitlama:IndexModel = IndexModel::builder()
+                                                            .keys(doc! {"isim" : 1})
+                                                            .options(benzersiz)
+                                                            .build();
+        let kategoriler_collection:Collection<Kategori> = db.collection("kategoriler");
+        kategoriler_collection.create_index(kategoriler_kisitlama, None).await.unwrap();
+        kategoriler_collection
+    }
+async fn urunler_collection_structure(db:Database) -> Collection<Urun>
+    {
+        let benzersiz:IndexOptions = IndexOptions::builder().unique(true).build();
+        let urunler_kisitlama:IndexModel = IndexModel::builder()
+                                                            .keys(doc! {"isim" : 1})
+                                                            .options(benzersiz)
+                                                            .build();
+        let urunler_collection:Collection<Urun> = db.collection("urunler");
+        urunler_collection.create_index(urunler_kisitlama, None).await.unwrap();
+        urunler_collection
+    }
 async fn gunluk_collection_structure(db:Database) -> Collection<Gunluk>
     {
         let benzersiz:IndexOptions = IndexOptions::builder().unique(true).build();
@@ -124,7 +190,7 @@ async fn gunluk_collection_structure(db:Database) -> Collection<Gunluk>
                                                             .keys(doc! {"tarih" : 1})
                                                             .options(benzersiz)
                                                             .build();
-        let gunluk_collection:Collection<Gunluk> = db.collection("kullanicilar");
+        let gunluk_collection:Collection<Gunluk> = db.collection("gunlukler");
         gunluk_collection.create_index(gunluk_kisitlama, None).await.unwrap();
         gunluk_collection
     }
@@ -165,16 +231,18 @@ async fn main()
                 kategori_collection:collections.1,
                 urun_collection:collections.2,
                 gunluk_collection:collections.3,
-                
             };
         let app = Router::new()
             .route("/", get(alive_handler))
-            .route("/kullanici/:kullanici", get(Kullanici::kullanici))
+            .route("/kullanici/:id", get(Kullanici::kullanici))
             .route("/kategori/:isim", get(Kategori::kategori))
+            .route("/kategori/ekle/:isim/:ust_kategori", get(Kategori::kategori_ekle))
             .route("/urun/:isim", get(Urun::urun))
-            .route("/gunluk/:tarih", get(Gunluk::gunluk))
+            .route("/urun/ekle/:isim/:kategori", get(Urun::urun_ekle))
+            .route("/gunluk/:urun/:tarih", get(Gunluk::gunluk))
+            .route("/gunluk/ekle/:urun/:personel_sayisi/:hedeflenen/:ulasilan/:atilan/:tarih", get(Gunluk::gunluk_ekle))
             .with_state(state);
-        let listener = tokio::net::TcpListener::bind("127.0.0.1:2000").await.unwrap();
+        let listener = tokio::net::TcpListener::bind(BIND_STRING).await.unwrap();
         axum::serve(listener, app).await.unwrap();
     }
 async fn alive_handler() -> impl IntoResponse
