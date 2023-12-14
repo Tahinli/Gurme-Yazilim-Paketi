@@ -2,14 +2,34 @@ import "./Login.css";
 import TextField from "@mui/material/TextField";
 import logo from "../assets/img/logo.png";
 import Button from "@mui/material/Button";
-import React, { useState, useEffect } from "react"; // Add useEffect here
+import React, { useRef, useState, useEffect } from "react"; // Add useEffect here
 import { useNavigate } from "react-router-dom";
 import backgroundImage from "../assets/img/photo.jpg";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 let isVerified;
 
+const USER_REGEX = /^[a-zA-Z][a-zA-Z0-9-_]{3,23}$/;
+const PWD_REGEX = /^(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%]).{8,24}$/;
 function Login() {
+  const userRef = useRef();
+  const errRef = useRef();
+
+  const [user, setuser] = useState("");
+  const [validName, setValidName] = useState(false);
+  const [userFocus, setUserFocus] = useState(false);
+
+  const [pwd, setPassword] = useState("");
+  const [validPwd, setValidPwd] = useState(false);
+  const [pwdFocus, setpwdFocus] = useState(false);
+
+  const [matchpwd, setMatchPwd] = useState("");
+  const [validMatch, setValidMatch] = useState(false);
+  const [matchFocus, setMatchFocus] = useState(false);
+
+  const [errMsg, setErrMsg] = useState("");
+  const [success, setSuccess] = useState(false);
+
   useEffect(() => {
     document.body.style.alignItems = "center";
 
@@ -23,10 +43,31 @@ function Login() {
       document.body.style.backgroundImage = "none";
     };
   }, []);
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
 
-  const [loginstate, setLoginState] = useState("false");
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
+
+  useEffect(() => {
+    const result = USER_REGEX.test(user);
+    console.log(result);
+    console.log(user);
+    setValidName(result);
+  }, [user]);
+
+  usetffect(() => {
+    const result = PWD_REGEX.test(pwd);
+    console.log(result);
+    console.log(pwd);
+    setValidPwd(result);
+    const match = pwd === matchPwd;
+    setValidmatch(match);
+  }, (pwd, matchPwd));
+
+  useEffect(() => {
+    setErrMsg("");
+  }, [user, pwd, matchPwd]);
+
   const [isVerified, setIsVerified] = useState();
   const [isntVerified, setIsntVerified] = useState(true);
 
@@ -56,10 +97,15 @@ function Login() {
       <div className="mainDiv">
         <div className="logodiv">
           <img className="imglogo" src={logo} alt="Logo" />
-          {!isntVerified && (
-            <h4>* Kullanıcı adı veya şifre yanlış girildi *</h4>
-          )}
-          {isntVerified && <h1></h1>}
+          <section>
+            <p
+              ref={errRef}
+              className={errMsg ? "errmsg" : "offscreen"}
+              aria-live="assertive"
+            >
+              {errMsg}
+            </p>
+          </section>
         </div>
         <div className="textfield">
           <TextField
@@ -67,10 +113,28 @@ function Login() {
             id="outlined-basic"
             label="Kullanıcı Adı"
             variant="outlined"
+            ref={userRef}
+            autoComplete="off"
             value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            onChange={(e) => setUser(e.target.value)}
             required
+            aria-invalid={validName ? "false" : "true"}
+            aria-describedby="uidnote"
+            onFocus={() => setUserFocus(true)}
+            onBlur={() => setUserFocus(false)}
           />
+          <p
+            id="uidnote"
+            className={
+              userFocus && user && !validName ? "instructions" : "offscreen"
+            }
+          >
+            {" "}
+            <FontAwesomeIcon icon={faInfoCircle} /> 4 to 24 ¢haracters.
+            <br /> Must begin with a letter.
+            <br /> Letters, numbers, underscores, hyphens allowed.
+          </p>
+
           <br />
           <TextField
             type="password"
@@ -90,7 +154,7 @@ function Login() {
             className="submitButton"
             onClick={handleButtonClick}
           >
-            Giriş Yap ;
+            Giriş Yap
             <Popup
               open={isVerified}
               onOpen={controlLogin2}
