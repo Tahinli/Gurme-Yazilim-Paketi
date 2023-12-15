@@ -1,6 +1,6 @@
-import Navbar from "../HomePage/Navbar/Navbar";
-import Footr from "../HomePage/Footer/Footr";
-import SideNavbar from "../HomePage/Sidebar/SideNavbar";
+import Navbar from "./Navbar/Navbar";
+import Footr from "./Footer/Footr";
+import SideNavbar from "./Sidebar/SideNavbar";
 
 import "../HomePage/Footer/footer.css";
 import "../HomePage/Navbar/navbar.css";
