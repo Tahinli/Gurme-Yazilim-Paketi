@@ -67,6 +67,10 @@ impl Kullanici
                     };
                 state.kullanici_collection.find_one_and_replace(doc! {"id":id}, yeni_kullanici, None).await.unwrap();
             }
+        async fn hepsi() -> impl IntoResponse
+            {
+                
+            }
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Kategori
@@ -132,6 +136,10 @@ impl Kategori
                     }
                 state.kategori_collection.find_one_and_replace(doc!{"isim":isim}, yeni_kategori, None).await.unwrap();
             }
+        async fn hepsi() -> impl IntoResponse
+            {
+                
+            }
 
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -188,7 +196,10 @@ impl Urun
                 
                 state.urun_collection.find_one_and_replace(doc! {"isim":isim}, yeni_urun, None).await.unwrap();
             }
-
+        async fn hepsi() -> impl IntoResponse
+            {
+                
+            }
 
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -277,6 +288,10 @@ impl Gunluk
                     };
                 state.gunluk_collection.find_one_and_replace(doc! {"urun_isim":urun_string, "tarih":tarih_string}, yeni_gunluk, None).await.unwrap();
             }
+        async fn hepsi() -> impl IntoResponse
+            {
+
+            }
 
 
     }
@@ -352,25 +367,29 @@ async fn routing(State(state): State<AppState>) -> Router
         .route("/:id", get(Kullanici::kullanici))
         .route("/ekle/:isim/:soyisim/:id/:sifre", get(Kullanici::ekle))
         .route("/sil/:id", get(Kullanici::sil))
-        .route("/duzenle/:id/:yeni_isim/:yeni_soyisim/:yeni_id/:yeni_sifre", get(Kullanici::duzenle));
+        .route("/duzenle/:id/:yeni_isim/:yeni_soyisim/:yeni_id/:yeni_sifre", get(Kullanici::duzenle))
+        .route("/hepsi", get(Kullanici::hepsi));
 
         let kategori_routers = Router::new()
         .route("/:isim", get(Kategori::kategori))
         .route("/ekle/:isim/:ust_kategori", get(Kategori::ekle))
         .route("/sil/:isim", get(Kategori::sil))
-        .route("/duzenle/:isim/:yeni_isim/:yeni_ust_kategori", get(Kategori::duzenle));
+        .route("/duzenle/:isim/:yeni_isim/:yeni_ust_kategori", get(Kategori::duzenle))
+        .route("/hepsi", get(Kategori::hepsi));
 
         let urun_routers = Router::new()
         .route("/:isim", get(Urun::urun))
         .route("/ekle/:isim/:kategori", get(Urun::ekle))
         .route("/sil/:isim", get(Urun::sil))
-        .route("/duzenle/:isim/:yeni_isim/:yeni_kategori", get(Urun::duzenle));
+        .route("/duzenle/:isim/:yeni_isim/:yeni_kategori", get(Urun::duzenle))
+        .route("/hepsi", get(Urun::hepsi));
 
         let gunluk_routers = Router::new()
         .route("/:urun/:tarih", get(Gunluk::gunluk))
         .route("/ekle/:urun/:personel_sayisi/:hedeflenen/:ulasilan/:atilan/:tarih", get(Gunluk::ekle))
         .route("/sil/:urun/:tarih", get(Gunluk::sil))
-        .route("/duzenle/:urun/:tarih/:yeni_urun/:yeni_personel_sayisi/:yeni_hedeflenen/:yeni_ulasilan/:yeni_atilan/:yeni_tarih", get(Gunluk::duzenle));
+        .route("/duzenle/:urun/:tarih/:yeni_urun/:yeni_personel_sayisi/:yeni_hedeflenen/:yeni_ulasilan/:yeni_atilan/:yeni_tarih", get(Gunluk::duzenle))
+        .route("/hepsi", get(Gunluk::hepsi));
 
         let app = Router::new()
             .route("/", get(alive_handler))
