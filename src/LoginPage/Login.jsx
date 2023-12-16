@@ -9,6 +9,7 @@ import "reactjs-popup/dist/index.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../AuthProvider";
+
 const LOGIN_URL = "http://localhost:5000/auth";
 
 function Login() {
@@ -75,63 +76,41 @@ function Login() {
 
   return (
     <div className="loginDiv">
-      <div className="mainDiv">
-        <div className="logodiv">
-          <img className="imglogo" src={logo} alt="Logo" />
-        </div>
-        <div className="textfield">
-          <TextField
-            className="textf"
-            id="outlined-basic"
-            label="Kullanıcı Adı"
-            variant="outlined"
-            ref={userRef}
-            autoComplete="off"
-            onChange={(e) => setUser(e.target.value)}
-            required
-          />
+      <div className="logodiv">
+        <img className="imglogo" src={logo} alt="Logo" />
+      </div>
+      <div className="textfield">
+        <TextField
+          className="textf"
+          id="outlined-basic"
+          label="Kullanıcı Adı"
+          variant="outlined"
+          ref={userRef}
+          autoComplete="off"
+          onChange={(e) => setUser(e.target.value)}
+          required
+        />
 
-          <br />
-          <TextField
-            type="password"
-            className="textf"
-            id="sifre"
-            label="Şifre"
-            variant="outlined"
-            onChange={(e) => setPwd(e.target.value)}
-            required
-          />
-        </div>
         <br />
-        <div className="buttonDiv">
-          <Button
-            variant="contained"
-            className="submitButton"
-            onClick={handleButtonClick}
-          >
-            Giriş Yap
-            <Popup
-              open={success}
-              closeOnDocumentClick
-              closeOnEscape
-              onClose={() => {
-                navigate("/");
-              }}
-            >
-              <div className="popup">
-                <div class="lds-ring">
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                  <div></div>
-                </div>
-                <div>
-                  <p>"Giriş Başarılı"</p>
-                </div>
-              </div>
-            </Popup>
-          </Button>
-        </div>
+        <TextField
+          type="password"
+          className="textf"
+          id="sifre"
+          label="Şifre"
+          variant="outlined"
+          onChange={(e) => setPwd(e.target.value)}
+          required
+        />
+      </div>
+      <br />
+      <div className="buttonDiv">
+        <Button
+          variant="contained"
+          className="submitButton"
+          onClick={handleButtonClick}
+        >
+          Giriş Yap
+        </Button>
       </div>
     </div>
   );
