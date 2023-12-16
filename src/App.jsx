@@ -16,9 +16,11 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<HomePage />} />
-          <Route path="/data" element={<DataPage />} />
-          <Route path="/stock" element={<StockPage />} />
-          <Route path="/transportation" element={<TransportationPage />} />
+          <Route element={<PrivateRoutes />}>
+            <Route path="/data" element={<DataPage />} />
+            <Route path="/stock" element={<StockPage />} />
+            <Route path="/transportation" element={<TransportationPage />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
