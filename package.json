@@ -40,7 +40,7 @@
     "react-router-dom": "^6.21.0",
     "react-virtuoso": "^4.6.2",
     "reactjs-popup": "^2.0.6",
-    "safe-buffer": "^5.2.1",
+    "request": "^2.88.2",
     "styled-components": "^6.1.1",
     "uuid": "^9.0.1"
   },

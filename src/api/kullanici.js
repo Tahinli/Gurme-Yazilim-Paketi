@@ -1,10 +1,26 @@
-import axios from "axios";
+import _axios from "axios";
+import baseUrl from "./base_api.js";
+const _baseUrl = baseUrl + '/kullanici'
 
-const axios = axios.create({
-    baseURL: 'http://localhost:2001/kullanici'
-});
+
+_axios.defaults.headers.post['Access-Control-Allow-Origin'] = '*';
 
 //**************KULLANICI
+export const kullaniciGetAll = async () => {
+    try {
+        const response = await fetch(`http://93.190.8.248:2001/kullanicibuwu`);
+        return {
+            data: response.data,
+            error: null
+        };
+    } catch (error) {
+        return {
+            data: null,
+            error: `Error fetching items: ${error}`
+        };
+    }
+}
+
 export const kullaniciGet = async (id) => {
     try {
         const response = await axios.get(`/${id}`)
@@ -68,6 +84,8 @@ export const kullaniciDuzenle = async (id, yeni_isim, yeni_soyisim, yeni_id, yen
 }
 
 const kullaniciApis = {
+    _baseUrl,
+    kullaniciGetAll,
     kullaniciGet,
     kullaniciEkle,
     kullaniciSil,

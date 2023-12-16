@@ -1,7 +1,9 @@
 import axios from "axios";
+import baseUrl from "./base_api";
+const baseURL = baseUrl + '/kategori'
 
 const axios = axios.create({
-    baseURL: 'http://localhost:2001/kategori'
+    baseURL: baseURL
 });
 //**************KATEGORİ
 
@@ -69,6 +71,7 @@ export const kategoriDuzenle = async (isim, yeni_isim, yeni_ust_kategori) => {
 }
 
 const kategoriApis = {
+    baseURL,
     kategoriGet,
     kategoriEkle,
     kategoriSil,

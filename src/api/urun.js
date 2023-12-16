@@ -1,7 +1,8 @@
 import axios from "axios";
+import baseUrl from "./base_api";
 
 const axios = axios.create({
-    baseURL: 'http://localhost:2001/urun'
+    baseURL: baseUrl + '/urun'
 });
 //**************ÜRÜN
 
