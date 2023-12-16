@@ -13,25 +13,25 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import PlagiarismIcon from "@mui/icons-material/Plagiarism";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import SContainer from "../../SendingPage/SendContainer/SContainer";
+import SContainer from "../SContainer/SContainer";
 
 const drawerWidth = 270;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
   ({ theme, open }) => ({
-    flexGrow: 1,
+    flexGrow: 0.76,
     padding: theme.spacing(3),
     transition: theme.transitions.create("margin", {
       easing: theme.transitions.easing.sharp,
       duration: theme.transitions.duration.leavingScreen,
     }),
-    marginRight: -drawerWidth,
+    marginRight: 0,
 
     ...(open && {
       transition: theme.transitions.create("margin", {
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: drawerWidth - 250,
+      marginLeft: drawerWidth -45 ,
     }),
     position: "relative",
   })
@@ -173,10 +173,11 @@ export default function DSide_Navbar() {
           </List>
         </Drawer>
 
-        <Main open={open}>
-          <SContainer/>
-        </Main>
+        
       </Box>
+      <Main open={open}>
+          <SContainer/>
+      </Main>
     </div>
   );
 }
