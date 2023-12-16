@@ -1,14 +1,12 @@
+import React from "react";
 import "./App.css";
-import Login from "../src/Login/Login";
-
-import HomePage from "../src/HomePage/Homepage";
-
-
+import Login from "./Login/Login";
+import HomePage from "./HomePage/Homepage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Datapage from "./Datapage/datapage";
 import Stockpage from "./Stockpage/stockpage";
 import Transportationpage from "./Transportationpage/transportationpage";
-import { isVerified } from "./Login/Login";
+import PrivateRoutes from "./PrivateRoute";
 
 function App() {
   return (
@@ -17,9 +15,11 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<HomePage />} />
-          <Route path="/data" element={<Datapage />} />
-          <Route path="/stock" element={<Stockpage />} />
-          <Route path="/transportation" element={<Transportationpage />} />
+          <Route element={<PrivateRoutes />}>
+            <Route path="/data" element={<Datapage />} />
+            <Route path="/stock" element={<Stockpage />} />
+            <Route path="/transportation" element={<Transportationpage />} />
+          </Route>
         </Routes>
       </BrowserRouter>
     </div>
