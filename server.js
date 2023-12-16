@@ -19,7 +19,7 @@ app.use(cookieParser());
 app.post("/auth", handleLogin);
 
 app.get("/verify", authenticateToken, (req, res) => {
-  return res.status(200).json({ message: "logged in", username: req.username });
+  return json({ username: req.username });
 });
 
 const api = kullaniciApi((error, { results } = {}) => {
