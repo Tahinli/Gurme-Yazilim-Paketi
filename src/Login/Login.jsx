@@ -9,7 +9,8 @@ import "reactjs-popup/dist/index.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../AuthProvider";
-const LOGIN_URL = "http://localhost:5000/auth";
+import URL from "../../URL";
+const LOGIN_URL = URL + "/auth";
 
 function Login() {
   const navigate = useNavigate();
@@ -59,6 +60,7 @@ function Login() {
 
       const accessToken = response?.data.accessToken;
       login(user, accessToken);
+      navigate("/");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");

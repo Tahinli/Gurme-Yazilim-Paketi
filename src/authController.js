@@ -14,7 +14,7 @@ const handleLogin = async (req, res) => {
   if (user === "admin" && pwd === "123") {
     // create JWTs
     const accessToken = jwt.sign({ username: "admin" }, ACCESS_TOKEN_SECRET, {
-      expiresIn: "30d",
+      expiresIn: "30days",
     });
     const refreshToken = jwt.sign({ username: "admin" }, REFRESH_TOKEN_SECRET, {
       expiresIn: "1d",
@@ -25,19 +25,20 @@ const handleLogin = async (req, res) => {
         secure: process.env.NODE_ENV === "production",
       })
       .status(200)
-      .json({ message: "Logged in successfully  👌" });
+      .json({ message: "Logged in successfully " });
   }
 };
-const authenticateToken = (req, res) => {
-  const token = req.cookies.auth;
-  if (!token) {
+const authenticateToken = async (req, res) => {
+  const accessToken = await req.cookies.auth;
+  if (!accessToken) {
     return res.sendStatus(403);
   }
   try {
-    const data = jwt.verify(token, ACCESS_TOKEN_SECRET);
+    const data = await jwt.verify(accessToken, ACCESS_TOKEN_SECRET);
     req.username = data.username;
-    return res.status(200);
-  } catch {
+    return res.status(200).send("Authentication successful");
+  } catch (error) {
+    console.error(error);
     return res.sendStatus(403);
   }
 };
