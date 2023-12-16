@@ -2,14 +2,26 @@ import "./Login.css";
 import TextField from "@mui/material/TextField";
 import logo from "../assets/img/logo.png";
 import Button from "@mui/material/Button";
-import React, { useState, useEffect } from "react"; // Add useEffect here
-import { useNavigate } from "react-router-dom";
+import React, { useRef, useState, useEffect, useContext } from "react"; // Add useEffect here
 import backgroundImage from "../assets/img/photo.jpg";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
-let isVerified;
+import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import { AuthContext } from "../AuthProvider";
+const LOGIN_URL = "http://localhost:5000/auth";
 
 function Login() {
+  const navigate = useNavigate();
+  const { login } = useContext(AuthContext);
+  const userRef = useRef();
+  const errRef = useRef();
+
+  const [user, setUser] = useState("");
+  const [pwd, setPwd] = useState("");
+  const [errMsg, setErrMsg] = useState("");
+  const [success, setSuccess] = useState(false);
+
   useEffect(() => {
     document.body.style.alignItems = "center";
 
@@ -23,32 +35,42 @@ function Login() {
       document.body.style.backgroundImage = "none";
     };
   }, []);
-  const [password, setPassword] = useState("");
-  const [username, setUsername] = useState("");
 
-  const [loginstate, setLoginState] = useState("false");
-  const [isVerified, setIsVerified] = useState();
-  const [isntVerified, setIsntVerified] = useState(true);
+  useEffect(() => {
+    userRef.current.focus();
+  }, []);
 
-  const navigate = useNavigate();
+  useEffect(() => {
+    setErrMsg("");
+  }, [user, pwd]);
 
-  async function controlLogin2() {
-    await setTimeout(() => {
+  const handleButtonClick = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await axios.post(
+        LOGIN_URL,
+        JSON.stringify({ user, pwd }),
+        {
+          headers: { "Content-Type": "application/json" },
+          withCredentials: true,
+        }
+      );
+
+      const accessToken = response?.data.accessToken;
+      login(user, accessToken);
       navigate("/");
-    }, 1000);
-  }
-
-  async function controlLogin() {
-    if (username === "admin" && password === "123") {
-      setLoginState("Giriş Başarılı");
-      setIsVerified(true);
-    } else {
-      setIsntVerified(false);
+    } catch (err) {
+      if (!err?.response) {
+        setErrMsg("No Server Response");
+      } else if (err.response?.status === 400) {
+        setErrMsg("Missing Username or Password");
+      } else if (err.response?.status === 401) {
+        setErrMsg("Unauthorized");
+      } else {
+        setErrMsg("Login Failed");
+      }
     }
-  }
-
-  const handleButtonClick = async () => {
-    await controlLogin();
   };
 
   return (
@@ -56,10 +78,6 @@ function Login() {
       <div className="mainDiv">
         <div className="logodiv">
           <img className="imglogo" src={logo} alt="Logo" />
-          {!isntVerified && (
-            <h4>* Kullanıcı adı veya şifre yanlış girildi *</h4>
-          )}
-          {isntVerified && <h1></h1>}
         </div>
         <div className="textfield">
           <TextField
@@ -67,10 +85,12 @@ function Login() {
             id="outlined-basic"
             label="Kullanıcı Adı"
             variant="outlined"
-            value={username}
-            onChange={(e) => setUsername(e.target.value)}
+            ref={userRef}
+            autoComplete="off"
+            onChange={(e) => setUser(e.target.value)}
             required
           />
+
           <br />
           <TextField
             type="password"
@@ -78,8 +98,7 @@ function Login() {
             id="sifre"
             label="Şifre"
             variant="outlined"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
+            onChange={(e) => setPwd(e.target.value)}
             required
           />
         </div>
@@ -90,10 +109,9 @@ function Login() {
             className="submitButton"
             onClick={handleButtonClick}
           >
-            Giriş Yap ;
+            Giriş Yap
             <Popup
-              open={isVerified}
-              onOpen={controlLogin2}
+              open={success}
               closeOnDocumentClick
               closeOnEscape
               onClose={() => {
@@ -108,7 +126,7 @@ function Login() {
                   <div></div>
                 </div>
                 <div>
-                  <p>{loginstate}</p>
+                  <p>"Giriş Başarılı"</p>
                 </div>
               </div>
             </Popup>
@@ -120,4 +138,3 @@ function Login() {
 }
 
 export default Login;
-export { isVerified };

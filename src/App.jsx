@@ -1,14 +1,13 @@
+import React from "react";
 import "./App.css";
+
 import Login from "../src/Login/Login";
-
 import HomePage from "./HomePage/HomePage";
-
-
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DataPage from "./DataPage/DataPage";
 import Stockpage from "./Stockpage/stockpage";
 import Transportationpage from "./Transportationpage/transportationpage";
-import { isVerified } from "./Login/Login";
+import PrivateRoutes from "./PrivateRoute";
 
 function App() {
   return (
