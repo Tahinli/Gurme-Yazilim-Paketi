@@ -6,8 +6,8 @@ import DSide_Navbar from "./DataSidebar/DSide_Navbar";
 
 import "../HomePage/Footer/footer.css";
 import "../HomePage/Navbar/navbar.css";
-import "../Datapage/DataSidebar/dside_navbar.css";
-import "../Datapage/DContainer/dcontainer.css";
+import "./DataSidebar/dside_navbar.css";
+import "./DContainer/dcontainer.css";
 
 function datapage() {
   return (
