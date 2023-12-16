@@ -7,7 +7,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Logout from "@mui/icons-material/Logout";
 import IconButton from "@mui/material/IconButton";
-import loginstate from "../../Login/Login";
+import loginstate from "../../LoginPage/Login";
 
 const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -39,10 +39,11 @@ const Navbar = () => {
                       textAlign: "center",
                     }}
                   >
-                    <IconButton className="login_menu"
+                    <IconButton
+                      className="login_menu"
                       onClick={handleClick}
                       size="small"
-                      sx={{ ml: 2, paddingRight:5 }}
+                      sx={{ ml: 2, paddingRight: 5 }}
                       aria-controls={open ? "account-menu" : undefined}
                       aria-haspopup="true"
                       aria-expanded={open ? "true" : undefined}
@@ -54,8 +55,7 @@ const Navbar = () => {
                           height: 40,
                           backgroundColor: "#305630",
                         }}
-                      >                        
-                      </Avatar>
+                      ></Avatar>
                     </IconButton>
                   </Box>
                   <Menu
