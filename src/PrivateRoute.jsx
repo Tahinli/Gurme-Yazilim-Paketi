@@ -1,12 +1,11 @@
 import React, { useContext, useEffect, useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import URL from "../URL";
 const PrivateRoutes = () => {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const response = await fetch(URL + "/verify", {
+      const response = await fetch("http://localhost:5000/verify", {
         method: "GET",
         headers: {
           "Content-Type": "application/json",
