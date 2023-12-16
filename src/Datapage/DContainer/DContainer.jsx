@@ -14,16 +14,41 @@ import LoupeIcon from '@mui/icons-material/Loupe';
 import Button from '@mui/material/Button';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
-
 import dayjs from 'dayjs';
 import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
 import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
-
 import { useState } from 'react';
 import Card from '@mui/joy/Card';
 import CancelIcon from '@mui/icons-material/Cancel';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
+import Snackbar from '@mui/joy/Snackbar';
+import { keyframes } from '@mui/system';
+import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
+
+const inAnimation = keyframes`
+  0% {
+    transform: scale(0);
+    opacity: 0;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+`;
+
+const outAnimation = keyframes`
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(0);
+    opacity: 0;
+  }
+`;
+
 
 const sample = [
   ['Frozen yoghurt', 159, 6.0, 24, 4.0],
@@ -136,7 +161,7 @@ export default function DContainer() {
     dayjs('2022-04-21'),
   ]);
 
-   const [showInputPart,setShow]= useState(false); 
+   const [showInputPart,setShow]= useState(false);
 
    const show_input_part = () => {
     setShow(true);
@@ -145,29 +170,37 @@ export default function DContainer() {
     setShow(false);
    }
 
+   const animationDuration = 600;
+   const [massage, setMassage] = useState(false);
+
+   const handleClick = () => {
+     setMassage(true);
+   };
+ 
+   const handleClose = () => {
+     setMassage(false);
+   };
+
   return (
-<div>
     
-
-  
-  {/* INPUT TEXT_FİELDS*/}
-
-  {showInputPart && <Card className='input_card'
+<div>
+{/* INPUT TEXT_FİELDS*/}
+  {showInputPart && <Card 
+  className='input_card'
   color='success'
   orientation="horizontal"
   size="lg"
   variant='outlined'
-  sx={{height:300, width:1350}} 
   >
 
-<div>
-<div className='input_header'>             
+   <div>
+      <div className='input_header'>             
           <CancelIcon  className="close_btn" onClick={close_input_part} />    
           <h4>VERİ GİRİŞİ</h4>
       </div>
           
 {/* AUTOCOMPLETE*/}
-<div className="autocomplete">
+    <div className="autocomplete">
           <Autocomplete className="autocomplete" 
               disablePortal
               options={sample2}
@@ -178,59 +211,80 @@ export default function DContainer() {
               options={sample2}
               renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürünler" />}
           />
-  </div>
+    </div>
   
     <div className='input_part'> 
     <TextField sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" />
     <TextField sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" />
     <TextField sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" />
     <TextField sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" />
-      
-        <Stack  className="field_btn" >
-        <Button className="save" color="error" variant="outlined" size='medium' endIcon={<LoupeIcon />}>
-          Kaydet
-        </Button>
-      </Stack>
 
       <Stack  className="field_btn">
-        <Button className="reset" color="error" variant="outlined" endIcon={<LoupeIcon />}>
-          Sıfırla
-        </Button>
+      <Button  color="success" variant='contained' aria-label="add"  sx={{marginTop:1}} onClick={handleClick} endIcon={<LoupeIcon />} >
+          KAYDET
+      </Button>
       </Stack>
-      
-       </div>       
+
+{/* ANİMATİON-MASSAGE */} 
+      <Snackbar
+      variant="soft"
+      color="success"
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={massage}
+        onClose={handleClose}
+        autoHideDuration={1000}
+        animationDuration={animationDuration}
+        startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
+        sx={{
+          ...(open && {
+            animation: `${inAnimation} ${animationDuration}ms forwards`,
+          }),
+          ...(!open && {
+            animation: `${outAnimation} ${animationDuration}ms forwards`,
+          }),
+        }}
+      >
+        Verileriniz Başarıyla Kaydedildi
+      </Snackbar>
+
+      <Stack  className="field_btn">
+        <Button color="error" variant='contained' aria-label="add" sx={{marginTop:1}} endIcon={<DeleteForeverIcon/>}>
+          SIFIRLA
+        </Button>
+      </Stack></div>   
+
 </div>
-  </Card>}
+  </Card> }
 
-
-        
-
-
-{/* TABLE */}
-      <div>
-        {/* DATE TİME PİCKER*/}
-
+{/* DATE TİME PİCKER*/}
+  <div> 
+  <Card className="date_card"
+  color='danger'
+  orientation="horizontal"
+  size="lg"
+  variant='outlined'
+  >
       <div className="date_picker">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
-
             <DemoContainer components={['DateRangePicker', 'DateRangePicker']}>
-
-                <DemoItem label="Controlled picker" component="DateRangePicker">
+                <DemoItem label="Filtrele" component="DateRangePicker">
                   <DateRangePicker
                     value={value}
                     onChange={(newValue) => setValue(newValue)}
                   />
                 </DemoItem>
-
             </DemoContainer>
           </LocalizationProvider>
+          <Button className='list_btn' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
       </div>
+      <img src="src/assets/img/genel.png" width={140}></img>
+</Card></div>
 
 
       <div  className='add_table' >
-        {/* ADD-BUTTON*/}
       <Stack className="add" sx={{backgroundColor:'#28342b'}}></Stack>
-      <Paper className="table">
+
+    <Paper className="table">
       <TableVirtuoso 
         data={rows}
         components={VirtuosoTableComponents}
@@ -238,17 +292,14 @@ export default function DContainer() {
         itemContent={rowContent}
       />
     </Paper>
-    <Stack className='add_btn'>
-    <Fab color="error" aria-label="add" sx={{ width :35 , height:0}}>
-               <AddIcon  onClick={show_input_part} />
-               </Fab>
+{/* ADD-BUTTON*/}
+    <Stack className='add_btn'>EKLE
+    <Fab color="error" onClick={show_input_part} sx={{ width :35 , height:0}}>
+        <AddIcon />
+    </Fab>
     </Stack>
-      </div>
-  
-    
   </div>
-    
-    </div>
-    
+  
+</div>
   );
 }
