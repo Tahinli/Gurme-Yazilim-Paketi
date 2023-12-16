@@ -26,9 +26,9 @@ const api = kullaniciApi((error, { results } = {}) => {
   if (error) {
     return res.send({ error });
   }
-  res.send({
-    results,
-  });
+//  res.send({
+//    results,
+//  });
   console.log(results[0].isim);
 });
 
