@@ -6,7 +6,7 @@
   "scripts": {
     "start:vite": "vite",
     "start:server": "node server.js",
-    "dev": "vite",
+    "dev": "npm-run-all --parallel start:vite start:server",
     "build": "vite build",
     "preview": "vite preview"
   },
