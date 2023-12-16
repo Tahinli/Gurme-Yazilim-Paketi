@@ -1,12 +1,16 @@
-import React, { useContext, useEffect } from "react";
-import { AuthContext } from "./AuthProvider";
+import React, { useContext, useEffect, useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 
 const PrivateRoutes = () => {
-  const sessionValue = sessionStorage.getItem("auth");
-  console.log(sessionValue);
+  const response = fetch("http://localhost:5000/verify", {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    credentials: "include",
+  });
 
-  return sessionValue ? <Outlet /> : <Navigate to="/login" />;
+  return response.status == 200 ? <Outlet /> : <Navigate to="/login" />;
 };
 
 export default PrivateRoutes;

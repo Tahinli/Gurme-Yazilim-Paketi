@@ -2,21 +2,30 @@ import express from "express";
 import cors from "cors";
 import corsOptions from "./config/corsOptions.js";
 import { handleLogin, authenticateToken } from "./src/authController.js"; // Import the handleLogin function
+import allowedOrigins from "./config/allowedOrigins.js";
+import cookieParser from "cookie-parser";
 
 const app = express();
 app.use(
   cors({
-    origin: "http://localhost:5173", // or your allowedOrigins function
+    origin: allowedOrigins, // or your allowedOrigins function
     credentials: true,
   })
 );
 app.use(cors(corsOptions));
 app.use(express.json());
+app.use(cookieParser());
 app.post("/auth", handleLogin);
-app.get("/api/data", authenticateToken, (req, res) => {
-  // Token doğrulama başarılıysa, devam eden işlemleri gerçekleştirin
-  const user = req.user;
-  res.json({ message: "API data", user });
+
+app.get("/verify", authenticateToken, (req, res) => {
+  return res.status(200).json({ message: "logged in", username: req.username });
+});
+
+app.get("/logout", authenticateToken, (req, res) => {
+  return res
+    .clearCookie("access_token")
+    .status(200)
+    .json({ message: "logged out" });
 });
 
 const PORT = process.env.PORT || 5000;

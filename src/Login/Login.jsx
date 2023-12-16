@@ -59,7 +59,6 @@ function Login() {
 
       const accessToken = response?.data.accessToken;
       login(user, accessToken);
-      navigate("/");
     } catch (err) {
       if (!err?.response) {
         setErrMsg("No Server Response");

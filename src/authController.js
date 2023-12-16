@@ -1,8 +1,8 @@
+import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
-import { useContext } from "react";
 
-const ACCESS_TOKEN_SECRET = "DSAD!^2ASDq@æßxcz₺₺DSA";
-const REFRESH_TOKEN_SECRET = "DCSAKLcxKMLCW@!#%&/()=";
+const ACCESS_TOKEN_SECRET = "sdaA";
+const REFRESH_TOKEN_SECRET = "dsada";
 const handleLogin = async (req, res) => {
   const { user, pwd } = req.body;
   if (!user || !pwd)
@@ -14,32 +14,33 @@ const handleLogin = async (req, res) => {
   if (user === "admin" && pwd === "123") {
     // create JWTs
     const accessToken = jwt.sign({ username: "admin" }, ACCESS_TOKEN_SECRET, {
-      expiresIn: "30s",
+      expiresIn: "30d",
     });
     const refreshToken = jwt.sign({ username: "admin" }, REFRESH_TOKEN_SECRET, {
       expiresIn: "1d",
     });
-    return res.json({ accessToken, refreshToken });
+    return res
+      .cookie("auth", accessToken, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === "production",
+      })
+      .status(200)
+      .json({ message: "Logged in successfully  👌" });
   }
 };
-
-const authenticateToken = (req, res, next) => {
-  const token = req.header("Authorization")?.split(" ")[1];
-
+const authenticateToken = (req, res) => {
+  const token = req.cookies.auth;
   if (!token) {
-    return res.status(401).json({ message: "Unauthorized" });
+    return res.sendStatus(403);
   }
-
-  jwt.verify(token, ACCESS_TOKEN_SECRET, (err, user) => {
-    if (err) {
-      return res.status(403).json({ message: "Forbidden" });
-    }
-
-    req.user = user; // Kullanıcı bilgilerini talep nesnesine ekleyin
-    next(); // Middleware'i devam ettirin
-  });
+  try {
+    const data = jwt.verify(token, ACCESS_TOKEN_SECRET);
+    req.username = data.username;
+    return res.status(200);
+  } catch {
+    return res.sendStatus(403);
+  }
 };
-export { authenticateToken }; // Export the authenticateToken function
 
+export { authenticateToken }; // Export the authenticateToken function
 export { handleLogin }; // Export the handleLogin function
-export default handleLogin;
