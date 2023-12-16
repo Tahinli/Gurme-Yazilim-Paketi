@@ -39,10 +39,10 @@ const Navbar = () => {
                       textAlign: "center",
                     }}
                   >
-                    <IconButton
+                    <IconButton className="login_menu"
                       onClick={handleClick}
                       size="small"
-                      sx={{ ml: 2 }}
+                      sx={{ ml: 2, paddingRight:5 }}
                       aria-controls={open ? "account-menu" : undefined}
                       aria-haspopup="true"
                       aria-expanded={open ? "true" : undefined}
@@ -54,8 +54,7 @@ const Navbar = () => {
                           height: 40,
                           backgroundColor: "#305630",
                         }}
-                      >
-                        
+                      >                        
                       </Avatar>
                     </IconButton>
                   </Box>
@@ -94,10 +93,6 @@ const Navbar = () => {
                     transformOrigin={{ horizontal: "right", vertical: "top" }}
                     anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                   >
-                    <MenuItem>
-                      <Avatar /> Profile
-                    </MenuItem>
-
                     <MenuItem onClick={handleClose}>
                       <ListItemIcon>
                         <PersonAdd fontSize="small" />
