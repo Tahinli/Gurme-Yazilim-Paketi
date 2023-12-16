@@ -67,9 +67,15 @@ impl Kullanici
                     };
                 state.kullanici_collection.find_one_and_replace(doc! {"id":id}, yeni_kullanici, None).await.unwrap();
             }
-        async fn hepsi() -> impl IntoResponse
+        async fn hepsi(State(state): State<AppState>) -> impl IntoResponse
             {
-                
+                let mut kullanicilar_vector:Vec<Kullanici> = vec![];
+                let mut kullanicilar_cursor = state.kullanici_collection.find(None, None).await.unwrap();
+                while kullanicilar_cursor.advance().await.unwrap() 
+                    {
+                        kullanicilar_vector.push(kullanicilar_cursor.deserialize_current().unwrap());
+                    }
+                (StatusCode::OK, Json(serde_json::json!(kullanicilar_vector)))
             }
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -136,9 +142,15 @@ impl Kategori
                     }
                 state.kategori_collection.find_one_and_replace(doc!{"isim":isim}, yeni_kategori, None).await.unwrap();
             }
-        async fn hepsi() -> impl IntoResponse
+        async fn hepsi(State(state): State<AppState>) -> impl IntoResponse
             {
-                
+                let mut kategoriler_vector:Vec<Kategori> = vec![];
+                let mut kategoriler_cursor = state.kategori_collection.find(None, None).await.unwrap();
+                while kategoriler_cursor.advance().await.unwrap() 
+                    {
+                        kategoriler_vector.push(kategoriler_cursor.deserialize_current().unwrap());
+                    }
+                (StatusCode::OK, Json(serde_json::json!(kategoriler_vector)))
             }
 
     }
@@ -196,9 +208,15 @@ impl Urun
                 
                 state.urun_collection.find_one_and_replace(doc! {"isim":isim}, yeni_urun, None).await.unwrap();
             }
-        async fn hepsi() -> impl IntoResponse
+        async fn hepsi(State(state): State<AppState>) -> impl IntoResponse
             {
-                
+                let mut urunler_vector:Vec<Urun> = vec![];
+                let mut urunler_cursor = state.urun_collection.find(None, None).await.unwrap();
+                while urunler_cursor.advance().await.unwrap() 
+                    {
+                        urunler_vector.push(urunler_cursor.deserialize_current().unwrap());
+                    }
+                (StatusCode::OK, Json(serde_json::json!(urunler_vector)))
             }
 
     }
@@ -288,9 +306,15 @@ impl Gunluk
                     };
                 state.gunluk_collection.find_one_and_replace(doc! {"urun_isim":urun_string, "tarih":tarih_string}, yeni_gunluk, None).await.unwrap();
             }
-        async fn hepsi() -> impl IntoResponse
+        async fn hepsi(State(state): State<AppState>) -> impl IntoResponse
             {
-
+                let mut gunlukler_vector:Vec<Gunluk> = vec![];
+                let mut gunlukler_cursor = state.gunluk_collection.find(None, None).await.unwrap();
+                while gunlukler_cursor.advance().await.unwrap() 
+                    {
+                        gunlukler_vector.push(gunlukler_cursor.deserialize_current().unwrap());
+                    }
+                (StatusCode::OK, Json(serde_json::json!(gunlukler_vector)))
             }
 
 
@@ -356,10 +380,6 @@ async fn create_db_structure(db:Database)
         let urunler_collection = urunler_collection_structure(db.clone()).await;
         let gunlukler_collection = gunluk_collection_structure(db.clone()).await;
         (kullanicilar_collection, kategoriler_collection, urunler_collection, gunlukler_collection)
-        //kullanicilar_collection.insert_one(ahmet, None).await.unwrap();
-        //println!("{:#?}", kullanicilar_collection.find_one(doc! {"id":"Tahinli"}, None).await.unwrap());
-        //println!("{:#?}", kullanicilar_collection.find_one_and_delete(doc! {"id":"Tahinli"}, None).await.unwrap());
-        //kullanicilar_collection.find_one_and_replace(doc! {"id":"Tahinli"}, ahmet, None).await.unwrap();
     }
 async fn routing(State(state): State<AppState>) -> Router
     {
