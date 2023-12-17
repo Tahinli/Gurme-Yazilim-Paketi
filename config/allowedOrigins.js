@@ -4,6 +4,7 @@ const allowedOrigins = [
   "http://localhost:3500",
   "http://localhost:5173",
   "http://localhost:5000",
+  "93.190.8.248:2001"
 ];
 
 export default allowedOrigins;

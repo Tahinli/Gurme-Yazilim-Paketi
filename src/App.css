@@ -5,14 +5,19 @@
 
   .loginDiv {
     width: 100% !important;
+    border-radius: 30px !important;
   }
   .mainDiv {
     padding: 0 0px;
   }
   .submitButton {
-    width: 60%;
+    width: 80% !important;
   }
   .textfield {
-    padding: 0 60px !important;
+    padding: 0 30px !important;
+    padding-bottom: 20px !important;
+  }
+  .textf {
+    width: 100% !important;
   }
 }

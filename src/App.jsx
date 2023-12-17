@@ -1,7 +1,7 @@
 import React from "react";
 import "./App.css";
 
-import Login from "../src/Login/Login";
+import Login from "./LoginPage/Login";
 import HomePage from "./HomePage/HomePage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import DataPage from "./DataPage/DataPage";
