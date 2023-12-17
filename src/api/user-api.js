@@ -2,38 +2,53 @@ import request from 'request'
 import apiURL from './_apiURL.js'
 import handleRequest from './handler.js'
 
-const getUsers = () => {
+const getUsers = async () => {
     const options = {
         method: 'GET',
         url: `${apiURL}/kullanici/hepsi`,
         json: true
     };
 
-    return handleRequest(options);
+    try {
+        const result = await handleRequest(options);
+        return result;
+    } catch (error) {
+        throw error;
+    }
 };
-const getUsersById = (id) => {
-    const options = {
-        method: 'GET',
-        url: `${apiURL}/kullanici/hepsi/${id}`,
-        json: true
-    };
+const getUserById = async (id) => {
+    try {
+        const options = {
+            method: 'GET',
+            url: `${apiURL}/kullanici/${id}`,
+            json: true
+        };
 
-    return handleRequest(options);
+        const result = await handleRequest(options);
+        return result;
+    } catch (error) {
+        throw error;
+    }
 };
 
-const addUser = (userData) => {
+const addUser = async (userData) => {
+
     const isim = userData.isim
     const soyisim = userData.soyisim
     const id = userData.id
     const sifre = userData.sifre
-    const options = {
-        method: 'GET',
-        url: `${apiURL}/kullanici/ekle/${isim}/${soyisim}/${id}/${sifre}`,
-        json: true,
-        body: userData
-    };
-
-    return handleRequest(options);
+    try {
+        const options = {
+            method: 'GET',
+            url: `${apiURL}/kullanici/ekle/${isim}/${soyisim}/${id}/${sifre}`,
+            json: true,
+            body: userData
+        };
+        const result = await handleRequest(options);
+        return result;
+    } catch (error) {
+        throw error;
+    }
 };
 
 const deleteUser = (id) => {
@@ -62,7 +77,7 @@ const updateUser = (id, userData) => {
 }
 
 const kullaniciApi = {
-    getUsersById,
+    getUserById,
     getUsers,
     addUser,
     deleteUser,
