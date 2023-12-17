@@ -183,7 +183,7 @@ export default function DContainer() {
 
   return (
     
-<div>
+<div className='body'>
 {/* INPUT TEXT_FİELDS*/}
   {showInputPart && <Card 
   className='input_card'
@@ -214,10 +214,10 @@ export default function DContainer() {
     </div>
   
     <div className='input_part'> 
-    <TextField sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" />
-    <TextField sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" />
-    <TextField sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" />
-    <TextField sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" />
+    <TextField sx={{paddingRight:1.5 ,paddingTop:1.5}} label="Hedef Miktar" variant="filled" />
+    <TextField sx={{paddingRight:1.5 ,paddingTop:1.5}} label="Tamamlanan Miktar" variant="filled" />
+    <TextField sx={{paddingRight:1.5 ,paddingTop:1.5}} label="Fire Miktarı" variant="filled" />
+    <TextField sx={{paddingRight:1.5 ,paddingTop:1.5}} label="Sevk Edilecek Miktar" variant="filled" />
 
       <Stack  className="field_btn">
       <Button  color="success" variant='contained' aria-label="add"  sx={{marginTop:1}} onClick={handleClick} endIcon={<LoupeIcon />} >
@@ -264,6 +264,7 @@ export default function DContainer() {
   size="lg"
   variant='outlined'
   >
+    <div className='div_div'>
       <div className="date_picker">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DateRangePicker', 'DateRangePicker']}>
@@ -277,7 +278,9 @@ export default function DContainer() {
           </LocalizationProvider>
           <Button className='list_btn' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
       </div>
-      <img src="src/assets/img/genel.png" width={140}></img>
+      <img src="src/assets/img/genel.png"></img>
+    </div>
+      
 </Card></div>
 
 
