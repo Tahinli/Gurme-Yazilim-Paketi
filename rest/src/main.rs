@@ -1,6 +1,7 @@
 use axum::{routing::get, extract::{Path, State}, Router, Json, http::StatusCode, response::IntoResponse};
+use serde_json::Value;
 use tower_http::cors::CorsLayer;
-use mongodb::{Client, options::{ClientOptions, IndexOptions}, Database, IndexModel, bson::doc, Collection};
+use mongodb::{Client, options::{ClientOptions, IndexOptions}, Database, IndexModel, bson::doc, Collection, error::Error};
 use serde::{Serialize, Deserialize};
 
 const DB_NAME:&str = "gurme";
@@ -24,13 +25,36 @@ struct Kullanici
     }
 impl Kullanici 
     {
-        async fn kullanici(Path(id):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+        async fn hata_ayiklayici(analiz_edilecek:Result<Option<Kullanici>, Error>) -> (StatusCode, Json<Value>)
+            {
+                match analiz_edilecek 
+                    {
+                        Ok(hatasiz) =>
+                            {
+                                match hatasiz 
+                                    {
+                                        Some(deger) =>
+                                            {
+                                                return (StatusCode::OK, Json(serde_json::json!(deger)));
+                                            }
+                                        None =>
+                                            {
+                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                            }
+                                    }
+                            }
+                        Err(hata_degeri) =>
+                            {
+                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                            }
+                    }
+            }
+        async fn kullanici(Path(id):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", id);
-                let aranan_kullanici = state.kullanici_collection.find_one(doc! {"id":id}, None).await.unwrap().unwrap();
-                (StatusCode::OK, Json(serde_json::json!(aranan_kullanici)))
+                Kullanici::hata_ayiklayici(state.kullanici_collection.find_one(doc! {"id":id}, None).await).await
             }
-        async fn ekle(Path((isim, soyisim, id, sifre)):Path<(String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn ekle(Path((isim, soyisim, id, sifre)):Path<(String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", isim);
                 println!("{}", soyisim);
@@ -44,14 +68,25 @@ impl Kullanici
                         id,
                         sifre,
                     };
-                state.kullanici_collection.insert_one(kullanici, None).await.unwrap();
+                match state.kullanici_collection.insert_one(kullanici, None).await
+                    {
+                        Ok(sonuc_degeri)=>
+                            {
+                                (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)))
+                            }
+                        Err(hata_degeri) =>
+                            {
+                                (StatusCode::OK, Json(serde_json::json!(hata_degeri.to_string())))
+                            }
+                    }
+                
             }
-        async fn sil(Path(id):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+        async fn sil(Path(id):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", id);
-                state.kullanici_collection.find_one_and_delete(doc! {"id":id}, None).await.unwrap();
+                Kullanici::hata_ayiklayici(state.kullanici_collection.find_one_and_delete(doc! {"id":id}, None).await).await
             }
-        async fn duzenle(Path((id, yeni_isim, yeni_soyisim, yeni_id, yeni_sifre)):Path<(String, String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn duzenle(Path((id, yeni_isim, yeni_soyisim, yeni_id, yeni_sifre)):Path<(String, String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", id);
                 println!("{}", yeni_isim);
@@ -66,17 +101,36 @@ impl Kullanici
                         id:yeni_id,
                         sifre:yeni_sifre,
                     };
-                state.kullanici_collection.find_one_and_replace(doc! {"id":id}, yeni_kullanici, None).await.unwrap();
+                Kullanici::hata_ayiklayici(state.kullanici_collection.find_one_and_replace(doc! {"id":id}, yeni_kullanici, None).await).await
             }
-        async fn hepsi(State(state): State<AppState>) -> impl IntoResponse
+        async fn hepsi(State(state): State<AppState>) -> (StatusCode, Json<Value>)
             {
                 let mut kullanicilar_vector:Vec<Kullanici> = vec![];
-                let mut kullanicilar_cursor = state.kullanici_collection.find(None, None).await.unwrap();
-                while kullanicilar_cursor.advance().await.unwrap() 
+                match state.kullanici_collection.find(None, None).await
                     {
-                        kullanicilar_vector.push(kullanicilar_cursor.deserialize_current().unwrap());
+                        Ok(mut kullanicilar_cursor) =>
+                            {
+                                while kullanicilar_cursor.advance().await.unwrap() 
+                                    {
+                                        match kullanicilar_cursor.deserialize_current()
+                                            {
+                                                Ok(eklenecek_kullanici) =>
+                                                    {
+                                                        kullanicilar_vector.push(eklenecek_kullanici);
+                                                    }
+                                                Err(hata_degeri) =>
+                                                    {
+                                                        return (StatusCode::EXPECTATION_FAILED, Json(serde_json::json!(hata_degeri.to_string())));
+                                                    }
+                                            }
+                                    }
+                                return (StatusCode::OK, Json(serde_json::json!(kullanicilar_vector)));
+                            }
+                        Err(hata_degeri) =>
+                            {
+                                return (StatusCode::EXPECTATION_FAILED, Json(serde_json::json!(hata_degeri.to_string())));
+                            }
                     }
-                (StatusCode::OK, Json(serde_json::json!(kullanicilar_vector)))
             }
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -87,32 +141,75 @@ struct Kategori
     }
 impl Kategori 
     {
-        async fn kategori(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+        async fn hata_ayiklayici(analiz_edilecek:Result<Option<Kategori>, Error>) -> (StatusCode, Json<Value>)
+            {
+                match analiz_edilecek 
+                    {
+                        Ok(hatasiz) =>
+                            {
+                                match hatasiz 
+                                    {
+                                        Some(deger) =>
+                                            {
+                                                return (StatusCode::OK, Json(serde_json::json!(deger)));
+                                            }
+                                        None =>
+                                            {
+                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                            }
+                                    }
+                            }
+                        Err(hata_degeri) =>
+                            {
+                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                            }
+                    }
+            }
+        async fn kategori(Path(isim):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", isim);
-                let aranan_kategori = state.kategori_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
-                (StatusCode::OK, Json(serde_json::json!(aranan_kategori)))
+                Kategori::hata_ayiklayici(state.kategori_collection.find_one(doc! {"isim":isim}, None).await).await
             }
-        async fn ekle(Path((isim, ust_kategori)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn ekle(Path((isim, ust_kategori)):Path<(String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("Kategori Ekle");
                 println!("{}", isim);
                 println!("{}", ust_kategori);
-                let ust_kategori = state.kategori_collection.find_one(doc! {"isim": ust_kategori}, None).await.unwrap();
                 let mut kategori:Kategori = Kategori
                     {
                         isim,
                         ust_kategori:None,
                     };
-                match ust_kategori 
+                match state.kategori_collection.find_one(doc! {"isim": ust_kategori}, None).await
                     {
-                        Some(var) =>
+                        Ok(ust_kategori) =>
                             {
-                                kategori.ust_kategori = Some(Box::new(var));
+                                
+                                match ust_kategori 
+                                    {
+                                        Some(var) =>
+                                            {
+                                                kategori.ust_kategori = Some(Box::new(var));
+                                            }
+                                        None =>{}
+                                    }
                             }
-                        None =>{}
+                        Err(hata_degeri) =>
+                            {
+                                return (StatusCode::NO_CONTENT, Json(serde_json::json!(hata_degeri.to_string())))
+                            }
                     }
-                state.kategori_collection.insert_one(kategori, None).await.unwrap();
+                match state.kategori_collection.insert_one(kategori, None).await
+                    {
+                        Ok(sonuc_degeri)=>
+                            {
+                                (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)))
+                            }
+                        Err(hata_degeri) =>
+                            {
+                                (StatusCode::OK, Json(serde_json::json!(hata_degeri.to_string())))
+                            }
+                    }
             }
         async fn sil(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
             {
