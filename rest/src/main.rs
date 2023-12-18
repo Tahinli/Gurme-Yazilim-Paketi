@@ -76,7 +76,7 @@ impl Kullanici
                             }
                         Err(hata_degeri) =>
                             {
-                                (StatusCode::OK, Json(serde_json::json!(hata_degeri.to_string())))
+                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
                 
@@ -124,13 +124,13 @@ impl Kullanici
                                                     }
                                             }
                                     }
-                                return (StatusCode::OK, Json(serde_json::json!(kullanicilar_vector)));
                             }
                         Err(hata_degeri) =>
                             {
                                 return (StatusCode::EXPECTATION_FAILED, Json(serde_json::json!(hata_degeri.to_string())));
                             }
                     }
+                (StatusCode::OK, Json(serde_json::json!(kullanicilar_vector)))
             }
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -182,21 +182,21 @@ impl Kategori
                     };
                 match state.kategori_collection.find_one(doc! {"isim": ust_kategori}, None).await
                     {
-                        Ok(ust_kategori) =>
+                        Ok(bulundu) =>
                             {
                                 
-                                match ust_kategori 
+                                match bulundu 
                                     {
-                                        Some(var) =>
+                                        Some(ust_kategori) =>
                                             {
-                                                kategori.ust_kategori = Some(Box::new(var));
+                                                kategori.ust_kategori = Some(Box::new(ust_kategori));
                                             }
                                         None =>{}
                                     }
                             }
-                        Err(hata_degeri) =>
+                        Err(bulunamadi) =>
                             {
-                                return (StatusCode::NO_CONTENT, Json(serde_json::json!(hata_degeri.to_string())))
+                                return (StatusCode::NO_CONTENT, Json(serde_json::json!(bulunamadi.to_string())))
                             }
                     }
                 match state.kategori_collection.insert_one(kategori, None).await
@@ -207,16 +207,16 @@ impl Kategori
                             }
                         Err(hata_degeri) =>
                             {
-                                (StatusCode::OK, Json(serde_json::json!(hata_degeri.to_string())))
+                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
             }
-        async fn sil(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+        async fn sil(Path(isim):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", isim);
 
-                //TO-DO ya kategori yoksa
-                state.kategori_collection.find_one_and_delete(doc! {"isim":isim}, None).await.unwrap();
+                //TO-DO ya kategori yoksa, ya alt ürünler varsa
+                Kategori::hata_ayiklayici(state.kategori_collection.find_one_and_delete(doc! {"isim":isim}, None).await).await
             }
         async fn duzenle(Path((isim, yeni_isim, yeni_ust_kategori)):Path<(String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
@@ -229,28 +229,58 @@ impl Kategori
                         isim:yeni_isim,
                         ust_kategori:None,
                     };
-                let ust_kategori = state.kategori_collection.find_one(doc! {"isim": yeni_ust_kategori}, None).await.unwrap();
-                match ust_kategori 
+                match state.kategori_collection.find_one(doc! {"isim": yeni_ust_kategori}, None).await
                     {
-                        Some(var) =>
+                        Ok(bulundu) =>
                             {
-                                yeni_kategori.ust_kategori = Some(Box::new(var));
+                                match bulundu
+                                    {
+                                        Some(ust_kategori) =>
+                                            {
+                                                yeni_kategori.ust_kategori = Some(Box::new(ust_kategori));
+                                            }
+                                        None =>
+                                            {
+                                                return (StatusCode::NOT_ACCEPTABLE, Json(serde_json::json!("")));
+                                            }
+                                    }
                             }
-                        None =>{}
+                        Err(bulunamadi) =>
+                            {
+                                return (StatusCode::NOT_ACCEPTABLE, Json(serde_json::json!(bulunamadi.to_string())));
+                            }
                     }
-                state.kategori_collection.find_one_and_replace(doc!{"isim":isim}, yeni_kategori, None).await.unwrap();
+                Kategori::hata_ayiklayici(state.kategori_collection.find_one_and_replace(doc!{"isim":isim}, yeni_kategori, None).await).await
             }
-        async fn hepsi(State(state): State<AppState>) -> impl IntoResponse
+        async fn hepsi(State(state): State<AppState>) -> (StatusCode, Json<Value>)
             {
                 let mut kategoriler_vector:Vec<Kategori> = vec![];
-                let mut kategoriler_cursor = state.kategori_collection.find(None, None).await.unwrap();
-                while kategoriler_cursor.advance().await.unwrap() 
+                match state.kategori_collection.find(None, None).await
                     {
-                        kategoriler_vector.push(kategoriler_cursor.deserialize_current().unwrap());
+                        Ok(mut bulundu) =>
+                            {
+                                while bulundu.advance().await.unwrap()
+                                    {
+                                        match bulundu.deserialize_current()
+                                            {
+                                                Ok(kategori) =>
+                                                    {
+                                                        kategoriler_vector.push(kategori);
+                                                    }
+                                                Err(hata) =>
+                                                    {
+                                                        return (StatusCode::EXPECTATION_FAILED, Json(serde_json::json!(hata.to_string())));
+                                                    }
+                                            }
+                                    }
+                            }
+                        Err(bulunamadi) =>
+                            {
+                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                            }
                     }
                 (StatusCode::OK, Json(serde_json::json!(kategoriler_vector)))
             }
-
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Urun
@@ -261,32 +291,84 @@ struct Urun
     }
 impl Urun 
     {
-        async fn urun(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+        async fn hata_ayiklayici(analiz_edilecek:Result<Option<Urun>, Error>) -> (StatusCode, Json<Value>)
+            {
+                match analiz_edilecek 
+                    {
+                        Ok(hatasiz) =>
+                            {
+                                match hatasiz 
+                                    {
+                                        Some(deger) =>
+                                            {
+                                                return (StatusCode::OK, Json(serde_json::json!(deger)));
+                                            }
+                                        None =>
+                                            {
+                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                            }
+                                    }
+                            }
+                        Err(hata_degeri) =>
+                            {
+                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                            }
+                    }
+            }
+        async fn urun(Path(isim):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", isim);
-                let aranan_urun = state.urun_collection.find_one(doc! {"isim":isim}, None).await.unwrap().unwrap();
-                (StatusCode::OK, Json(serde_json::json!(aranan_urun)))
+                Urun::hata_ayiklayici(state.urun_collection.find_one(doc! {"isim":isim}, None).await).await
             }
-        async fn ekle(Path((isim, kategori)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn ekle(Path((isim, kategori)):Path<(String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", isim);
                 println!("{}", kategori);
 
-                let aranan_kategori = state.kategori_collection.find_one(doc! {"isim":kategori}, None).await.unwrap().unwrap();
-
-                let urun = Urun
+                match state.kategori_collection.find_one(doc! {"isim":kategori}, None).await
                     {
-                        isim,
-                        kategori:aranan_kategori.clone(),
-                        kategori_isim:aranan_kategori.isim,
-                    };
-                state.urun_collection.insert_one(urun, None).await.unwrap();
+                        Ok(bulundu) =>
+                            {
+                                match bulundu 
+                                    {
+                                        Some(kategori) =>
+                                            {
+                                                let urun = Urun
+                                                    {
+                                                        isim,
+                                                        kategori:kategori.clone(),
+                                                        kategori_isim:kategori.isim,
+                                                    };
+                                                match state.urun_collection.insert_one(urun, None).await
+                                                    {
+                                                        Ok(sonuc_degeri) =>
+                                                            {
+                                                                return (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)));
+                                                            }
+                                                        Err(hata_degeri) =>
+                                                            {
+                                                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                                                            }
+                                                        
+                                                    }
+                                            }
+                                        None =>
+                                            {
+                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                            }
+                                    }
+                            }
+                        Err(bulunamadi) =>
+                            {
+                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                            }
+                    }
             }
-        async fn sil(Path(isim):Path<String>, State(state):State<AppState>) -> impl IntoResponse
+        async fn sil(Path(isim):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", isim);
                 //TO-DO ya yoksa?
-                state.urun_collection.find_one_and_delete(doc!{"isim":isim}, None).await.unwrap();
+                Urun::hata_ayiklayici(state.urun_collection.find_one_and_delete(doc!{"isim":isim}, None).await).await
             }
         async fn duzenle(Path((isim, yeni_isim, yeni_kategori)):Path<(String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
@@ -295,24 +377,60 @@ impl Urun
                 println!("{}", yeni_kategori);
                 
                 //TO-DO ya ürün ya da kategori yoksa
-                let aranan_kategori = state.kategori_collection.find_one(doc! {"isim":yeni_kategori}, None).await.unwrap().unwrap();
-
-                let yeni_urun = Urun
+                match state.kategori_collection.find_one(doc! {"isim":yeni_kategori}, None).await
                     {
-                        isim:yeni_isim,
-                        kategori:aranan_kategori.clone(),
-                        kategori_isim:aranan_kategori.isim,
-                    };
-                
-                state.urun_collection.find_one_and_replace(doc! {"isim":isim}, yeni_urun, None).await.unwrap();
+                        Ok(bulundu) =>
+                            {
+                                match bulundu
+                                    {
+                                        Some(kategori) =>
+                                            {
+                                                let yeni_urun = Urun
+                                                    {
+                                                        isim:yeni_isim,
+                                                        kategori:kategori.clone(),
+                                                        kategori_isim:kategori.isim,
+                                                    };                                                
+                                                return Urun::hata_ayiklayici(state.urun_collection.find_one_and_replace(doc! {"isim":isim}, yeni_urun, None).await).await;
+                                            }
+                                        None =>
+                                            {
+                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                            }
+                                    }
+                            }
+                        Err(bulunamadi) =>
+                            {
+                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                            }
+                    }
             }
-        async fn hepsi(State(state): State<AppState>) -> impl IntoResponse
+        async fn hepsi(State(state): State<AppState>) -> (StatusCode, Json<Value>)
             {
                 let mut urunler_vector:Vec<Urun> = vec![];
-                let mut urunler_cursor = state.urun_collection.find(None, None).await.unwrap();
-                while urunler_cursor.advance().await.unwrap() 
+                match state.urun_collection.find(None, None).await
                     {
-                        urunler_vector.push(urunler_cursor.deserialize_current().unwrap());
+                        Ok(mut bulundu) =>
+                            {
+                                while bulundu.advance().await.unwrap()
+                                    {
+                                        match bulundu.deserialize_current()
+                                            {
+                                                Ok(urun) =>
+                                                    {
+                                                        urunler_vector.push(urun);
+                                                    }
+                                                Err(hata_degeri) =>
+                                                    {
+                                                        return (StatusCode::EXPECTATION_FAILED, Json(serde_json::json!(hata_degeri.to_string())));
+                                                    }
+                                            }
+                                    }
+                            }
+                        Err(bulunamadi) =>
+                            {
+                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                            }
                     }
                 (StatusCode::OK, Json(serde_json::json!(urunler_vector)))
             }
