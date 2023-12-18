@@ -25,6 +25,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Snackbar from '@mui/joy/Snackbar';
 import { keyframes } from '@mui/system';
+import Checkbox from '@mui/material/Checkbox';
 import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
 import urunApi from '../../api/urun-api'
 import gunlukApi from '../../api/gunluk-api'
@@ -60,13 +61,12 @@ const outAnimation = keyframes`
 `;
 
 
-
-
 function createData(id , urun_isim, tarih, hedeflenen, ulasilan, atilan) {
   return {id , urun_isim, tarih, hedeflenen, ulasilan, atilan };
 }
 
 const columns = [
+  
   {
     width: 160,
     label: 'Ürünler',
@@ -96,6 +96,7 @@ const columns = [
     dataKey: 'atilan',
     numeric: true,
   },
+  
 ];
 
 
@@ -115,6 +116,7 @@ const VirtuosoTableComponents = {
 function fixedHeaderContent() {
   return (
     <TableRow>
+     
       {columns.map((column) => (
         <TableCell
           key={column.dataKey}
@@ -125,11 +127,28 @@ function fixedHeaderContent() {
             backgroundColor: '#28342b',
             color:'white',
             fontSize: 17,
+            paddingLeft:1,
+            border:'0.1px solid black'
           }}
         >
           {column.label}
         </TableCell>
       ))}
+       <TableCell padding="checkbox"
+         sx={{
+            backgroundColor: '#28342b',
+          }}
+        >
+        </TableCell>
+        <TableCell padding="checkbox"
+         sx={{
+            backgroundColor: '#28342b',
+            paddingLeft:3.8,
+            fontSize:17,
+            color:'white',
+          }}
+        >  İşlemler
+        </TableCell>
     </TableRow>
   );
 }
@@ -141,10 +160,36 @@ function rowContent(_index, row) {
         <TableCell
           key={column.dataKey}
           align={column.numeric || false ? 'right' : 'left'}
+          sx={{backgroundColor:'rgb(209, 209,209)'}}
         >
           {row[column.dataKey]}
         </TableCell>
       ))}
+      <TableCell align="right" sx={{backgroundColor:'rgb(209, 209,209)'}}>
+        <Button 
+          onClick={() => handleDelete(row)}
+          size="small" // makes the button smaller
+          variant="contained" // gives the button an outline
+          color="warning" 
+          sx={{backgroundColor:'rgb(120, 180,120)'}}
+        >
+          Sil
+        </Button >
+        
+      </TableCell>
+      <TableCell sx={{backgroundColor:'rgb(209, 209,209)'}} >
+        <Button 
+          size='small'
+          color="success" 
+          variant="contained"
+          aria-label="add"  
+          
+          startIcon={<LoupeIcon />}
+        >
+          Düzenle
+        </Button >
+      </TableCell>
+      
     </React.Fragment>
   );
 }

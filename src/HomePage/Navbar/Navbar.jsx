@@ -7,17 +7,55 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import PersonAdd from "@mui/icons-material/PersonAdd";
 import Logout from "@mui/icons-material/Logout";
 import IconButton from "@mui/material/IconButton";
-import loginstate from "../../LoginPage/Login";
+import axios from "axios";
+const LOGOUT_URL = "http://localhost:5000/logout";
+import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import Button from '@mui/material/Button';
+import LoginIcon from '@mui/icons-material/Login';
 
 const Navbar = () => {
+  const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
+  const [verify, setVerify] = useState(false);
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
   const handleClose = () => {
     setAnchorEl(null);
   };
+  const handleLogout = async () => {
+    const response = await axios.post(
+      LOGOUT_URL,
+      {},
+      {
+        headers: { "Content-Type": "application/json" },
+        withCredentials: true,
+      }
+    );
+    navigate("/");
+    verifyUser();
+  };
+  const verifyUser = async () => {
+    const response = await fetch("http://localhost:5000/verify", {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials: "include",
+    });
+    setVerify(response.status === 200);
+    setVerify(!(response.status !== 200));
+
+    return response.status;
+  };
+  const buttonClick = () => {
+    navigate("/login");
+  };
+  useEffect(() => {
+    verifyUser();
+  }, []);
 
   return (
     <div>
@@ -30,7 +68,7 @@ const Navbar = () => {
           <nav className="navbar">
             <h1 className="header">ÇEMEN'S GURME</h1>
             <ul className="navbar_links">
-              {loginstate && (
+              {verify && (
                 <React.Fragment>
                   <Box
                     sx={{
@@ -39,23 +77,23 @@ const Navbar = () => {
                       textAlign: "center",
                     }}
                   >
-                    <IconButton className="login_menu"
+                    <IconButton
+                      className="login_menu"
                       onClick={handleClick}
                       size="small"
-                      sx={{ ml: 2, paddingRight:5 }}
+                      sx={{ ml: 2, paddingRight: 5 }}
                       aria-controls={open ? "account-menu" : undefined}
                       aria-haspopup="true"
                       aria-expanded={open ? "true" : undefined}
                     >
                       <Avatar
-                        className="login_btn"
+                        className="login_symbol"
                         sx={{
                           width: 40,
                           height: 40,
                           backgroundColor: "#305630",
                         }}
-                      >                        
-                      </Avatar>
+                      ></Avatar>
                     </IconButton>
                   </Box>
                   <Menu
@@ -100,7 +138,12 @@ const Navbar = () => {
                       Üye Ekle
                     </MenuItem>
 
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem
+                      onClick={() => {
+                        handleClose();
+                        handleLogout();
+                      }}
+                    >
                       <ListItemIcon>
                         <Logout fontSize="small" />
                       </ListItemIcon>
@@ -109,6 +152,9 @@ const Navbar = () => {
                   </Menu>
                 </React.Fragment>
               )}
+              {!verify && <Button className="login_btn" color="error" variant='contained' aria-label="add"  sx={{marginTop:1}} onClick={buttonClick} startIcon={<LoginIcon />} >
+                            GİRİŞ YAP
+                          </Button>}
             </ul>
           </nav>
         </div>

@@ -8,6 +8,7 @@ import DataPage from "./DataPage/DataPage";
 import StockPage from "./StockPage/StockPage";
 import TransportationPage from "./TransportationPage/TransportationPage";
 import PrivateRoutes from "./PrivateRoute";
+import ProductPage from "./ProductPage/ProductPage";
 
 import UserPage from "./UserControlPage/UserControlPage";
 function App() {
@@ -20,6 +21,7 @@ function App() {
           <Route path="/user" element={<UserPage />} />
           <Route element={<PrivateRoutes />}>
             <Route path="/data" element={<DataPage />} />
+            <Route path="/product" element={<ProductPage />} />
             <Route path="/stock" element={<StockPage />} />
             <Route path="/transportation" element={<TransportationPage />} />
           </Route>

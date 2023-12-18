@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
 const PrivateRoutes = () => {
   const [status, setStatus] = useState(null);

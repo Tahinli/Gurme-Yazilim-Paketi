@@ -14,6 +14,8 @@ import PlagiarismIcon from "@mui/icons-material/Plagiarism";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
 import TContainer from "../TContainer/TContainer";
+import { useNavigate } from "react-router-dom";
+import FoodBankIcon from '@mui/icons-material/FoodBank';
 
 const drawerWidth = 270;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -86,17 +88,21 @@ const Drawer = styled(MuiDrawer, {
 export default function DSide_Navbar() { 
   const [open, setOpen] = React.useState(false)
 
+  const navigate = useNavigate();
   const handleClick1 = () => {
-    setOpen(true);
+    navigate("/");
   };
   const handleClick2 = () => {
-    setOpen(true);
+    navigate("/data");
   };
   const handleClick3 = () => {
-    setOpen(true);
+    navigate("/stock");
   };
   const handleClick4 = () => {
-    setOpen(true);
+    navigate("/transportation");
+  };
+  const handleClick5 = () => {
+    navigate("/product");
   };
 
   const handleDrawerOpen = () => {
@@ -105,8 +111,6 @@ export default function DSide_Navbar() {
   return (
     <div>
       <Box sx={{ display: "flex" }}>
-        <input type="checkbox" id="check"></input>
-
         <Drawer variant="permanent" open={open}>
           <DrawerHeader>
             <img
@@ -138,32 +142,39 @@ export default function DSide_Navbar() {
               ></ListSubheader>
             }
           >
-            <ListItemButton>
+             <ListItemButton onClick={handleClick1}>
               <ListItemIcon>
-                <HomeIcon onClick={handleClick1} />
+                <HomeIcon  sx={{fontSize:30}}/>
               </ListItemIcon>
-              <ListItemText primary="Ana Sayfa" />
+              <ListItemText primary="Ana Sayfa"/>
             </ListItemButton>
 
-            <ListItemButton>
+            <ListItemButton onClick={handleClick2} >
               <ListItemIcon>
-                <NoteAltIcon onClick={handleClick2} />
+                <NoteAltIcon  sx={{fontSize:27}}/>
               </ListItemIcon>
               <ListItemText primary="Veri Girişi" />
             </ListItemButton>
 
-            <ListItemButton>
+            <ListItemButton onClick={handleClick3} >
               <ListItemIcon>
-                <InventoryIcon onClick={handleClick3} />
+                <InventoryIcon  sx={{fontSize:27}}/>
               </ListItemIcon>
               <ListItemText primary="Stok Takibi" />
             </ListItemButton>
 
-            <ListItemButton>
+            <ListItemButton onClick={handleClick4}>
               <ListItemIcon>
-                <PlagiarismIcon onClick={handleClick4} />
+                <PlagiarismIcon   sx={{fontSize:30}}/>
               </ListItemIcon>
               <ListItemText primary="Sevk Takibi" />
+            </ListItemButton>
+
+            <ListItemButton onClick={handleClick5}>
+              <ListItemIcon>
+                <FoodBankIcon  sx={{fontSize:33}}/>
+              </ListItemIcon>
+              <ListItemText primary="Ürünler" />
             </ListItemButton>
             <img
               className="sideBar_img"

@@ -1,4 +1,3 @@
-import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 import kullaniciApi from "./api/user-api.js";
 const ACCESS_TOKEN_SECRET = "sdaA";
@@ -13,8 +12,8 @@ const handleLogin = async (req, res) => {
 
   if (pwd == dbuser.sifre) {
     // create JWTs
-    const accessToken = jwt.sign({ id: "token-id" }, ACCESS_TOKEN_SECRET, {
-      expiresIn: "30days",
+    const accessToken = jwt.sign({ username: "admin" }, ACCESS_TOKEN_SECRET, {
+      expiresIn: "3h",
     });
     const refreshToken = jwt.sign(
       { username: "token-id" },
