@@ -1,19 +1,19 @@
-.loginDiv {
+.loginDiv2 {
   width: 1100px;
   height: 700px;
   border-radius: 50px;
   background: rgba(255, 255, 255, 1);
 }
 
-.submitButton {
+.submitButton2 {
   width: 20%;
   height: 50px;
   background-color: #6ab335 !important;
 }
-.buttonDiv {
+.buttonDiv2 {
   padding-top: 20px;
 }
-.textfield {
+.textfield1 {
   padding-top: 60px;
   display: flex;
   flex-direction: row;
@@ -21,17 +21,18 @@
   justify-content: space-evenly;
 }
 .textfield2 {
+  padding: 15px 0px;
+
   display: flex;
   flex-direction: row;
   align-items: center;
-  padding-bottom: 15px;
   justify-content: space-evenly;
 }
-.imglogo {
+.imglogo2 {
   width: 12%;
   padding-top: 50px;
   padding-bottom: 50px;
 }
-.textf {
-  width: 40%;
+.textf2 {
+  width: 35%;
 }
