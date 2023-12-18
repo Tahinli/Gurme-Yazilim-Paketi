@@ -1,4 +1,5 @@
 use axum::{routing::get, extract::{Path, State}, Router, Json, http::StatusCode, response::IntoResponse};
+use tower_http::cors::CorsLayer;
 use mongodb::{Client, options::{ClientOptions, IndexOptions}, Database, IndexModel, bson::doc, Collection};
 use serde::{Serialize, Deserialize};
 
@@ -417,6 +418,7 @@ async fn routing(State(state): State<AppState>) -> Router
             .nest("/kategori", kategori_routers)
             .nest("/urun", urun_routers)
             .nest("/gunluk", gunluk_routers)
+            .layer(CorsLayer::permissive())
             .with_state(state.clone());
         app
     }
