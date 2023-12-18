@@ -15,9 +15,8 @@ const LOGIN_URL = "http://localhost:5000/auth";
 function Login() {
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
-  const userRef = useRef();
   const errRef = useRef();
-
+  const userRef = useRef();
   const [user, setUser] = useState("");
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
