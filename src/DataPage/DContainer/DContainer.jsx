@@ -29,11 +29,13 @@ import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCh
 import urunApi from '../../api/urun-api'
 import gunlukApi from '../../api/gunluk-api'
 import kategoriApi from '../../api/kategori-api';
-import { add } from 'date-fns';
+import { add, set } from 'date-fns';
 
 const Urunler = await urunApi.getUrunler();
 const Gunlukler = await gunlukApi.getGunlukler();
 
+const urungir = (await urunApi.getUrunler()).map((urun) => urun.isim);
+const kategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
 
 const inAnimation = keyframes`
   0% {
@@ -58,8 +60,6 @@ const outAnimation = keyframes`
 `;
 
 
-const urungir = (await urunApi.getUrunler()).map((urun) => urun.isim);
-const kategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
 
 
 function createData(id , urun_isim, tarih, hedeflenen, ulasilan, atilan) {
@@ -98,10 +98,7 @@ const columns = [
   },
 ];
 
-const rows = Array.from({ length: Gunlukler.length }, (_, index) => {
-  const Selection = Gunlukler[index];
-  return createData(index, Selection.urun_isim, Selection.tarih, Selection.hedeflenen, Selection.ulasilan, Selection.atilan);
-});
+
 
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
@@ -154,14 +151,25 @@ function rowContent(_index, row) {
 
 export default function DContainer() {
 
-  const [ urunismi, setUrunismi ] = useState('');
+  /// ilk rows'u oluşturmak için
+  const [rows, setRows] = useState(
+    Array.from({ length: Gunlukler.length }, (_, index) => {
+      const Selection = Gunlukler[index];
+      return createData(index, Selection.urun_isim, Selection.tarih, Selection.hedeflenen, Selection.ulasilan, Selection.atilan);
+    })
+  );
+  /////////////////////////////////////////
+
+  const [ urunadi, setUrunadi ] = useState('');
   const [ kategoriadi, setKategoriadi ] = useState('');
   const [ hedef, setHedef ] = useState(0);
   const [ tamamlanan, setTamamlanan] = useState(0);
   const [ fire, setFire] = useState(0);
   const [ sevk, setSevk] = useState(0);
   // console.log(Gunlukler)
-  console.log(kategorigir)
+  console.log(urunadi)
+  console.log(kategoriadi)
+  // console.log(kategorigir)
   console.log(hedef)
   console.log(tamamlanan)
   console.log(fire)
@@ -186,33 +194,40 @@ export default function DContainer() {
 
    
    const handleClick = async () => {
+    //vvvvvvvvvvvvvvvv   GUNLUK EKLEME   vvvvvvvvvvvvvvvvvvvvvvvvvvv
+    await gunlukApi.addGunluk (`${urunadi}`,
+  {
+    personel_sayisi: 2,
+    hedeflenen: hedef,
+    ulasilan: tamamlanan,
+    atilan: fire,
 
-//     await gunlukApi.addGunluk (urunismi, 
-//   {
-//     personel_sayisi: 0,
-//     hedeflenen: hedef,
-//     ulasilan: tamamlanan,
-//     atilan: fire,
-
-//     tarih: (() => {
-//       const date = new Date();
-//       const day = String(date.getDate()).padStart(2, '0');
-//       const month = String(date.getMonth() + 1).padStart(2, '0');
-//       const year = date.getFullYear();
+    tarih: (() => {
+      const date = new Date();
+      const day = String(date.getDate()-2).padStart(2, '0');
+      const month = String(date.getMonth() + 1).padStart(2, '0');
+      const year = date.getFullYear();
     
-//       return `${day}.${month}.${year}`;
-//     })(),
-// })           <-------------- ÇALIŞMIYOR      GET http://93.190.8.248:2001/gunluk/ekle//0/85/40/20/18.12.2023 net::ERR_EMPTY_RESPONSE
-
+      return `${day}.${month}.${year}`;
+    })(),
+});
+//////////////////////////////////////////////////////////////////////
+// vvvvvvvvvvvv ROWSU DEGISTIREREK TABLOYU GUNCELLER vvvvvvvvvvvvvvvvvvv
+    setRows([
+      ...rows,
+      createData(rows.length, urunadi, sevk, hedef, tamamlanan, fire),
+    ]);
+//////////////////////////////////////////////////////////////////////
      setMassage(true);
    };
- 
+
+
+
    const handleClose = () => {
      setMassage(false);
    };
 
   return (
-    
 <div>
 {/* INPUT TEXT_FİELDS*/}
   {showInputPart && <Card 
@@ -231,23 +246,25 @@ export default function DContainer() {
           
 {/* AUTOCOMPLETE*/}
     <div className="autocomplete">
-          <Autocomplete className="autocomplete" 
+          <Autocomplete onChange={(event, value) => setKategoriadi(value)}
+              className="autocomplete" 
               disablePortal
               options={kategorigir}
-              renderInput={(params) => <TextField onChange = {(e) => setKategoriadi(e.target.value)} className='auto_cmplete' {...params} label="Ürün Katagorisi" />}
+              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürün Katagorisi" />}
           />
-          <Autocomplete className="autocomplete"
+          <Autocomplete onChange={(event, value) => setUrunadi(value)}
+              className="autocomplete"
               disablePortal
               options={urungir}
-              renderInput={(params) => <TextField onChange = {(e) => setUrunismi(e.target.value)} className='auto_cmplete' {...params} label="Ürünler" />}
+              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürünler" />}
           />
     </div>
   
     <div className='input_part'> 
-    <TextField onChange={(e) => setHedef(e.target.value)} sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" />
-    <TextField onChange={(e) => setTamamlanan(e.target.value)} sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" />
-    <TextField onChange={(e) => setFire(e.target.value)} sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" />
-    <TextField onChange={(e) => setSevk(e.target.value)} sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" />
+    <TextField type="number" onChange={(e) => setHedef(e.target.value)} sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
+    <TextField type="number" onChange={(e) => setTamamlanan(e.target.value)} sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
+    <TextField type="number" onChange={(e) => setFire(e.target.value)} sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+    <TextField type="number" onChange={(e) => setSevk(e.target.value)} sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
 
       <Stack  className="field_btn">
       <Button  color="success" variant='contained' aria-label="add"  sx={{marginTop:1}} onClick={handleClick} endIcon={<LoupeIcon />} >
@@ -316,7 +333,7 @@ export default function DContainer() {
 
     <Paper className="table">
       <TableVirtuoso
-      // {...rows.sort((a, b) => a.calories - b.calories)}
+      // {...rows.sort((a, b) => a.calories - b.calories)}  <--- SIRALAMA
         data={rows}
         components={VirtuosoTableComponents}
         fixedHeaderContent={fixedHeaderContent}
