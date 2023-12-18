@@ -261,6 +261,7 @@ export default function DContainer() {
     </div>
   
     <div className='input_part'> 
+
     <TextField type="number" onChange={(e) => setHedef(e.target.value)} sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
     <TextField type="number" onChange={(e) => setTamamlanan(e.target.value)} sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
     <TextField type="number" onChange={(e) => setFire(e.target.value)} sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
@@ -311,6 +312,7 @@ export default function DContainer() {
   size="lg"
   variant='outlined'
   >
+    <div className='div_div'>
       <div className="date_picker">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DateRangePicker', 'DateRangePicker']}>
@@ -324,7 +326,9 @@ export default function DContainer() {
           </LocalizationProvider>
           <Button className='list_btn' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
       </div>
-      <img src="src/assets/img/genel.png" width={140}></img>
+      <img src="src/assets/img/genel.png"></img>
+    </div>
+      
 </Card></div>
 
 
