@@ -26,6 +26,14 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Snackbar from '@mui/joy/Snackbar';
 import { keyframes } from '@mui/system';
 import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
+import urunApi from '../../api/urun-api'
+import gunlukApi from '../../api/gunluk-api'
+import kategoriApi from '../../api/kategori-api';
+import { add } from 'date-fns';
+
+const Urunler = await urunApi.getUrunler();
+const Gunlukler = await gunlukApi.getGunlukler();
+
 
 const inAnimation = keyframes`
   0% {
@@ -50,60 +58,49 @@ const outAnimation = keyframes`
 `;
 
 
-const sample = [
-  ['Frozen yoghurt', 159, 6.0, 24, 4.0],
-  ['Ice cream sandwich', 237, 9.0, 37, 4.3],
-  ['Eclair', 262, 16.0, 24, 6.0],
-  ['Cupcake', 305, 3.7, 67, 4.3],
-  ['Gingerbread', 356, 16.0, 49, 3.9],
-];
-const sample2 = [
-  ['Frozen yoghurt'],
-  ['Ice cream sandwich'],
-  ['Eclair'],
-  ['Cupcake'],
-  ['Gingerbread'],
-];
+const urungir = (await urunApi.getUrunler()).map((urun) => urun.isim);
+const kategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
 
-function createData(id, dessert, calories, fat, carbs, protein) {
-  return { id, dessert, calories, fat, carbs, protein };
+
+function createData(id , urun_isim, tarih, hedeflenen, ulasilan, atilan) {
+  return {id , urun_isim, tarih, hedeflenen, ulasilan, atilan };
 }
 
 const columns = [
   {
     width: 160,
     label: 'Ürünler',
-    dataKey: 'dessert',
+    dataKey: 'urun_isim',
   },
   {
     width: 120,
     label: 'Tarih',
-    dataKey: 'calories',
+    dataKey: 'tarih',
     numeric: true,
   },
   {
     width: 120,
     label: 'Hedef',
-    dataKey: 'fat',
+    dataKey: 'hedeflenen',
     numeric: true,
   },
   {
     width: 120,
     label: 'Tamamlanan',
-    dataKey: 'carbs',
+    dataKey: 'ulasilan',
     numeric: true,
   },
   {
     width: 120,
     label: 'Sevk Miktarı',
-    dataKey: 'protein',
+    dataKey: 'atilan',
     numeric: true,
   },
 ];
 
-const rows = Array.from({ length: 200 }, (_, index) => {
-  const randomSelection = sample[Math.floor(Math.random() * sample.length)];
-  return createData(index, ...randomSelection);
+const rows = Array.from({ length: Gunlukler.length }, (_, index) => {
+  const Selection = Gunlukler[index];
+  return createData(index, Selection.urun_isim, Selection.tarih, Selection.hedeflenen, Selection.ulasilan, Selection.atilan);
 });
 
 const VirtuosoTableComponents = {
@@ -156,6 +153,20 @@ function rowContent(_index, row) {
 }
 
 export default function DContainer() {
+
+  const [ urunismi, setUrunismi ] = useState('');
+  const [ kategoriadi, setKategoriadi ] = useState('');
+  const [ hedef, setHedef ] = useState(0);
+  const [ tamamlanan, setTamamlanan] = useState(0);
+  const [ fire, setFire] = useState(0);
+  const [ sevk, setSevk] = useState(0);
+  // console.log(Gunlukler)
+  console.log(kategorigir)
+  console.log(hedef)
+  console.log(tamamlanan)
+  console.log(fire)
+  console.log(sevk)
+
   const [value, setValue] = useState([
     dayjs('2022-04-17'),
     dayjs('2022-04-21'),
@@ -173,7 +184,26 @@ export default function DContainer() {
    const animationDuration = 600;
    const [massage, setMassage] = useState(false);
 
-   const handleClick = () => {
+   
+   const handleClick = async () => {
+
+//     await gunlukApi.addGunluk (urunismi, 
+//   {
+//     personel_sayisi: 0,
+//     hedeflenen: hedef,
+//     ulasilan: tamamlanan,
+//     atilan: fire,
+
+//     tarih: (() => {
+//       const date = new Date();
+//       const day = String(date.getDate()).padStart(2, '0');
+//       const month = String(date.getMonth() + 1).padStart(2, '0');
+//       const year = date.getFullYear();
+    
+//       return `${day}.${month}.${year}`;
+//     })(),
+// })           <-------------- ÇALIŞMIYOR      GET http://93.190.8.248:2001/gunluk/ekle//0/85/40/20/18.12.2023 net::ERR_EMPTY_RESPONSE
+
      setMassage(true);
    };
  
@@ -203,21 +233,21 @@ export default function DContainer() {
     <div className="autocomplete">
           <Autocomplete className="autocomplete" 
               disablePortal
-              options={sample2}
-              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürün Katagorisi" />}
+              options={kategorigir}
+              renderInput={(params) => <TextField onChange = {(e) => setKategoriadi(e.target.value)} className='auto_cmplete' {...params} label="Ürün Katagorisi" />}
           />
           <Autocomplete className="autocomplete"
               disablePortal
-              options={sample2}
-              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürünler" />}
+              options={urungir}
+              renderInput={(params) => <TextField onChange = {(e) => setUrunismi(e.target.value)} className='auto_cmplete' {...params} label="Ürünler" />}
           />
     </div>
   
     <div className='input_part'> 
-    <TextField sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" />
-    <TextField sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" />
-    <TextField sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" />
-    <TextField sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" />
+    <TextField onChange={(e) => setHedef(e.target.value)} sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" />
+    <TextField onChange={(e) => setTamamlanan(e.target.value)} sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" />
+    <TextField onChange={(e) => setFire(e.target.value)} sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" />
+    <TextField onChange={(e) => setSevk(e.target.value)} sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" />
 
       <Stack  className="field_btn">
       <Button  color="success" variant='contained' aria-label="add"  sx={{marginTop:1}} onClick={handleClick} endIcon={<LoupeIcon />} >
@@ -285,7 +315,8 @@ export default function DContainer() {
       <Stack className="add" sx={{backgroundColor:'#28342b'}}></Stack>
 
     <Paper className="table">
-      <TableVirtuoso 
+      <TableVirtuoso
+      // {...rows.sort((a, b) => a.calories - b.calories)}
         data={rows}
         components={VirtuosoTableComponents}
         fixedHeaderContent={fixedHeaderContent}
