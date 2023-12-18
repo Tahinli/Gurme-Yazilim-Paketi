@@ -1,0 +1,39 @@
+.loginDiv {
+  width: 1500px;
+  height: 1000px;
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 1);
+}
+
+.submitButton {
+  width: 20%;
+  height: 50px;
+  background-color: #6ab335 !important;
+}
+.textfield {
+  padding-top: 40px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-evenly;
+}
+.textfield2 {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-bottom: 15px;
+  justify-content: space-evenly;
+}
+.imglogo {
+  width: 12%;
+  padding-top: 50px;
+  padding-bottom: 50px;
+}
+.textf {
+  width: 40%;
+}
+.table {
+  padding: 10px 60px;
+
+  width: 100%;
+}
