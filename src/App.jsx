@@ -9,6 +9,7 @@ import StockPage from "./StockPage/StockPage";
 import TransportationPage from "./TransportationPage/TransportationPage";
 import PrivateRoutes from "./PrivateRoute";
 
+import UserPage from "./UserControlPage/UserControlPage";
 function App() {
   return (
     <div className="App">
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<HomePage />} />
+          <Route path="/user" element={<UserPage />} />
           <Route element={<PrivateRoutes />}>
             <Route path="/data" element={<DataPage />} />
             <Route path="/stock" element={<StockPage />} />

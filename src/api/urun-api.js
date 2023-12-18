@@ -5,6 +5,7 @@ const getUrunler = async () => {
     try {
         const options = {
             method: 'GET',
+            // mode: 'no-cors',
             url: `${apiURL}/urun/hepsi`,
             json: true
         };
