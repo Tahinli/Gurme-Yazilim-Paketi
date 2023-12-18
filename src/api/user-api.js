@@ -8,6 +8,7 @@ const getUsers = async () => {
       json: true,
     };
     const result = await handleRequest(options);
+
     return result;
   } catch (error) {
     throw error;

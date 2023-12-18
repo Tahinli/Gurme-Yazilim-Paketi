@@ -1,6 +1,6 @@
 .loginDiv {
-  width: 1500px;
-  height: 1000px;
+  width: 1100px;
+  height: 700px;
   border-radius: 50px;
   background: rgba(255, 255, 255, 1);
 }
@@ -10,8 +10,11 @@
   height: 50px;
   background-color: #6ab335 !important;
 }
+.buttonDiv {
+  padding-top: 20px;
+}
 .textfield {
-  padding-top: 40px;
+  padding-top: 60px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -31,9 +34,4 @@
 }
 .textf {
   width: 40%;
-}
-.table {
-  padding: 10px 60px;
-
-  width: 100%;
 }
