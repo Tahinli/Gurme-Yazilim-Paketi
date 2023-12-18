@@ -1,4 +1,3 @@
-import cookieParser from "cookie-parser";
 import jwt from "jsonwebtoken";
 
 const ACCESS_TOKEN_SECRET = "sdaA";
@@ -14,7 +13,7 @@ const handleLogin = async (req, res) => {
   if (user === "admin" && pwd === "123") {
     // create JWTs
     const accessToken = jwt.sign({ username: "admin" }, ACCESS_TOKEN_SECRET, {
-      expiresIn: "30days",
+      expiresIn: "3h",
     });
     const refreshToken = jwt.sign({ username: "admin" }, REFRESH_TOKEN_SECRET, {
       expiresIn: "1d",

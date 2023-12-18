@@ -21,15 +21,11 @@ app.get("/verify", authenticateToken, (req, res) => {
   return json({ username: req.username });
 });
 
-app.get("/logout", authenticateToken, (req, res) => {
-  return res
-    .clearCookie("access_token")
-    .status(200)
-    .json({ message: "logged out" });
+app.post("/logout", (req, res) => {
+  res.clearCookie("auth").status(200).json({ message: "logged out" });
+  console.log(res);
 });
-
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
