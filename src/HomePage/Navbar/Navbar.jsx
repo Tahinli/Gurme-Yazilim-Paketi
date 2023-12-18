@@ -11,6 +11,8 @@ import axios from "axios";
 const LOGOUT_URL = "http://localhost:5000/logout";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
+import Button from '@mui/material/Button';
+import LoginIcon from '@mui/icons-material/Login';
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -85,7 +87,7 @@ const Navbar = () => {
                       aria-expanded={open ? "true" : undefined}
                     >
                       <Avatar
-                        className="login_btn"
+                        className="login_symbol"
                         sx={{
                           width: 40,
                           height: 40,
@@ -150,7 +152,9 @@ const Navbar = () => {
                   </Menu>
                 </React.Fragment>
               )}
-              {!verify && <button onClick={buttonClick}> Giriş Yap </button>}
+              {!verify && <Button className="login_btn" color="error" variant='contained' aria-label="add"  sx={{marginTop:1}} onClick={buttonClick} startIcon={<LoginIcon />} >
+                            GİRİŞ YAP
+                          </Button>}
             </ul>
           </nav>
         </div>
