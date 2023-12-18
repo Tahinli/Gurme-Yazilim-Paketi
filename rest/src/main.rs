@@ -1,7 +1,7 @@
 use axum::{routing::get, extract::{Path, State}, Router, Json, http::StatusCode, response::IntoResponse};
 use serde_json::Value;
 use tower_http::cors::CorsLayer;
-use mongodb::{Client, options::{ClientOptions, IndexOptions}, Database, IndexModel, bson::doc, Collection, error::Error};
+use mongodb::{Client, options::{ClientOptions, IndexOptions}, Database, IndexModel, bson::doc, Collection, error::Error, results::CreateIndexResult};
 use serde::{Serialize, Deserialize};
 
 const DB_NAME:&str = "gurme";
@@ -449,20 +449,59 @@ struct Gunluk
     }
 impl Gunluk 
     {
-        async fn gunluk(Path((urun_string, tarih_string)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn hata_ayiklayici(analiz_edilecek:Result<Option<Gunluk>, Error>) -> (StatusCode, Json<Value>)
+            {
+                match analiz_edilecek 
+                    {
+                        Ok(hatasiz) =>
+                            {
+                                match hatasiz 
+                                    {
+                                        Some(deger) =>
+                                            {
+                                                return (StatusCode::OK, Json(serde_json::json!(deger)));
+                                            }
+                                        None =>
+                                            {
+                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                            }
+                                    }
+                            }
+                        Err(hata_degeri) =>
+                            {
+                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                            }
+                    }
+            }
+        async fn gunluk(Path((urun_string, tarih_string)):Path<(String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", urun_string);
                 println!("{}", tarih_string);
                 //TO-DO tarihi tarih mi diye bak
-                let urun = state.urun_collection
-                                                            .find_one(doc! {"isim": urun_string}
-                                                            , None).await.unwrap().unwrap();
-                let aranan_gunluk = state.gunluk_collection
-                                            .find_one(doc! {"tarih":tarih_string, "urun_isim":urun.isim}
-                                            ,None).await.unwrap().unwrap();
-                (StatusCode::OK, Json(serde_json::json!(aranan_gunluk)))
+                match state.urun_collection.find_one(doc! {"isim": urun_string}, None).await
+                    {
+                        Ok(bulundu) =>
+                            {
+                                match bulundu 
+                                    {
+                                        Some(urun) =>
+                                            {
+                                                return Gunluk::hata_ayiklayici(state.gunluk_collection.find_one(doc! {"tarih":tarih_string, "urun_isim":urun.isim}, None).await).await;
+                                            }
+                                        None =>
+                                            {
+                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                            }
+                                    }                                
+                            }
+                        Err(bulunamadi) =>
+                            {
+                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                            }
+                    }
+                
             }
-        async fn ekle(Path((urun_string, personel_sayisi_string, hedeflenen_string, ulasilan_string, atilan_string, tarih_string)):Path<(String, String, String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn ekle(Path((urun_string, personel_sayisi_string, hedeflenen_string, ulasilan_string, atilan_string, tarih_string)):Path<(String, String, String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", urun_string);
                 println!("{}", personel_sayisi_string);
@@ -473,30 +512,58 @@ impl Gunluk
                 
                 //TO-DO tarihi tarih mi diye bak
 
-                let urun = state.urun_collection
-                                .find_one(doc! {"isim": urun_string}
-                                , None).await.unwrap().unwrap();
-                let gunluk = Gunluk
+                match state.urun_collection.find_one(doc! {"isim": urun_string}, None).await
                     {
-                        urun:urun.clone(),
-                        urun_isim:urun.isim,
-                        personel_sayisi:personel_sayisi_string.parse().unwrap(),
-                        hedeflenen:hedeflenen_string.parse().unwrap(),
-                        ulasilan:ulasilan_string.parse().unwrap(),
-                        atilan:atilan_string.parse().unwrap(),
-                        tarih:tarih_string,
-                    };
-                state.gunluk_collection.insert_one(gunluk, None).await.unwrap();
+                        Ok(bulundu) =>
+                            {
+                                match bulundu 
+                                    {
+                                        Some(urun) =>
+                                            {
+                                                let gunluk = Gunluk
+                                                    {
+                                                        urun:urun.clone(),
+                                                        urun_isim:urun.isim,
+                                                        personel_sayisi:personel_sayisi_string.parse().unwrap(),
+                                                        hedeflenen:hedeflenen_string.parse().unwrap(),
+                                                        ulasilan:ulasilan_string.parse().unwrap(),
+                                                        atilan:atilan_string.parse().unwrap(),
+                                                        tarih:tarih_string,
+                                                    };
+                                                match state.gunluk_collection.insert_one(gunluk, None).await
+                                                    {
+                                                        Ok(sonuc_degeri) =>
+                                                            {
+                                                                return (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)));
+                                                            }
+                                                        Err(hata_degeri) =>
+                                                            {
+                                                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                                                            }
+                                                    }
+                                            }
+                                        None =>
+                                            {
+                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                            }
+                                    }
+                            }
+                        Err(bulunamadi) =>
+                            {
+                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                            }
+                    }
+                
             }
-        async fn sil(Path((urun_string, tarih_string)):Path<(String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn sil(Path((urun_string, tarih_string)):Path<(String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", urun_string);
                 println!("{}", tarih_string);
 
                 //TO-DO ya ürün yoksa ?
-                state.urun_collection.find_one_and_delete(doc! {"urun_isim":urun_string, "tarih":tarih_string}, None).await.unwrap();
+                return Gunluk::hata_ayiklayici(state.gunluk_collection.find_one_and_delete(doc! {"urun_isim":urun_string, "tarih":tarih_string}, None).await).await;
             }
-        async fn duzenle(Path((urun_string, tarih_string, yeni_urun_string, yeni_personel_sayisi_string, yeni_hedeflenen_string, yeni_ulasilan_string, yeni_atilan_string, yeni_tarih_string)):Path<(String, String, String, String, String, String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn duzenle(Path((urun_string, tarih_string, yeni_urun_string, yeni_personel_sayisi_string, yeni_hedeflenen_string, yeni_ulasilan_string, yeni_atilan_string, yeni_tarih_string)):Path<(String, String, String, String, String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", urun_string);
                 println!("{}", tarih_string);
@@ -507,33 +574,84 @@ impl Gunluk
                 println!("{}", yeni_atilan_string);
                 println!("{}", yeni_tarih_string);
 
-                let yeni_urun = state.urun_collection
-                                .find_one(doc! {"isim": yeni_urun_string}
-                                , None).await.unwrap().unwrap();
-                let yeni_gunluk = Gunluk
+                match state.urun_collection.find_one(doc! {"isim": yeni_urun_string}, None).await
                     {
-                        urun:yeni_urun.clone(),
-                        urun_isim:yeni_urun.isim,
-                        personel_sayisi:yeni_personel_sayisi_string.parse().unwrap(),
-                        hedeflenen:yeni_hedeflenen_string.parse().unwrap(),
-                        ulasilan:yeni_ulasilan_string.parse().unwrap(),
-                        atilan:yeni_atilan_string.parse().unwrap(),
-                        tarih:yeni_tarih_string,
-                    };
-                state.gunluk_collection.find_one_and_replace(doc! {"urun_isim":urun_string, "tarih":tarih_string}, yeni_gunluk, None).await.unwrap();
+                        Ok(bulundu) =>
+                            {
+                                match bulundu
+                                    {
+                                        Some(urun) =>
+                                            {
+                                                let yeni_gunluk = Gunluk
+                                                    {
+                                                        urun:urun.clone(),
+                                                        urun_isim:urun.isim,
+                                                        personel_sayisi:yeni_personel_sayisi_string.parse().unwrap(),
+                                                        hedeflenen:yeni_hedeflenen_string.parse().unwrap(),
+                                                        ulasilan:yeni_ulasilan_string.parse().unwrap(),
+                                                        atilan:yeni_atilan_string.parse().unwrap(),
+                                                        tarih:yeni_tarih_string,
+                                                    };
+                                                return Gunluk::hata_ayiklayici(state.gunluk_collection.find_one_and_replace(doc! {"urun_isim":urun_string, "tarih":tarih_string}, yeni_gunluk, None).await).await;
+                                            }
+                                        None =>
+                                            {
+                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                            }
+                                    }
+                            }
+                        Err(bulunamadi) =>
+                            {
+                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                            }
+                    }
             }
-        async fn hepsi(State(state): State<AppState>) -> impl IntoResponse
+        async fn hepsi(State(state): State<AppState>) -> (StatusCode, Json<Value>)
             {
                 let mut gunlukler_vector:Vec<Gunluk> = vec![];
-                let mut gunlukler_cursor = state.gunluk_collection.find(None, None).await.unwrap();
-                while gunlukler_cursor.advance().await.unwrap() 
+                match state.gunluk_collection.find(None, None).await
                     {
-                        gunlukler_vector.push(gunlukler_cursor.deserialize_current().unwrap());
+                        Ok(mut bulundu) =>
+                            {
+                                while bulundu.advance().await.unwrap()
+                                    {
+                                        match bulundu.deserialize_current()
+                                            {
+                                                Ok(gunluk) =>
+                                                    {
+                                                        gunlukler_vector.push(gunluk);
+                                                    }
+                                                Err(hata_degeri) =>
+                                                    {
+                                                        return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                                                    }
+                                            }
+                                    }
+                            }
+                        Err(bulunamadi) =>
+                            {
+                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                            }
                     }
                 (StatusCode::OK, Json(serde_json::json!(gunlukler_vector)))
             }
 
 
+    }
+async fn collection_hata_ayiklama(sonuc:Result<CreateIndexResult, Error>)
+    {
+        match sonuc
+            {
+                Ok(sonuc_degeri) =>
+                    {
+                        println!("{:#?}", sonuc_degeri);
+                    }
+                Err(hata_degeri) =>
+                    {
+                        println!("{:#?}", hata_degeri);
+                        panic!("Collection");
+                    }
+            }
     }
 async fn kullanicilar_collection_structure(db:Database) -> Collection<Kullanici>
     {
@@ -543,7 +661,7 @@ async fn kullanicilar_collection_structure(db:Database) -> Collection<Kullanici>
                                                             .options(benzersiz)
                                                             .build();
         let kullanicilar_collection:Collection<Kullanici> = db.collection("kullanicilar");
-        kullanicilar_collection.create_index(kullanicilar_kisitlama, None).await.unwrap();
+        collection_hata_ayiklama(kullanicilar_collection.create_index(kullanicilar_kisitlama, None).await).await;
         kullanicilar_collection
     }
 async fn kategoriler_collection_structure(db:Database) -> Collection<Kategori>
@@ -554,7 +672,7 @@ async fn kategoriler_collection_structure(db:Database) -> Collection<Kategori>
                                                             .options(benzersiz)
                                                             .build();
         let kategoriler_collection:Collection<Kategori> = db.collection("kategoriler");
-        kategoriler_collection.create_index(kategoriler_kisitlama, None).await.unwrap();
+        collection_hata_ayiklama(kategoriler_collection.create_index(kategoriler_kisitlama, None).await).await;
         kategoriler_collection
     }
 async fn urunler_collection_structure(db:Database) -> Collection<Urun>
@@ -565,7 +683,7 @@ async fn urunler_collection_structure(db:Database) -> Collection<Urun>
                                                             .options(benzersiz)
                                                             .build();
         let urunler_collection:Collection<Urun> = db.collection("urunler");
-        urunler_collection.create_index(urunler_kisitlama, None).await.unwrap();
+        collection_hata_ayiklama(urunler_collection.create_index(urunler_kisitlama, None).await).await;
         urunler_collection
     }
 async fn gunluk_collection_structure(db:Database) -> Collection<Gunluk>
@@ -576,7 +694,7 @@ async fn gunluk_collection_structure(db:Database) -> Collection<Gunluk>
                                                             .options(benzersiz)
                                                             .build();
         let gunluk_collection:Collection<Gunluk> = db.collection("gunlukler");
-        gunluk_collection.create_index(gunluk_kisitlama, None).await.unwrap();
+        collection_hata_ayiklama(gunluk_collection.create_index(gunluk_kisitlama, None).await).await;
         gunluk_collection
     }
 async fn create_db_structure(db:Database) 
