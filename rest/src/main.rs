@@ -445,6 +445,8 @@ struct Gunluk
         hedeflenen:u64,
         ulasilan:u64,
         atilan:u64,
+        stok:u64,
+        sevk:u64,
         tarih:String,
     }
 impl Gunluk 
@@ -501,13 +503,15 @@ impl Gunluk
                     }
                 
             }
-        async fn ekle(Path((urun_string, personel_sayisi_string, hedeflenen_string, ulasilan_string, atilan_string, tarih_string)):Path<(String, String, String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
+        async fn ekle(Path((urun_string, personel_sayisi_string, hedeflenen_string, ulasilan_string, atilan_string, stok_string, sevk_string, tarih_string)):Path<(String, String, String, String, String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", urun_string);
                 println!("{}", personel_sayisi_string);
                 println!("{}", hedeflenen_string);
                 println!("{}", ulasilan_string);
                 println!("{}", atilan_string);
+                println!("{}", stok_string);
+                println!("{}", sevk_string);
                 println!("{}", tarih_string);
                 
                 //TO-DO tarihi tarih mi diye bak
@@ -528,6 +532,8 @@ impl Gunluk
                                                         hedeflenen:hedeflenen_string.parse().unwrap(),
                                                         ulasilan:ulasilan_string.parse().unwrap(),
                                                         atilan:atilan_string.parse().unwrap(),
+                                                        stok:stok_string.parse().unwrap(),
+                                                        sevk:sevk_string.parse().unwrap(),
                                                         tarih:tarih_string,
                                                     };
                                                 match state.gunluk_collection.insert_one(gunluk, None).await
@@ -563,7 +569,7 @@ impl Gunluk
                 //TO-DO ya ürün yoksa ?
                 return Gunluk::hata_ayiklayici(state.gunluk_collection.find_one_and_delete(doc! {"urun_isim":urun_string, "tarih":tarih_string}, None).await).await;
             }
-        async fn duzenle(Path((urun_string, tarih_string, yeni_urun_string, yeni_personel_sayisi_string, yeni_hedeflenen_string, yeni_ulasilan_string, yeni_atilan_string, yeni_tarih_string)):Path<(String, String, String, String, String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
+        async fn duzenle(Path((urun_string, tarih_string, yeni_urun_string, yeni_personel_sayisi_string, yeni_hedeflenen_string, yeni_ulasilan_string, yeni_atilan_string, yeni_stok_string, yeni_sevk_string, yeni_tarih_string)):Path<(String, String, String, String, String, String, String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", urun_string);
                 println!("{}", tarih_string);
@@ -572,6 +578,8 @@ impl Gunluk
                 println!("{}", yeni_hedeflenen_string);
                 println!("{}", yeni_ulasilan_string);
                 println!("{}", yeni_atilan_string);
+                println!("{}", yeni_stok_string);
+                println!("{}", yeni_sevk_string);
                 println!("{}", yeni_tarih_string);
 
                 match state.urun_collection.find_one(doc! {"isim": yeni_urun_string}, None).await
@@ -590,6 +598,8 @@ impl Gunluk
                                                         hedeflenen:yeni_hedeflenen_string.parse().unwrap(),
                                                         ulasilan:yeni_ulasilan_string.parse().unwrap(),
                                                         atilan:yeni_atilan_string.parse().unwrap(),
+                                                        sevk:yeni_stok_string.parse().unwrap(),
+                                                        stok:yeni_stok_string.parse().unwrap(),
                                                         tarih:yeni_tarih_string,
                                                     };
                                                 return Gunluk::hata_ayiklayici(state.gunluk_collection.find_one_and_replace(doc! {"urun_isim":urun_string, "tarih":tarih_string}, yeni_gunluk, None).await).await;
@@ -740,9 +750,9 @@ async fn routing(State(state): State<AppState>) -> Router
 
         let gunluk_routers = Router::new()
         .route("/:urun/:tarih", get(Gunluk::gunluk))
-        .route("/ekle/:urun/:personel_sayisi/:hedeflenen/:ulasilan/:atilan/:tarih", get(Gunluk::ekle))
+        .route("/ekle/:urun/:personel_sayisi/:hedeflenen/:ulasilan/:atilan/:stok/:sevk/:tarih", get(Gunluk::ekle))
         .route("/sil/:urun/:tarih", get(Gunluk::sil))
-        .route("/duzenle/:urun/:tarih/:yeni_urun/:yeni_personel_sayisi/:yeni_hedeflenen/:yeni_ulasilan/:yeni_atilan/:yeni_tarih", get(Gunluk::duzenle))
+        .route("/duzenle/:urun/:tarih/:yeni_urun/:yeni_personel_sayisi/:yeni_hedeflenen/:yeni_ulasilan/:yeni_atilan/:yeni_stok/:yeni_sevk/:yeni_tarih", get(Gunluk::duzenle))
         .route("/hepsi", get(Gunluk::hepsi));
 
         let app = Router::new()
