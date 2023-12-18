@@ -1,7 +1,7 @@
 *{
     font-size: 15px;
 }
-.input_card{
+.input_card2{
     transition: 'all 1s ease-out';
     margin-bottom: 3rem;
     margin-left: 5rem;
@@ -9,30 +9,30 @@
     width: 70%;
     height: 300px;
 }
-.autocomplete{
+.autocomplete2{
     display: flex;
     width: 60%;
     margin-bottom: 1rem;
     margin-right: 1rem;  
 }
-.table{
+.table2{
     height: 470px;
     width: 70%;
 }
 
-.add{
+.add2{
    padding-right: 1rem;
    margin-right: 0.50rem;
 }
 
-.input_part{
+.input_part2{
     width: 100%;
     display: flex;
     padding-bottom: 7rem;   
     transition: 'all 1s ease-out';
 }
 
-.field_btn{
+.field_btn2{
    
     padding-left: 0.75rem;
     padding-top: 0.85rem;
@@ -40,7 +40,7 @@
     width:10%;
 }
 
-.date_picker{
+.date_picker2{
 width: 100%;
 margin-top: -5rem;
 margin-bottom: 3rem;
@@ -48,30 +48,30 @@ margin-left: -0.4rem;
 padding-top: 7rem;
 }
 
-.add_table{
+.add_table2{
     display: flex;
     margin-left: 5rem;
 }
-.close_btn{
+.close_btn2{
     margin-top: 1rem;
 }
-.close_btn:hover{
+.close_btn2:hover{
     color: red;
 }
 
-.input_header{
+.input_header2{
     display: flex;
 }
 
-.input_header h4{
+.input_header2 h4{
     padding-left: 1rem;
 }
 
-.add_btn{
+.add_btn2{
     margin-left: 1rem;
 }
 
-.date_card{
+.date_card2{
     margin-bottom: 3rem;
     margin-left: 5rem;
     padding-top: 7rem;

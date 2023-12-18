@@ -175,7 +175,7 @@ export default function TContainer() {
 <div>
 {/* INPUT TEXT_FİELDS*/}
   {showInputPart && <Card 
-  className='input_card'
+  className='input_card2'
   color='success'
   orientation="horizontal"
   size="lg"
@@ -183,26 +183,26 @@ export default function TContainer() {
   >
 
    <div>
-      <div className='input_header'>             
-          <CancelIcon  className="close_btn" onClick={close_input_part} />    
+      <div className='input_header2'>             
+          <CancelIcon  className="close_btn2" onClick={close_input_part} />    
           <h4>SEVK İŞLEMLERİ</h4>
       </div>
           
 {/* AUTOCOMPLETE*/}
-    <div className="autocomplete">
-          <Autocomplete className="autocomplete" 
+    <div className="autocomplete2">
+          <Autocomplete className="autocomplete2" 
               disablePortal
               options={sample2}
-              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürün Katagorisi" />}
+              renderInput={(params) => <TextField className='auto_cmplete2' {...params} label="Ürün Katagorisi" />}
           />
-          <Autocomplete className="autocomplete"
+          <Autocomplete className="autocomplete2"
               disablePortal
               options={sample2}
-              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürünler" />}
+              renderInput={(params) => <TextField className='auto_cmplete2' {...params} label="Ürünler" />}
           />
     </div>
   
-    <div className='input_part'> 
+    <div className='input_part2'> 
     <TextField sx={{paddingRight:1.5}} label="Günlük Toplam Sevk" variant="filled" />
     <TextField sx={{paddingRight:1.5}} label="Haftalık Toplam Sevk" variant="filled" />
     <TextField sx={{paddingRight:1.5}} label="Aylık Toplam Sevk" variant="filled" />
@@ -236,13 +236,13 @@ export default function TContainer() {
 
 {/* DATE TİME PİCKER*/}
   <div> 
-  <Card className="date_card"
+  <Card className="date_card2"
   color='danger'
   orientation="horizontal"
   size="lg"
   variant='outlined'
   >
-      <div className="date_picker">
+      <div className="date_picker2">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DateRangePicker', 'DateRangePicker']}>
                 <DemoItem label="Filtrele" component="DateRangePicker">
@@ -253,16 +253,16 @@ export default function TContainer() {
                 </DemoItem>
             </DemoContainer>
           </LocalizationProvider>
-          <Button className='list_btn' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
+          <Button className='list_btn2' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
       </div>
       <img src="src/assets/img/genel.png" width={140}></img>
 </Card></div>
 
 
-      <div  className='add_table' >
-      <Stack className="add" sx={{backgroundColor:'#28342b'}}></Stack>
+      <div  className='add_table2' >
+      <Stack className="add2" sx={{backgroundColor:'#28342b'}}></Stack>
 
-    <Paper className="table">
+    <Paper className="table2">
       <TableVirtuoso 
         data={rows}
         components={VirtuosoTableComponents}
@@ -271,7 +271,7 @@ export default function TContainer() {
       />
     </Paper>
 {/* ADD-BUTTON*/}
-    <Stack className='add_btn'>SEVK
+    <Stack className='add_btn2'>SEVK
     <Fab color="error" onClick={show_input_part} sx={{ width :35 , height:0}}>
         <AddIcon />
     </Fab>

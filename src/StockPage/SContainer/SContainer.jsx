@@ -175,7 +175,7 @@ export default function SContainer() {
 <div>
 {/* INPUT TEXT_FİELDS*/}
   {showInputPart && <Card 
-  className='input_card'
+  className='input_card1'
   color='success'
   orientation="horizontal"
   size="lg"
@@ -183,31 +183,31 @@ export default function SContainer() {
   >
 
    <div>
-      <div className='input_header'>             
-          <CancelIcon  className="close_btn" onClick={close_input_part} />    
+      <div className='input_header1'>             
+          <CancelIcon  className="close_btn1" onClick={close_input_part} />    
           <h4>STOK İŞLEMLERİ</h4>
       </div>
           
 {/* AUTOCOMPLETE*/}
-    <div className="autocomplete">
-          <Autocomplete className="autocomplete" 
+    <div className="autocomplete1">
+          <Autocomplete className="autocomplete1" 
               disablePortal
               options={sample2}
-              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürün Katagorisi" />}
+              renderInput={(params) => <TextField className='auto_cmplete1' {...params} label="Ürün Katagorisi" />}
           />
-          <Autocomplete className="autocomplete"
+          <Autocomplete className="autocomplete1"
               disablePortal
               options={sample2}
-              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürünler" />}
+              renderInput={(params) => <TextField className='auto_cmplete1' {...params} label="Ürünler" />}
           />
     </div>
   
-    <div className='input_part'> 
+    <div className='input_part1'> 
     <TextField sx={{paddingRight:1.5}} label="Toplam Stok" variant="filled" />
     <TextField sx={{paddingRight:1.5}} label="Sevk Edilecek Miktar" variant="filled" />
 
 
-      <Stack  className="field_btn">
+      <Stack  className="field_btn1">
       <Button  color="success" variant='contained' aria-label="add"  sx={{marginTop:1}} onClick={handleClick} endIcon={<LoupeIcon />} >
           SEVK
       </Button>
@@ -241,13 +241,13 @@ export default function SContainer() {
 
 {/* DATE TİME PİCKER*/}
   <div> 
-  <Card className="date_card"
+  <Card className="date_card1"
   color='danger'
   orientation="horizontal"
   size="lg"
   variant='outlined'
   >
-      <div className="date_picker">
+      <div className="date_picker1">
           <LocalizationProvider dateAdapter={AdapterDayjs}>
             <DemoContainer components={['DateRangePicker', 'DateRangePicker']}>
                 <DemoItem label="Filtrele" component="DateRangePicker">
@@ -258,16 +258,16 @@ export default function SContainer() {
                 </DemoItem>
             </DemoContainer>
           </LocalizationProvider>
-          <Button className='list_btn' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
+          <Button className='list_btn1' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
       </div>
       <img src="src/assets/img/genel.png" width={140}></img>
 </Card></div>
 
 
-      <div  className='add_table' >
-      <Stack className="add" sx={{backgroundColor:'#28342b'}}></Stack>
+      <div  className='add_table1' >
+      <Stack className="add1" sx={{backgroundColor:'#28342b'}}></Stack>
 
-    <Paper className="table">
+    <Paper className="table1">
       <TableVirtuoso 
         data={rows}
         components={VirtuosoTableComponents}
@@ -276,7 +276,7 @@ export default function SContainer() {
       />
     </Paper>
 {/* ADD-BUTTON*/}
-    <Stack className='add_btn'>SEVK
+    <Stack className='add_btn1'>SEVK
     <Fab color="error" onClick={show_input_part} sx={{ width :35 , height:0}}>
         <AddIcon />
     </Fab>

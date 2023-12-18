@@ -56,8 +56,8 @@ a:hover {
 }
 .logo {
   margin: 1rem;
-  width: 125px;
-  margin-left: 111rem;
+  width: 7%;
+  margin-left: 109rem;
   border-radius: 100%;
   height: 120px;
   margin-top: -5rem;
@@ -65,4 +65,5 @@ a:hover {
 
 .login_btn:hover {
   background-color: rgb(104, 193, 96);
+  transform: scale(1.2,1.2);
 }
