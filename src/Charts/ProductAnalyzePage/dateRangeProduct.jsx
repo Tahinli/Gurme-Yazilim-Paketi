@@ -1,17 +1,9 @@
 import * as React from 'react';
-import {useEffect, useState} from 'react';
-import dayjs from 'dayjs';
-import {DemoContainer, DemoItem} from '@mui/x-date-pickers/internals/demo';
-import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-
 import {PieChart} from "@mui/x-charts/PieChart";
-import {jsonData} from "./dataJS.js";
-import {Button, responsiveFontSizes} from "@mui/material";
+import { dataJS } from '../dataJS';
 import { Card } from '@mui/joy';
-import {DateRangePicker,Stack} from "rsuite";
 
-const parsedData= jsonData
+const parsedData= dataJS
 let valCompleted,valGoal;
 
 function getCurrentURL ()
@@ -73,10 +65,7 @@ export const DateRangeProduct = () => {
                        size="lg"
                        variant="soft"
             >
-                <Stack direction="column" spacing={15} alignItems="flex-start">
-                    <DateRangePicker value={value} onChange={setValue}
-                    />
-                </Stack>
+               
             </Card>
 
             </div>

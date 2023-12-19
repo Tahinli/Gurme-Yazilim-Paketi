@@ -1,12 +1,7 @@
 import React, {useEffect, useState} from 'react'
-import './App.css'
-import{Chart as ChartJS,ArcElement,Tooltip,Legend} from "chart.js";
-import {Doughnut} from "react-chartjs-2";
-ChartJS.register(ArcElement,Tooltip,Legend);
 import { PieChart } from '@mui/x-charts/PieChart';
-import {jsonData} from "./dataJS.js";
+import { dataJS } from '../dataJS';
 import { BarChart } from '@mui/x-charts/BarChart';
-import { axisClasses } from '@mui/x-charts';
 import {Card} from "@mui/joy";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
@@ -20,7 +15,7 @@ var goalCount=0
 var completedCount=0
 let totalHamL=[],totalDesertL=[],totalDrinkL=[];
 let range
-var parsedData=jsonData;
+var parsedData=dataJS;
 const date=new Date()
 
 var datePerc=date.getUTCDay()

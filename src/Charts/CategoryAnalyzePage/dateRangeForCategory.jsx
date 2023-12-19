@@ -1,41 +1,24 @@
-import * as React from 'react';
-import {useEffect, useState} from 'react';
-import dayjs from 'dayjs';
-import {DemoContainer, DemoItem} from '@mui/x-date-pickers/internals/demo';
-import {AdapterDayjs} from '@mui/x-date-pickers/AdapterDayjs';
-import {LocalizationProvider} from '@mui/x-date-pickers/LocalizationProvider';
-import {DateRangePicker} from '@mui/x-date-pickers-pro';
+import React, {useState} from 'react';
+import { dataJS } from '../dataJS';
+import {Card} from "@mui/joy";
 import {PieChart} from "@mui/x-charts/PieChart";
-import {jsonData} from "./dataJS.js";
-import {Button, responsiveFontSizes} from "@mui/material";
-import { Card } from '@mui/joy';
-
-const parsedData= jsonData
+const parsedData= dataJS
 let valHam,valDesert,valDrink;
 
-export default function DateRangePickerValue() {
+const date=new Date()
+export const DateRangeP = () => {
     let totalHamR=0,totalDesertR=0,totalDrinkR=0;
-
-    const[analyze,setAnalyze]=useState(false)
-    const[refresh,isRefreshed]=useState(false)
-    const [value, setValue] = useState([
-        dayjs(Date.now()),
-        dayjs(Date.now()),
+    let showChart=false
+    const [value, setValue] = React.useState([
+        new Date(),
+        new Date()
     ]);
-
-    //fonksiyon
-
-
-    setTimeout(function() {
-       isRefreshed(false)
-    }, 5000);
-
-    const firstDate = new Date(value[0].year(),value[0].month()+1,value[0].date())
-    const lastDate = new Date(value[1].year(),value[1].month()+1,value[1].date())
+    const firstDate = new Date(value[0].getUTCFullYear(),value[0].getUTCMonth(),value[0].getUTCDate())
+    const lastDate = new Date(value[1].getUTCFullYear(),value[1].getUTCMonth(),value[1].getUTCDate())
 
     const hamR = parsedData.filter(function (product) {
 
-        let productDate = new Date(product.Year,product.Month,product.Day);
+        let productDate = new Date(product.Year,product.Month-1,product.Day);
 
         return ((productDate>=firstDate&&productDate<=lastDate)&&product.Category === "Hamur")
 
@@ -49,7 +32,7 @@ export default function DateRangePickerValue() {
     console.log(hamR.length)
 
     const icecekR = parsedData.filter(function (product) {
-        let productDate = new Date(product.Year,product.Month,product.Day);
+        let productDate = new Date(product.Year,product.Month-1,product.Day);
 
         return ((productDate>=firstDate&&productDate<=lastDate) && product.Category==="İçecek")
     });
@@ -60,7 +43,7 @@ export default function DateRangePickerValue() {
     totalDrinkR/=icecekR.length
 
     const tatliR = parsedData.filter(function (product) {
-        let productDate = new Date(product.Year,product.Month,product.Day);
+        let productDate = new Date(product.Year,product.Month-1,product.Day);
 
         return ((productDate>=firstDate&&productDate<=lastDate) && product.Category==="Tatlı")
     });
@@ -68,63 +51,32 @@ export default function DateRangePickerValue() {
         totalDesertR+=(tatliR[i].CompletedCount/tatliR[i].GoalCount);
     }
     totalDesertR/=tatliR.length
-    function setValAnalyze(bool){
-        setAnalyze(bool)
-        isRefreshed(bool)
-
-    }
-
-    if(refresh){
-        valHam=totalHamR
-        valDesert=totalDesertR
-        valDrink=totalDrinkR
-    }
-
+    valHam=totalHamR
+    valDesert=totalDesertR
+    valDrink=totalDrinkR
     const data = [
         { id: 0, value: valHam, label: 'Hamur' },
         { id: 1, value: valDesert, label: 'Tatlı' },
         { id: 2, value: valDrink, label: 'İçecek' },
     ];
-
-
+    if(value[0]<date&&value[1]<=date){
+        showChart=true
+    }
+console.log("Tarih değeri"+date+"val"+value[0])
     return (
         <div className={"ChartsDate"}>
-            <div className={"dateArea"}>
-                <Card style={{width: '500px', height: '250ppx'}}
-                    color="success"
-                    invertedColors={false}
-                    orientation="vertical"
-                    size="lg"
-                    variant="soft"
-                >
-
-                    <div className={"dateArea"}>
-
-                        <LocalizationProvider dateAdapter={AdapterDayjs}>
-                            <DemoContainer components={['DateRangePicker', 'DateRangePicker']}>
-                                <DemoItem label="Zaman Aralığı" component="DateRangePicker">
-                                    <DateRangePicker
-                                        value={value}
-                                        onChange={(newValue) => {
-                                            setValue(newValue)
-
-                                        }}
-
-                                    />
-                                </DemoItem>
-                            </DemoContainer>
-                        </LocalizationProvider>
-
-
-                    </div>
-                    <div className={"dateArea"}>
-                        <Button onClick={() => setValAnalyze(true)} variant="contained">ANALİZ</Button>
-                    </div>
-                </Card>
+            <div><Card className={"Charts"}
+                orientation="vertical"
+                size="lg"
+                variant="soft"
+            >
+                
+            </Card>
 
             </div>
+            <br/>
             <div>
-                {analyze && <Card className={"Charts"} style={{width: '800px', height: '400px'}}
+                {showChart&& <Card className={"Charts"} style={{width: '400px', height: '400px'}}
                                   color="neutral"
                                   invertedColors={false}
                                   orientation="vertical"
@@ -150,8 +102,7 @@ export default function DateRangePickerValue() {
 
     )
         ;
-}
-
+};
 
 
 

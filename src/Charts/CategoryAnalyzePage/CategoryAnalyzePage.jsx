@@ -1,5 +1,5 @@
-import {DateRangeP} from "./dateRangePicker.jsx";
-import ControllableStates from "./getInput.jsx";
+import {DateRangeP} from "./dateRangeForCategory.jsx";
+import ControllableStates from "./getInputAutocomplete.jsx";
 import {
     BarAnimation,
     CategoryDailyAnalyzeComp,
@@ -19,7 +19,7 @@ export function CategoryAnalyzeP(){
             </div>
             <div className={"ChartsDiv"}>
 
-                <DateRangeP/>
+              
                 <ControllableStates/>
                 <InfoValues/>
 

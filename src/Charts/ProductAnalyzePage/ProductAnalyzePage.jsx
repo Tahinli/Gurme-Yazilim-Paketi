@@ -5,13 +5,13 @@ import {
     BarAnimationDaily
 } from "./productAnalyze.jsx";
 import {Card} from "@mui/joy";
-import ControllableStates from "./getInput.jsx";
+import ControllableStates from "../CategoryAnalyzePage/getInputAutocomplete.jsx";
 import {DateRangeProduct} from "./dateRangeProduct.jsx";
 import React from "react";
 
 
 
-export default function ProductPage (){
+export default function ProductPageAnalyze (){
     return(
         <div className={"mainAreaP"}>
             <div className={"maAreaP"}>

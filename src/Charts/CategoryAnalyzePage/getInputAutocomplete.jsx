@@ -4,8 +4,6 @@ import Autocomplete from '@mui/material/Autocomplete';
 import {Card} from "@mui/joy";
 import {Button} from "@mui/material";
 import {useEffect, useState} from "react";
-import {DailyProductAnalyze, MonthlyProductAnalyze, WeeklyProductAnalyze} from "./productAnalyze.jsx";
-import Test from "./ProductAnalyzePage.jsx";
 import {useNavigate} from "react-router-dom";
 
 
@@ -17,7 +15,6 @@ export default function ControllableStates({ onValue2Change }) {
     const[value2,setValue2]=useState(options2[0])
     const [inputValue, setInputValue] = useState('');
     const [inputValue2, setInputValue2] =useState('');
-    const[textInput,setTextInput]=useState('')
     const navigate = useNavigate();
     let productName;
 
@@ -37,7 +34,8 @@ export default function ControllableStates({ onValue2Change }) {
         options2=['Şalgam','Kola']
     }
     const pName = (text) => {
-        return text.replaceAll('Ğ','g')
+        if(text !== null) 
+         return text.replaceAll('Ğ','g')
             .replaceAll('Ü','u')
             .replaceAll('Ş','s')
             .replaceAll('I','i')

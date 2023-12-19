@@ -9,6 +9,7 @@ import StockPage from "./Pages/StockPage/StockPage";
 import TransportationPage from "./Pages/TransportationPage/TransportationPage";
 import PrivateRoutes from "./PrivateRoute";
 import ProductPage from "./Pages/ProductPage/ProductPage";
+import ProductPageAnalyze from "./Charts/ProductAnalyzePage/ProductAnalyzePage";
 
 import UserPage from "./Pages/UserControlPage/UserControlPage";
 function App() {
@@ -18,6 +19,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<HomePage />} />
+          <Route path="/Products/*" element={ <ProductPageAnalyze/>}></Route>
           <Route element={<PrivateRoutes />}>
             <Route path="/user" element={<UserPage />} />
             <Route path="/data" element={<DataPage />} />

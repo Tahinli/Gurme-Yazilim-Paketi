@@ -1,26 +1,16 @@
 import React, {useEffect, useState} from 'react'
-import './App.css'
-import{Chart as ChartJS,ArcElement,Tooltip,Legend} from "chart.js";
-import {Doughnut} from "react-chartjs-2";
-ChartJS.register(ArcElement,Tooltip,Legend);
 import { PieChart } from '@mui/x-charts/PieChart';
-import {jsonData} from "./dataJS.js";
-import {LineChart} from "@mui/x-charts";
-import ControllableStates from "./getInput.jsx";
+import { dataJS } from '../dataJS';
 import Box from "@mui/material/Box";
 import {BarChart} from "@mui/x-charts/BarChart";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Slider from "@mui/material/Slider";
-import {DateRangeP} from "./dateRangePicker.jsx";
-import {da} from "date-fns/locale";
-
-
 
 let totalCompletedProduct=[],totalGoalProduct=[]
 let tempCompletedProduct=0,tempGoalProduct=0
-var parsedData=jsonData;
+var parsedData=dataJS;
 const date=new Date()
 var datePerc=date.getUTCDay()
 if(date.getUTCDay()===0){
