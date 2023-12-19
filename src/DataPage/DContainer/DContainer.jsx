@@ -30,11 +30,11 @@ import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCh
 import urunApi from '../../api/urun-api'
 import gunlukApi from '../../api/gunluk-api'
 import kategoriApi from '../../api/kategori-api';
+import { ka } from 'date-fns/locale';
 
 const Urunler = await urunApi.getUrunler();
 const Gunlukler = await gunlukApi.getGunlukler();
-
-const urungir = (await urunApi.getUrunler()).map((urun) => urun.isim);
+// const urungir = (await urunApi.getUrunler()).map((urun) => urun.isim);
 const kategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
 
 const inAnimation = keyframes`
@@ -60,10 +60,15 @@ const outAnimation = keyframes`
 `;
 
 
+function getTodayDate() {
+  const today = new Date();
+  today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  return today.toLocaleDateString('tr-TR', options);
+}
 
-
-function createData(id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi) {
-  return {id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi };
+function createData(id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi, sevk, stok) {
+  return {id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi, sevk, stok };
 }
 
 const columns = [
@@ -107,6 +112,12 @@ const columns = [
     width: 120,
     label: 'Sevk Miktarı',
     dataKey: 'sevk',
+    numeric: true,
+  },
+  {
+    width: 120,
+    label: 'Stok Miktarı',
+    dataKey: 'stok',
     numeric: true,
   },
 ];
@@ -213,25 +224,34 @@ export default function DContainer() {
   const [rows, setRows] = useState(
     Array.from({ length: Gunlukler.length }, (_, index) => {
       const Selection = Gunlukler[index];
-      return createData(index, Selection.urun_isim, Selection.tarih, Selection.hedeflenen, Selection.ulasilan, Selection.atilan,Selection.personel_sayisi);
+      return createData(index, Selection.urun_isim,
+         Selection.tarih, Selection.hedeflenen, 
+         Selection.ulasilan, Selection.atilan,
+         Selection.personel_sayisi, Selection.sevk, Selection.stok);
     })
   );
   /////////////////////////////////////////
 
   const [ urunadi, setUrunadi ] = useState('');
-  const [ kategoriadi, setKategoriadi ] = useState('');
-  const [ hedef, setHedef ] = useState(0);
-  const [ tamamlanan, setTamamlanan] = useState(0);
-  const [ fire, setFire] = useState(0);
-  const [ sevk, setSevk] = useState(0);
+  const [ kategoriadi, setKategoriadi ] = useState(''); 
+  const [ hedef, setHedef ] = useState(0); //hedeflenen
+  const [ tamamlanan, setTamamlanan] = useState(0); //ulasilan
+  const [ fire, setFire] = useState(0); //atilan
+  const [ sevk, setSevk] = useState(0); 
+  const [ stok, setStok] = useState(0); 
+  const [ personel_sayisi, setPersonel_sayisi] = useState(0);
+
+  const urungir = [];
+for (let urun of Urunler) {
+  if(urun.kategori_isim === kategoriadi)
+  urungir.push(urun.isim);
+}
+
   // console.log(Gunlukler)
+
   console.log(urunadi)
   console.log(kategoriadi)
-  // console.log(kategorigir)
-  console.log(hedef)
-  console.log(tamamlanan)
-  console.log(fire)
-  console.log(sevk)
+
 
   const [value, setValue] = useState([
     dayjs('2022-04-17'),
@@ -253,33 +273,33 @@ export default function DContainer() {
    
    const handleClick = async () => {
     //vvvvvvvvvvvvvvvv   GUNLUK EKLEME   vvvvvvvvvvvvvvvvvvvvvvvvvvv
-    await gunlukApi.addGunluk (`${urunadi}`,
-  {
-    personel_sayisi: 2,
-    hedeflenen: hedef,
-    ulasilan: tamamlanan,
-    atilan: fire,
+    //if ile bos olup olmadigini kontrol et
+    if(!(urunadi === null || urunadi === undefined || urunadi === ''
+        &&
+        kategoriadi === null || kategoriadi === undefined || kategoriadi === '')
+      )
+    {
+          await gunlukApi.addGunluk (`${urunadi}`,
+        {
+          personel_sayisi: personel_sayisi,
+          hedeflenen: hedef,
+          ulasilan: tamamlanan,
+          atilan: fire,
+          stok : stok,
+          sevk : sevk,
 
-    tarih: (() => {
-      const date = new Date();
-      const day = String(date.getDate()+4).padStart(2, '0');
-      const month = String(date.getMonth() + 1).padStart(2, '0');
-      const year = date.getFullYear();
-    
-      return `${day}.${month}.${year}`;
-    })(),
-});
-//////////////////////////////////////////////////////////////////////
-// vvvvvvvvvvvv ROWSU DEGISTIREREK TABLOYU GUNCELLER vvvvvvvvvvvvvvvvvvv
-    setRows([
-      ...rows,
-      createData(rows.length, urunadi, sevk, hedef, tamamlanan, fire),
-    ]);
-//////////////////////////////////////////////////////////////////////
-     setMassage(true);
+          tarih: getTodayDate(),
+      });
+      //////////////////////////////////////////////////////////////////////
+      // vvvvvvvvvvvv ROWSU DEGISTIREREK TABLOYU GUNCELLER vvvvvvvvvvvvvvvvvvv
+          setRows([
+            createData(rows.length, urunadi, getTodayDate() , hedef, tamamlanan, fire, personel_sayisi, sevk, stok),
+            ...rows,
+          ]);//id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi, sevk, stok
+      //////////////////////////////////////////////////////////////////////
+          setMassage(true);
    };
-
-
+}
 
    const handleClose = () => {
      setMassage(false);
@@ -304,11 +324,14 @@ export default function DContainer() {
           
 {/* AUTOCOMPLETE*/}
     <div className="autocomplete">
-          <Autocomplete onChange={(event, value) => setKategoriadi(value)}
+          <Autocomplete onChange={(event, value) => {
+          setKategoriadi(value);
+          setUrunadi(null);
+        }}
               className="autocomplete" 
               disablePortal
               options={kategorigir}
-              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürün Katagorisi" />}
+              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürün Kategorisi" />}
           />
           <Autocomplete onChange={(event, value) => setUrunadi(value)}
               className="autocomplete"
@@ -320,11 +343,12 @@ export default function DContainer() {
   
     <div className='input_part'> 
 
-    <TextField type="number" onChange={(e) => setHedef(e.target.value)} sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" onChange={(e) => setTamamlanan(e.target.value)} sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" onChange={(e) => setFire(e.target.value)} sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" onChange={(e) => setSevk(e.target.value)} sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
-
+    <TextField type="number" defaultValue = {0} onChange={(e) => setHedef(e.target.value)} sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
+    <TextField type="number" defaultValue = {0} onChange={(e) => setTamamlanan(e.target.value)} sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
+    <TextField type="number" defaultValue = {0} onChange={(e) => setFire(e.target.value)} sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+    <TextField type="number" defaultValue = {0} onChange={(e) => setSevk(e.target.value)} sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
+    <TextField type="number" defaultValue = {0} onChange={(e) => setStok(e.target.value)} sx={{paddingRight:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+    <TextField type="number" defaultValue = {0} onChange={(e) => setPersonel_sayisi(e.target.value)} sx={{paddingRight:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
       <Stack  className="field_btn">
       <Button  color="success" variant='contained' aria-label="add"  sx={{marginTop:1}} onClick={handleClick} endIcon={<LoupeIcon />} >
           KAYDET
@@ -395,7 +419,7 @@ export default function DContainer() {
 
     <Paper className="table">
       <TableVirtuoso
-      // {...rows.sort((a, b) => a.calories - b.calories)}  <--- SIRALAMA
+      {...rows.sort((a, b) => b.id - a.id)}  // <--- SIRALAMA
         data={rows}
         components={VirtuosoTableComponents}
         fixedHeaderContent={fixedHeaderContent}

@@ -30,6 +30,13 @@ import FoodBankIcon from '@mui/icons-material/FoodBank';
 import CardContent from '@mui/joy/CardContent';
 import Snackbar from '@mui/joy/Snackbar';
 import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
+import urunApi from '../../api/urun-api';
+import kategoriApi from '../../api/kategori-api';
+
+const urunler = await urunApi.getUrunler();
+// const urunler = (await urunApi.getUrunler()).map((urun) => urun.isim);
+const kategoriler = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
+
 
 const inAnimation = keyframes`
   0% {
@@ -53,32 +60,18 @@ const outAnimation = keyframes`
   }
 `;
 
-function createData(id, name, calories, fat, carbs, protein) {
+function createData(id,isim,kategori) {
   return {
     id,
-    name,
-    calories,
-    fat,
-    carbs,
-    protein,
+    isim,
+    kategori,
   };
 }
 
-const rows = [
-  createData(1, 'Cupcake', 305, 3.7, 67, 4.3),
-  createData(2, 'Donut', 452, 25.0, 51, 4.9),
-  createData(3, 'Eclair', 262, 16.0, 24, 6.0),
-  createData(4, 'Frozen yoghurt', 159, 6.0, 24, 4.0),
-  createData(5, 'Gingerbread', 356, 16.0, 49, 3.9),
-  createData(6, 'Honeycomb', 408, 3.2, 87, 6.5),
-  createData(7, 'Ice cream sandwich', 237, 9.0, 37, 4.3),
-  createData(8, 'Jelly Bean', 375, 0.0, 94, 0.0),
-  createData(9, 'KitKat', 518, 26.0, 65, 7.0),
-  createData(10, 'Lollipop', 392, 0.2, 98, 0.0),
-  createData(11, 'Marshmallow', 318, 0, 81, 2.0),
-  createData(12, 'Nougat', 360, 19.0, 9, 37.0),
-  createData(13, 'Oreo', 437, 18.0, 63, 4.0),
-];
+const rows = 
+  Array.from({ length: urunler.length }, (_, index) => {
+    return createData(index, urunler[index].isim, urunler[index].kategori);
+  });
 
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
@@ -119,7 +112,7 @@ const headCells = [
     id: 'calories',
     numeric: true,
     disablePadding: false,
-    label: 'Ürün Katagorisi',
+    label: 'Ürün Kategorisi',
   }
 ];
 
@@ -245,14 +238,29 @@ EnhancedTableToolbar.propTypes = {
   numSelected: PropTypes.number.isRequired,
 };
 
+// ************************* ANA FONKSIYON  ********************************
 export default function PContainer() {
+
+
   const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
+  const [orderBy, setOrderBy] = React.useState('name');
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [rowsPerPage, setRowsPerPage] = React.useState(10);
+
+  //vvvvvvvvvvvvvvv textfieldlar için vvvvvvvvvvvvvvv
+  const [urunadi, setUrunadi] = useState('');
+  const [urunkategorisi, setUrunkategorisi] = useState('');
   const animationDuration = 600;
+
+
+  console.log(rows)
+  
+  // console.log(urunler);
+  // console.log(kategoriler);
+  // console.log(urunadi);
+  // console.log(urunkategorisi);
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -317,7 +325,20 @@ export default function PContainer() {
   );
   const [massage, setMassage] = useState(false);
 
-  const handleClick2 = () => {
+  const handleClick2 = async () => {
+
+    //vvvvvvvvvvvvvv KATEGORI EKLE vvvvvvvvvvvvvvv   (ŞUAN HEM KATEGORİ HEMDE ÜRÜN EKLENİYOR DÜZELTİLECEK)
+    if( !kategoriler.includes(urunkategorisi) ){
+    await kategoriApi.addKategori({
+      isim: urunkategorisi,
+      ust_kategori : null,
+    });
+    }
+    //vvvvvvvvvvvvvv URUN EKLE vvvvvvvvvvvvvvv
+    await urunApi.addUrun({
+      isim: urunadi,
+      kategori : urunkategorisi,
+    })
     setMassage(true);
   };
 
@@ -362,11 +383,28 @@ export default function PContainer() {
 
       <CardContent sx={{ maxWidth: '40ch' }} className="p_cardcontent">
         <h4 className='p_header'>Ürün Ekle</h4>
-        <TextField sx={{paddingTop:1.5}} label="Ürün Adı" variant="filled" />
-        <TextField  label="Ürün Katagorisi" variant="filled" />
-         <Button  className="save_btn" onClick={handleClick2} color="success" variant='contained' aria-label="add"  sx={{marginTop:1}} endIcon={<LoupeIcon />} >
+        <TextField 
+        type="text" 
+        onChange={(e) => setUrunadi(e.target.value)} 
+        sx={{paddingTop:1.5}} 
+        label="Ürün Adı" 
+        variant="filled" 
+        />
+        <TextField
+          type="text" 
+          onChange={(e) => setUrunkategorisi(e.target.value)} 
+          label="Ürün Kategorisi" 
+          variant="filled" 
+        />
+        <Button  className="save_btn" 
+          onClick={handleClick2} 
+          color="success" 
+          variant='contained' 
+          aria-label="add"  
+          sx={{marginTop:1}}
+          endIcon={<LoupeIcon />} >
           KAYDET
-      </Button>
+        </Button>
       </CardContent>
 
  {/* ANİMATİON-MASSAGE */} 
@@ -395,7 +433,7 @@ export default function PContainer() {
 </div>
 <h1 className='p_h1'>ÜRÜN TABLOSU</h1>
  <Box sx={{ width: '50%' }} className="p_box">
-      <Paper sx={{ width: '100%', mb: 2 }} className='p_table'>
+      <Paper sx={{ width: '100%', mb: 1 }} className='p_table'>
         <EnhancedTableToolbar numSelected={selected.length} />
         <TableContainer>
           <Table
@@ -446,17 +484,16 @@ export default function PContainer() {
                         }}
                       />
                     </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
+                    <TableCell component="th" id={labelId}
+                      scope="row"  padding="none"
                       sx={{ paddingLeft:2 ,color:'black'}}
-                      
-                    >
-                      {row.name}
+                      >                   
+                      {row.isim}
                     </TableCell>
-                    <TableCell align="right" sx={{color:'black', paddingRight:30}}>{row.calories}</TableCell>
+                    <TableCell align="left" sx={{color:'black', paddingLeft:81.5}}
+                    >
+                    {row.kategori.isim}
+                    </TableCell>
                   </TableRow>
                 );
               })}
@@ -473,7 +510,7 @@ export default function PContainer() {
           </Table>
         </TableContainer>
         <TablePagination
-          rowsPerPageOptions={[5, 10, 25]}
+          rowsPerPageOptions={[10, 15, 25]}
           component="div"
           count={rows.length}
           rowsPerPage={rowsPerPage}
