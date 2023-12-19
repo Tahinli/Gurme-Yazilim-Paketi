@@ -22,6 +22,7 @@
     "@mui/styled-engine-sc": "^6.0.0-alpha.8",
     "@mui/system": "^5.15.0",
     "@mui/x-data-grid": "^6.18.4",
+    "@mui/x-data-grid-generator": "^6.18.5",
     "@mui/x-date-pickers": "^6.18.4",
     "@mui/x-date-pickers-pro": "^6.18.5",
     "axios": "^1.6.2",
