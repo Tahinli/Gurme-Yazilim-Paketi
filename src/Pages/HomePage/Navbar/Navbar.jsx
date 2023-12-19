@@ -13,8 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import LoginIcon from "@mui/icons-material/Login";
-import URL from "../../../URL/url";
-
+import URL from "../../../URL/server";
 const Navbar = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);

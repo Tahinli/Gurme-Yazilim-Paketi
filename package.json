@@ -4,9 +4,7 @@
   "version": "0.0.0",
   "type": "module",
   "scripts": {
-    "start:vite": "vite",
-    "start:server": "node server.js",
-    "dev": "npm-run-all --parallel start:vite start:server",
+    "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },

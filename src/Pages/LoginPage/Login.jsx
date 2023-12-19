@@ -9,8 +9,7 @@ import "reactjs-popup/dist/index.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { AuthContext } from "../../AuthProvider";
-import URL from "../../URL/url";
-
+import URL from "../../URL/server";
 const LOGIN_URL = URL + "/auth";
 
 function Login() {
