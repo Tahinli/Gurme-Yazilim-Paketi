@@ -37,12 +37,14 @@ const addGunluk = async (urunAdi, userData) => {
     const hedeflenen = userData.hedeflenen
     const ulasilan = userData.ulasilan
     const atilan = userData.atilan
+    const stok = userData.stok
+    const sevk = userData.sevk
     const tarih = userData.tarih
 
     try {
         const options = {
             method: 'GET',
-            url: `${apiURL}/gunluk/ekle/${urunAdi}/${personel_sayisi}/${hedeflenen}/${ulasilan}/${atilan}/${tarih}`,
+            url: `${apiURL}/gunluk/ekle/${urunAdi}/${personel_sayisi}/${hedeflenen}/${ulasilan}/${atilan}/${stok}/${sevk}/${tarih}`,
             json: true,
             body: userData
         };
@@ -69,18 +71,20 @@ const deleteGunluk = async (name) => {
 };
 
 const updateGunluk = async (urunAdi, tarih, userData) => {
-    let yeni_urun, yeni_personel_sayisi, yeni_hedeflenen, yeni_ulasilan, yeni_atilan, yeni_tarih
+    let yeni_urun, yeni_personel_sayisi, yeni_hedeflenen, yeni_ulasilan, yeni_atilan, yeni_tarih, yeni_stok, yeni_sevk
     yeni_urun = userData.yeni_urun
     yeni_personel_sayisi = userData.yeni_personel_sayisi
     yeni_hedeflenen = userData.yeni_hedeflenen
     yeni_ulasilan = userData.yeni_ulasilan
     yeni_atilan = userData.yeni_atilan
+    yeni_stok = userData.yeni_stok
+    yeni_sevk = userData.yeni_sevk
     yeni_tarih = userData.yeni_tarih
 
     try {
         const options = {
             method: 'GET',
-            url: `${apiURL}/gunluk/duzenle/${urunAdi}/${tarih}/${yeni_urun}/${yeni_personel_sayisi}/${yeni_hedeflenen}/${yeni_ulasilan}/${yeni_atilan}/${yeni_tarih}`,
+            url: `${apiURL}/gunluk/duzenle/${urunAdi}/${tarih}/${yeni_urun}/${yeni_personel_sayisi}/${yeni_hedeflenen}/${yeni_ulasilan}/${yeni_atilan}/${yeni_stok}/${yeni_sevk}}/${yeni_tarih}`,
             json: true,
             body: userData
         };

@@ -14,7 +14,7 @@ const handleLogin = async (req, res) => {
   if (pwd == dbuser.sifre) {
     // create JWTs
     const accessToken = jwt.sign(
-      { username: "admin" },
+      { username: user, isim: dbuser.isim, soyisim: dbuser.soyisim },
       process.env.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "3h",

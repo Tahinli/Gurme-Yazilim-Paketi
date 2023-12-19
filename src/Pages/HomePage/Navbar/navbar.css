@@ -12,10 +12,9 @@ a {
   justify-content: space-between;
   align-items: center;
   padding: 0 0.75rem;
-  height: 60px;
-  margin: 0 auto;
-  width: 100%;
-  min-width: 200px;
+  height: 60px auto;
+  width: 100% auto;
+  min-width: 400px;
   background-color: #1b722f;
   color: white;
 }
