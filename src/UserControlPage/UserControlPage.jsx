@@ -4,6 +4,7 @@ import logo from "../assets/img/logo.png";
 import Button from "@mui/material/Button";
 import React, { useEffect, useRef, useState } from "react"; // Add useEffect here
 import backgroundImage from "../assets/img/photo.jpg";
+import { useNavigate } from "react-router-dom";
 
 import kullaniciApi from "../api/user-api.js";
 
@@ -12,7 +13,7 @@ import { DataGrid } from "@mui/x-data-grid";
 function UserPage() {
   const [rows, setRows] = useState([]);
   const [refresh, setRefresh] = useState(false); // Yeni durum değişkeni
-
+  const navigate = useNavigate();
   useEffect(() => {
     const talha = async () => {
       const users = await kullaniciApi.getUsers();
@@ -61,16 +62,20 @@ function UserPage() {
     const response = await kullaniciApi.addUser({ isim, soyisim, id, sifre });
     setRefresh((prev) => !prev); // refresh durumunu günceller
   };
+  const handleButtonClick2 = (e) => {
+    e.preventDefault();
+    navigate("/");
+  };
 
   return (
     <div>
-      <div className="logodiv">
-        <img className="imglogo" src={logo} alt="Logo" />
+      <div className="logodiv2">
+        <img className="imglogo2" src={logo} alt="Logo" />
       </div>
-      <div className="loginDiv">
-        <div className="textfield">
+      <div className="loginDiv2">
+        <div className="textfield1">
           <TextField
-            className="textf"
+            className="textf2"
             id="outlined-basic"
             label="İsim"
             variant="outlined"
@@ -81,7 +86,7 @@ function UserPage() {
           />
 
           <TextField
-            className="textf"
+            className="textf2"
             id="outlined-basic"
             label=" Soyisim"
             variant="outlined"
@@ -91,7 +96,7 @@ function UserPage() {
         </div>
         <div className="textfield2">
           <TextField
-            className="textf"
+            className="textf2"
             id="outlined-basic"
             label="Kullanıcı Adı"
             variant="outlined"
@@ -103,7 +108,7 @@ function UserPage() {
 
           <TextField
             type="password"
-            className="textf"
+            className="textf2"
             id="outlined-basic"
             label="Şifre"
             variant="outlined"
@@ -112,7 +117,10 @@ function UserPage() {
           />
         </div>
 
-        <div style={{ height: 400, width: "90%", paddingLeft: "100px" }}>
+        <div
+          className="tabletz"
+          style={{ height: 400, width: "90%", paddingLeft: "100px" }}
+        >
           <DataGrid
             rows={rows}
             columns={columns}
@@ -124,15 +132,22 @@ function UserPage() {
             pageSizeOptions={[5, 10]}
             checkboxSelection
           />
-          <div className="buttonDiv">
-            <Button
-              variant="contained"
-              className="submitButton"
-              onClick={handleButtonClick}
-            >
-              Kayıt Ekle
-            </Button>
-          </div>
+        </div>
+        <div className="buttonDiv2">
+          <Button
+            variant="contained"
+            className="submitButton2"
+            onClick={handleButtonClick}
+          >
+            Kayıt Ekle
+          </Button>
+          <Button
+            variant="contained"
+            className="submitButton2"
+            onClick={handleButtonClick2}
+          >
+            Ana Sayfaya Dön
+          </Button>
         </div>
       </div>
     </div>
