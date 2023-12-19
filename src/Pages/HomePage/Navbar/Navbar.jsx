@@ -13,6 +13,7 @@ import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import LoginIcon from "@mui/icons-material/Login";
+import URL from "../../../URL/url";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -38,7 +39,7 @@ const Navbar = () => {
     verifyUser();
   };
   const verifyUser = async () => {
-    const response = await fetch("http://localhost:5000/verify", {
+    const response = await fetch(URL + "/verify", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -47,8 +48,6 @@ const Navbar = () => {
     });
     setVerify(response.status === 200);
     setVerify(!(response.status !== 200));
-
-    return response.status;
   };
   const buttonClick = () => {
     navigate("/login");

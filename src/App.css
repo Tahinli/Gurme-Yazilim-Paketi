@@ -35,6 +35,7 @@
   }
   .submitButton2 {
     width: 80% !important;
+    margin-left: 0px !important;
     margin-bottom: 20px !important;
   }
   .textfield2 {

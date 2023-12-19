@@ -1,16 +1,17 @@
 import "./Login.css";
 import TextField from "@mui/material/TextField";
-import logo from "../assets/img/logo.png";
+import logo from "../../assets/img/logo.png";
 import Button from "@mui/material/Button";
 import React, { useRef, useState, useEffect, useContext } from "react"; // Add useEffect here
-import backgroundImage from "../assets/img/photo.jpg";
+import backgroundImage from "../../assets/img/photo.jpg";
 import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { AuthContext } from "../AuthProvider";
+import { AuthContext } from "../../AuthProvider";
+import URL from "../../URL/url";
 
-const LOGIN_URL = "http://localhost:5000/auth";
+const LOGIN_URL = URL + "/auth";
 
 function Login() {
   const navigate = useNavigate();

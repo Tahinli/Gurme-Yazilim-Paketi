@@ -1,7 +1,8 @@
 import jwt from "jsonwebtoken";
 import kullaniciApi from "./api/user-api.js";
-const ACCESS_TOKEN_SECRET = "sdaA";
-const REFRESH_TOKEN_SECRET = "dsada";
+import dotenv from "dotenv";
+dotenv.config();
+
 const handleLogin = async (req, res) => {
   const { user, pwd } = req.body;
   if (!user || !pwd)
@@ -14,14 +15,14 @@ const handleLogin = async (req, res) => {
     // create JWTs
     const accessToken = jwt.sign(
       { username: user, isim: dbuser.isim, soyisim: dbuser.soyisim },
-      ACCESS_TOKEN_SECRET,
+      process.env.ACCESS_TOKEN_SECRET,
       {
         expiresIn: "3h",
       }
     );
     const refreshToken = jwt.sign(
       { username: "token-id" },
-      REFRESH_TOKEN_SECRET,
+      process.env.REFRESH_TOKEN_SECRET,
       {
         expiresIn: "1d",
       }
@@ -41,7 +42,7 @@ const authenticateToken = async (req, res) => {
     return res.sendStatus(403);
   }
   try {
-    const data = await jwt.verify(accessToken, ACCESS_TOKEN_SECRET);
+    const data = await jwt.verify(accessToken, process.env.ACCESS_TOKEN_SECRET);
     req.username = data.username;
     return res.status(200).send("Authentication successful");
   } catch (error) {
