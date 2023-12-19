@@ -12,9 +12,13 @@ const handleLogin = async (req, res) => {
 
   if (pwd == dbuser.sifre) {
     // create JWTs
-    const accessToken = jwt.sign({ username: "admin" }, ACCESS_TOKEN_SECRET, {
-      expiresIn: "3h",
-    });
+    const accessToken = jwt.sign(
+      { username: user, isim: dbuser.isim, soyisim: dbuser.soyisim },
+      ACCESS_TOKEN_SECRET,
+      {
+        expiresIn: "3h",
+      }
+    );
     const refreshToken = jwt.sign(
       { username: "token-id" },
       REFRESH_TOKEN_SECRET,
