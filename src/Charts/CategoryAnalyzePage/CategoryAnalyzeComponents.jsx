@@ -255,6 +255,7 @@ let totalHamM=0,totalDrinkM=0,totalDesertM=0
         </>
     )
 }
+//Burada totalde ürünlerde hedeflere ulasıldı mı onu göstereceğiz
 export function InfoValues(){
 
 
@@ -280,7 +281,7 @@ export function InfoValues(){
         </div>
     )
 }
-
+//SON 30 GÜN İÇİN AYARLANABİLİR BAR CHART
 export function BarAnimation() {
 
     const [seriesNb, setSeriesNb] =useState(3);
