@@ -419,7 +419,7 @@ for (let urun of Urunler) {
 
     <Paper className="table">
       <TableVirtuoso
-      {...rows.sort((a, b) => b.id - a.id)}  // <--- SIRALAMA
+      // {...rows.sort((a, b) => Number(b.id) - Number(a.id))}  // <--- SIRALAMA
         data={rows}
         components={VirtuosoTableComponents}
         fixedHeaderContent={fixedHeaderContent}
