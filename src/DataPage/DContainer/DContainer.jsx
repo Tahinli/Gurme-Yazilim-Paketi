@@ -147,12 +147,11 @@ function fixedHeaderContent() {
           align={column.numeric || false ? 'right' : 'left'}
           style={{ width: column.width }}
           sx={{
-            border: '0.1px solid black',
+            border:'0.1px solid black',
             backgroundColor: '#28342b',
             color:'white',
             fontSize: 17,
             paddingLeft:1,
-            border:'0.1px solid black'
           }}
         >
           {column.label}
