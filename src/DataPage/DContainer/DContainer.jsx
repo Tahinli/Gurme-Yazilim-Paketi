@@ -30,7 +30,6 @@ import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCh
 import urunApi from '../../api/urun-api'
 import gunlukApi from '../../api/gunluk-api'
 import kategoriApi from '../../api/kategori-api';
-import { add, set } from 'date-fns';
 
 const Urunler = await urunApi.getUrunler();
 const Gunlukler = await gunlukApi.getGunlukler();
@@ -61,8 +60,10 @@ const outAnimation = keyframes`
 `;
 
 
-function createData(id , urun_isim, tarih, hedeflenen, ulasilan, atilan) {
-  return {id , urun_isim, tarih, hedeflenen, ulasilan, atilan };
+
+
+function createData(id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi) {
+  return {id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi };
 }
 
 const columns = [
@@ -71,6 +72,12 @@ const columns = [
     width: 160,
     label: 'Ürünler',
     dataKey: 'urun_isim',
+  },
+  {
+    width: 120,
+    label: 'Personel Sayısı',
+    dataKey: 'personel_sayisi',
+    numeric: true,
   },
   {
     width: 120,
@@ -92,11 +99,16 @@ const columns = [
   },
   {
     width: 120,
-    label: 'Sevk Miktarı',
+    label: 'Fire',
     dataKey: 'atilan',
     numeric: true,
   },
-  
+  {
+    width: 120,
+    label: 'Sevk Miktarı',
+    dataKey: 'sevk',
+    numeric: true,
+  },
 ];
 
 
@@ -124,6 +136,7 @@ function fixedHeaderContent() {
           align={column.numeric || false ? 'right' : 'left'}
           style={{ width: column.width }}
           sx={{
+            border: '0.1px solid black',
             backgroundColor: '#28342b',
             color:'white',
             fontSize: 17,
@@ -163,13 +176,13 @@ function rowContent(_index, row) {
           sx={{backgroundColor:'rgb(209, 209,209)'}}
         >
           {row[column.dataKey]}
-        </TableCell>
+        </TableCell>        
       ))}
       <TableCell align="right" sx={{backgroundColor:'rgb(209, 209,209)'}}>
         <Button 
           onClick={() => handleDelete(row)}
-          size="small" // makes the button smaller
-          variant="contained" // gives the button an outline
+          size="small"
+          variant="contained"
           color="warning" 
           sx={{backgroundColor:'rgb(120, 180,120)'}}
         >
@@ -200,7 +213,7 @@ export default function DContainer() {
   const [rows, setRows] = useState(
     Array.from({ length: Gunlukler.length }, (_, index) => {
       const Selection = Gunlukler[index];
-      return createData(index, Selection.urun_isim, Selection.tarih, Selection.hedeflenen, Selection.ulasilan, Selection.atilan);
+      return createData(index, Selection.urun_isim, Selection.tarih, Selection.hedeflenen, Selection.ulasilan, Selection.atilan,Selection.personel_sayisi);
     })
   );
   /////////////////////////////////////////
@@ -249,7 +262,7 @@ export default function DContainer() {
 
     tarih: (() => {
       const date = new Date();
-      const day = String(date.getDate()-2).padStart(2, '0');
+      const day = String(date.getDate()+4).padStart(2, '0');
       const month = String(date.getMonth() + 1).padStart(2, '0');
       const year = date.getFullYear();
     
