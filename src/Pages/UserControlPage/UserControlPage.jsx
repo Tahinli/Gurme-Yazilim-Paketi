@@ -1,12 +1,12 @@
 import "./user.css";
 import TextField from "@mui/material/TextField";
-import logo from "../assets/img/logo.png";
+import logo from "../../assets/img/logo.png";
 import Button from "@mui/material/Button";
 import React, { useEffect, useRef, useState } from "react"; // Add useEffect here
-import backgroundImage from "../assets/img/photo.jpg";
+import backgroundImage from "../../assets/img/photo.jpg";
 import { useNavigate } from "react-router-dom";
 
-import kullaniciApi from "../api/user-api.js";
+import kullaniciApi from "../../api/user-api.js";
 
 import { DataGrid } from "@mui/x-data-grid";
 
