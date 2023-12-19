@@ -57,7 +57,6 @@ function UserPage() {
   const processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
     setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    console.log(updatedRow);
     kullaniciApi.updateUser(newRow.id, newRow);
     alert("Kullanıcı Güncellendi");
 
