@@ -11,8 +11,8 @@ import axios from "axios";
 const LOGOUT_URL = "http://localhost:5000/logout";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import Button from '@mui/material/Button';
-import LoginIcon from '@mui/icons-material/Login';
+import Button from "@mui/material/Button";
+import LoginIcon from "@mui/icons-material/Login";
 
 const Navbar = () => {
   const navigate = useNavigate();
@@ -52,6 +52,9 @@ const Navbar = () => {
   };
   const buttonClick = () => {
     navigate("/login");
+  };
+  const handleUyeEkle = () => {
+    navigate("/user");
   };
   useEffect(() => {
     verifyUser();
@@ -131,7 +134,12 @@ const Navbar = () => {
                     transformOrigin={{ horizontal: "right", vertical: "top" }}
                     anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
                   >
-                    <MenuItem onClick={handleClose}>
+                    <MenuItem
+                      onClick={() => {
+                        handleClose();
+                        handleUyeEkle();
+                      }}
+                    >
                       <ListItemIcon>
                         <PersonAdd fontSize="small" />
                       </ListItemIcon>
@@ -152,9 +160,19 @@ const Navbar = () => {
                   </Menu>
                 </React.Fragment>
               )}
-              {!verify && <Button className="login_btn" color="error" variant='contained' aria-label="add"  sx={{marginTop:1}} onClick={buttonClick} startIcon={<LoginIcon />} >
-                            GİRİŞ YAP
-                          </Button>}
+              {!verify && (
+                <Button
+                  className="login_btn"
+                  color="error"
+                  variant="contained"
+                  aria-label="add"
+                  sx={{ marginTop: 1 }}
+                  onClick={buttonClick}
+                  startIcon={<LoginIcon />}
+                >
+                  GİRİŞ YAP
+                </Button>
+              )}
             </ul>
           </nav>
         </div>
