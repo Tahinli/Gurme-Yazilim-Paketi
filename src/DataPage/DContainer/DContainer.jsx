@@ -25,7 +25,7 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Snackbar from '@mui/joy/Snackbar';
 import { keyframes } from '@mui/system';
-import Checkbox from '@mui/material/Checkbox';
+import BorderColorIcon from '@mui/icons-material/BorderColor';
 import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
 import urunApi from '../../api/urun-api'
 import gunlukApi from '../../api/gunluk-api'
@@ -161,13 +161,14 @@ function fixedHeaderContent() {
        <TableCell padding="checkbox"
          sx={{
             backgroundColor: '#28342b',
+            width:'7%'
           }}
         >
         </TableCell>
         <TableCell padding="checkbox"
          sx={{
             backgroundColor: '#28342b',
-            paddingLeft:3.8,
+            paddingLeft:1,
             fontSize:17,
             color:'white',
           }}
@@ -191,24 +192,25 @@ function rowContent(_index, row) {
       ))}
       <TableCell align="right" sx={{backgroundColor:'rgb(209, 209,209)'}}>
         <Button 
+          
           onClick={() => handleDelete(row)}
-          size="small"
-          variant="contained"
-          color="warning" 
-          sx={{backgroundColor:'rgb(120, 180,120)'}}
+          size="small" // makes the button smaller
+          variant="contained" // gives the button an outline
+          color="error" 
+          endIcon={<DeleteForeverIcon/>}
         >
           Sil
         </Button >
-        
       </TableCell>
+
       <TableCell sx={{backgroundColor:'rgb(209, 209,209)'}} >
         <Button 
+          className='table_btn'
           size='small'
           color="success" 
           variant="contained"
           aria-label="add"  
-          
-          startIcon={<LoupeIcon />}
+          endIcon={<BorderColorIcon/>}
         >
           Düzenle
         </Button >
