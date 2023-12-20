@@ -344,22 +344,42 @@ for (let urun of Urunler) {
   
     <div className='input_part'> 
 
-    <TextField type="number" defaultValue = {0} onChange={(e) => setHedef(e.target.value)} sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" defaultValue = {0} onChange={(e) => setTamamlanan(e.target.value)} sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" defaultValue = {0} onChange={(e) => setFire(e.target.value)} sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" defaultValue = {0} onChange={(e) => setSevk(e.target.value)} sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" defaultValue = {0} onChange={(e) => setStok(e.target.value)} sx={{paddingRight:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" defaultValue = {0} onChange={(e) => setPersonel_sayisi(e.target.value)} sx={{paddingRight:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
-      <Stack  className="field_btn">
-      <Button  color="success" variant='contained' aria-label="add"  sx={{marginTop:1}} onClick={handleClick} endIcon={<LoupeIcon />} >
+    <TextField type="number" defaultValue = {0} 
+     onChange={(e) => setHedef(e.target.value)}
+     sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0} 
+     onChange={(e) => setTamamlanan(e.target.value)}
+     sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setFire(e.target.value)}
+     sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setSevk(e.target.value)}
+     sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setStok(e.target.value)}
+     sx={{paddingRight:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setPersonel_sayisi(e.target.value)}
+     sx={{paddingRight:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
+
+    <Stack  className="field_btn">
+        <Button  color="success" variant='contained' aria-label="add" 
+        sx={{marginTop:1}} onClick={handleClick} endIcon={<LoupeIcon />}
+        >
           KAYDET
-      </Button>
-      </Stack>
+        </Button>
+    </Stack>
 
 {/* ANİMATİON-MASSAGE */} 
       <Snackbar
-      variant="soft"
-      color="success"
+        variant="soft"
+        color="success"
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={massage}
         onClose={handleClose}
@@ -382,10 +402,12 @@ for (let urun of Urunler) {
         <Button color="error" variant='contained' aria-label="add" sx={{marginTop:1}} endIcon={<DeleteForeverIcon/>}>
           SIFIRLA
         </Button>
-      </Stack></div>   
+      </Stack>
+      </div>   
 
-</div>
-  </Card> }
+    </div>
+  </Card> 
+}
 
 {/* DATE TİME PİCKER*/}
   <div> 
@@ -420,7 +442,7 @@ for (let urun of Urunler) {
 
     <Paper className="table">
       <TableVirtuoso
-      // {...rows.sort((a, b) => Number(b.id) - Number(a.id))}  // <--- SIRALAMA
+      // {...rows.sort((a, b) => b.id - a.id)}  // <--- SIRALAMA
         data={rows}
         components={VirtuosoTableComponents}
         fixedHeaderContent={fixedHeaderContent}
