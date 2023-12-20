@@ -59,8 +59,8 @@ a:hover {
 
 .login_symbol:hover {
   background-color: rgb(104, 193, 96);
-  transform: scale(1.2, 1.2);
+  transform: scale(1.2,1.2);
 }
-.login_btn:hover {
-  transform: scale(1.05, 1.05);
+.login_btn:hover{
+  transform: scale(1.05,1.05);
 }
