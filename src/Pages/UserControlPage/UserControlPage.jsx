@@ -219,10 +219,7 @@ function UserPage() {
           />
         </div>
 
-        <div
-          className="tabletz"
-          style={{ height: 400, width: "90%", paddingLeft: "120px" }}
-        >
+        <div className="tabletz" style={{ width: "90%", paddingLeft: "120px" }}>
           <DataGrid
             rows={rows}
             columns={columns}

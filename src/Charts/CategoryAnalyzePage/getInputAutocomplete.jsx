@@ -5,13 +5,14 @@ import {Card} from "@mui/joy";
 import {Button} from "@mui/material";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
+import './CategoryAnalyze.css';
 
 
 const options = ['Hamur', 'Tatlı','İçecek'];
 
 export default function ControllableStates({ onValue2Change }) {
     let options2=['']
-    const [value, setValue] = React.useState(options[0]);
+    const [value, setValue] = React.useState('');
     const[value2,setValue2]=useState(options2[0])
     const [inputValue, setInputValue] = useState('');
     const [inputValue2, setInputValue2] =useState('');
@@ -54,12 +55,13 @@ export default function ControllableStates({ onValue2Change }) {
         <div id={"categoryComplete"}>
 
 
-            <Card className={"Charts"} style={{height: '300px'}}
+            <Card className='auto_card'
                   color="neutral"
                   invertedColors={false}
                   orientation="vertical"
                   size="lg"
                   variant="soft"
+                  sx={{width:'30%',maxWidth:'30%', alignItems:'center'}}
             >
                 <Autocomplete
                     value={value}
@@ -74,16 +76,14 @@ export default function ControllableStates({ onValue2Change }) {
 
                     id="controllable-states-demo1"
                     options={options}
-                    sx={{width: 300}}
+                    sx={{width: '60%', minWidth:150}}
                     renderInput={(params) => <TextField {...params} label="Kategori"/>}
                 />
-                <br/>
+               
                 {<Autocomplete
                     value={value2}
                     onChange={(event, newValue) => {
                         setValue2(newValue);
-
-
                     }}
                     options={options2}
                     inputValue={inputValue2}
@@ -92,16 +92,18 @@ export default function ControllableStates({ onValue2Change }) {
                     }}
                     id="controllable-states-demo2"
                     autoHighlight={true}
-
-
-                    sx={{width: 300}}
+                    sx={{width: '60%', minWidth:150}}
                     renderInput={(params) => <TextField {...params} label="Ürün"/>}
                 />}
-                <br/>
-
-                <Button onClick={()=>{navigate('/Products/'+productName)
-               window.location.reload() }}
-                        variant="contained">ÜRÜNE GİT</Button>
+              
+                <Button onClick={()=>{navigate('/Products/'+productName) 
+                window.location.reload() }}
+                variant="contained"
+                color='error'
+                sx={{width: '40%', minWidth:130}}
+                >
+                ÜRÜNE GİT
+                </Button>
             </Card>
 
 

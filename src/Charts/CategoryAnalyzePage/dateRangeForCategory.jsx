@@ -1,20 +1,32 @@
-import React, {useState} from 'react';
-import { dataJS } from '../dataJS';
-import {Card} from "@mui/joy";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
+import {useState} from "react";
+import * as React from 'react';
 import {PieChart} from "@mui/x-charts/PieChart";
+import {dataJS} from "../dataJS.js";
+import {Button, responsiveFontSizes} from "@mui/material";
+import { Card } from '@mui/joy';
+
 const parsedData= dataJS
 let valHam,valDesert,valDrink;
 
-const date=new Date()
-export const DateRangeP = () => {
+export  function DateRangeP() {
     let totalHamR=0,totalDesertR=0,totalDrinkR=0;
-    let showChart=false
-    const [value, setValue] = React.useState([
-        new Date(),
-        new Date()
-    ]);
-    const firstDate = new Date(value[0].getUTCFullYear(),value[0].getUTCMonth(),value[0].getUTCDate())
-    const lastDate = new Date(value[1].getUTCFullYear(),value[1].getUTCMonth(),value[1].getUTCDate())
+
+    const[analyze,setAnalyze]=useState(false)
+    const[refresh,isRefreshed]=useState(false)
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+
+    //fonksiyon
+
+
+    setTimeout(function() {
+        isRefreshed(false)
+    }, 5000);
+
+    const firstDate = new Date(startDate.getUTCFullYear(),startDate.getUTCMonth(),startDate.getUTCDate())
+    const lastDate = new Date(endDate.getUTCFullYear(),endDate.getUTCMonth(),endDate.getUTCDate())
 
     const hamR = parsedData.filter(function (product) {
 
@@ -51,32 +63,64 @@ export const DateRangeP = () => {
         totalDesertR+=(tatliR[i].CompletedCount/tatliR[i].GoalCount);
     }
     totalDesertR/=tatliR.length
-    valHam=totalHamR
-    valDesert=totalDesertR
-    valDrink=totalDrinkR
+    function setValAnalyze(bool){
+        setAnalyze(bool)
+        isRefreshed(bool)
+
+    }
+
+    if(refresh){
+        valHam=totalHamR
+        valDesert=totalDesertR
+        valDrink=totalDrinkR
+    }
+
     const data = [
         { id: 0, value: valHam, label: 'Hamur' },
         { id: 1, value: valDesert, label: 'Tatlı' },
         { id: 2, value: valDrink, label: 'İçecek' },
     ];
-    if(value[0]<date&&value[1]<=date){
-        showChart=true
-    }
-console.log("Tarih değeri"+date+"val"+value[0])
+
+
     return (
         <div className={"ChartsDate"}>
-            <div><Card className={"Charts"}
-                orientation="vertical"
-                size="lg"
-                variant="soft"
-            >
-                
-            </Card>
+            <div className={"dateArea"}>
+                <Card style={{width: '500px', height: '250ppx'}}
+                      color="success"
+                      invertedColors={false}
+                      orientation="vertical"
+                      size="lg"
+                      variant="soft"
+                >
+
+                    <div className={"dateArea"}>
+
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            selectsStart
+                            startDate={startDate}
+                            endDate={endDate}
+                        />
+                        <DatePicker
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            selectsEnd
+                            startDate={startDate}
+                            endDate={endDate}
+                            minDate={startDate}
+                        />
+
+
+                    </div>
+                    <div className={"dateArea"}>
+                        <Button onClick={() => setValAnalyze(true)} variant="contained">ANALİZ</Button>
+                    </div>
+                </Card>
 
             </div>
-            <br/>
             <div>
-                {showChart&& <Card className={"Charts"} style={{width: '400px', height: '400px'}}
+                {analyze && <Card className={"Charts"} style={{width: '800px', height: '400px'}}
                                   color="neutral"
                                   invertedColors={false}
                                   orientation="vertical"
@@ -102,8 +146,4 @@ console.log("Tarih değeri"+date+"val"+value[0])
 
     )
         ;
-};
-
-
-
-
+}

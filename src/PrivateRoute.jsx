@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Outlet, Navigate } from "react-router-dom";
-import URL from "./URL/url";
+import URL from "./URL/server";
 const PrivateRoutes = () => {
   const [status, setStatus] = useState(null);
 

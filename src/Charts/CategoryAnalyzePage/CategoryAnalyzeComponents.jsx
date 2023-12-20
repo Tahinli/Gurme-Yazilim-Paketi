@@ -250,32 +250,7 @@ let totalHamM=0,totalDrinkM=0,totalDesertM=0
         </>
     )
 }
-//Burada totalde ürünlerde hedeflere ulasıldı mı onu göstereceğiz
-export function InfoValues(){
 
-
-
-    return(
-        <div>
-            <Card className={"Charts"}
-                  color="neutral"
-                  invertedColors={false}
-                  orientation="vertical"
-                  size="lg"
-                  variant="soft"
-            >
-                <h4>
-                    Günlük Hedeflenen Toplam Miktar:{goalCount}
-                </h4>
-                <br/>
-                <h4>
-                    Günlük Üretilen Toplam Miktar:{completedCount}
-                </h4>
-
-            </Card>
-        </div>
-    )
-}
 //SON 30 GÜN İÇİN AYARLANABİLİR BAR CHART
 export function BarAnimation() {
 
@@ -452,7 +427,7 @@ export function BarAnimation() {
     console.log(totalHamL[1])
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '98%'}}>
             <BarChart
                 height={300}
                 series={series
@@ -463,12 +438,13 @@ export function BarAnimation() {
             <FormControlLabel
                 checked={skipAnimation}
                 control={
-                    <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />
+                    <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} color='error'/>
                 }
                 label="Animasyonları Kapat"
                 labelPlacement="end"
             />
-            <Typography id="input-item-number" gutterBottom>
+            <div className='sliders'>
+                <Typography id="input-item-number" sx={{fontSize:16, backgroundColor:'rgb(235, 230, 230)'}} gutterBottom>
                 Günlerin Aralık Sayısı
             </Typography>
             <Slider
@@ -477,9 +453,11 @@ export function BarAnimation() {
                 valueLabelDisplay="auto"
                 min={1}
                 max={30}
+                sx={{width:'50%'}}
                 aria-labelledby="input-item-number"
+                color='error'
             />
-            <Typography id="input-series-number" gutterBottom>
+            <Typography id="input-series-number" sx={{fontSize:16, backgroundColor:'rgb(235, 230, 230)'}} gutterBottom>
                 Kategori Sayısı
             </Typography>
             <Slider
@@ -488,8 +466,12 @@ export function BarAnimation() {
                 valueLabelDisplay="auto"
                 min={1}
                 max={10}
+                sx={{width:'30%'}}
                 aria-labelledby="input-series-number"
+                color='error'
             />
+            </div>
+            
         </Box>
     );
 }

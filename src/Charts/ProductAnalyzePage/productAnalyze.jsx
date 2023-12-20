@@ -29,8 +29,6 @@ function getCurrentURL ()
 const url = getCurrentURL().toString()
 
 
-
-console.log(url)
 const productNameVar=url.split("/")
 
 

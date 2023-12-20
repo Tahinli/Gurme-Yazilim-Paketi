@@ -174,7 +174,7 @@ export default function TContainer() {
     
 <div>
 {/* INPUT TEXT_FİELDS*/}
-  {showInputPart && <Card 
+  { <Card 
   className='input_card2'
   color='success'
   orientation="horizontal"
@@ -183,8 +183,7 @@ export default function TContainer() {
   >
 
    <div>
-      <div className='input_header2'>             
-          <CancelIcon  className="close_btn2" onClick={close_input_part} />    
+      <div className='input_header2'>               
           <h4>SEVK İŞLEMLERİ</h4>
       </div>
           
@@ -270,13 +269,7 @@ export default function TContainer() {
         itemContent={rowContent}
       />
     </Paper>
-{/* ADD-BUTTON*/}
-    <Stack className='add_btn2'>SEVK
-    <Fab color="error" onClick={show_input_part} sx={{ width :35 , height:0}}>
-        <AddIcon />
-    </Fab>
-    
-    </Stack>
+
   </div>
 
 </div>

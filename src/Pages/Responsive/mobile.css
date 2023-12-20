@@ -40,5 +40,7 @@
     flex-direction: column;
     justify-content: center;
   }
-
+  .pie_charts{
+    flex-direction: column;
+    }
 }

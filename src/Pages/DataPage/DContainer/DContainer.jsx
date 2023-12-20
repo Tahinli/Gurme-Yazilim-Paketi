@@ -177,47 +177,7 @@ function fixedHeaderContent() {
   );
 }
 
-function rowContent(_index, row) {
-  return (
-    <React.Fragment>
-      {columns.map((column) => (
-        <TableCell
-          key={column.dataKey}
-          align={column.numeric || false ? 'right' : 'left'}
-          sx={{backgroundColor:'rgb(209, 209,209)'}}
-        >
-          {row[column.dataKey]}
-        </TableCell>        
-      ))}
-      <TableCell align="right" sx={{backgroundColor:'rgb(209, 209,209)'}}>
-        <Button 
-          
-          onClick={() => handleDelete(row)}
-          size="small" // makes the button smaller
-          variant="contained" // gives the button an outline
-          color="error" 
-          endIcon={<DeleteForeverIcon/>}
-        >
-          Sil
-        </Button >
-      </TableCell>
 
-      <TableCell sx={{backgroundColor:'rgb(209, 209,209)'}} >
-        <Button 
-          className='table_btn'
-          size='small'
-          color="success" 
-          variant="contained"
-          aria-label="add"  
-          endIcon={<BorderColorIcon/>}
-        >
-          Düzenle
-        </Button >
-      </TableCell>
-      
-    </React.Fragment>
-  );
-}
 
 export default function DContainer() {
 
@@ -231,6 +191,17 @@ export default function DContainer() {
          Selection.personel_sayisi, Selection.sevk, Selection.stok);
     })
   );
+
+  React.useEffect(() => {
+  const sortedRows = rows.sort((a, b) => {
+    const dateA = new Date(a.tarih.split('.').reverse().join('-'));
+    const dateB = new Date(b.tarih.split('.').reverse().join('-'));
+    console.log(`${a.urun_isim} - ${b.urun_isim} = ${dateA-dateB}`)
+    return dateB - dateA;
+  });
+  setRows(sortedRows);
+  
+}, [rows]);
   /////////////////////////////////////////
 
   const [ urunadi, setUrunadi ] = useState('');
@@ -250,8 +221,6 @@ for (let urun of Urunler) {
 
   // console.log(Gunlukler)
 
-  console.log(urunadi)
-  console.log(kategoriadi)
 
 
   const [value, setValue] = useState([
@@ -271,7 +240,7 @@ for (let urun of Urunler) {
    const animationDuration = 600;
    const [massage, setMassage] = useState(false);
 
-   
+
    const handleClick = async () => {
     //vvvvvvvvvvvvvvvv   GUNLUK EKLEME   vvvvvvvvvvvvvvvvvvvvvvvvvvv
     //if ile bos olup olmadigini kontrol et
@@ -302,9 +271,59 @@ for (let urun of Urunler) {
    };
 }
 
+////////////////////////// GUNLUK SILME /////////////////////////////
+const handleDelete = async (row) => {
+  await gunlukApi.deleteGunluk(`${row.urun_isim}`);
+  console.log(row.urun_isim)
+  setRows(prevRows => prevRows.filter(r => r.id !== row.id));
+ };
+ /////////////////////////////////////////////////////////////////////
+
    const handleClose = () => {
      setMassage(false);
    };
+
+   function rowContent(_index, row) {
+    return (
+      <React.Fragment>
+        {columns.map((column) => (
+          <TableCell
+            key={column.dataKey}
+            align={column.numeric || false ? 'right' : 'left'}
+            sx={{backgroundColor:'rgb(209, 209,209)'}}
+          >
+            {row[column.dataKey]}
+          </TableCell>        
+        ))}
+        <TableCell align="right" sx={{backgroundColor:'rgb(209, 209,209)'}}>
+          <Button 
+            
+            onClick={() => handleDelete(row)}
+            size="small" // makes the button smaller
+            variant="contained" // gives the button an outline
+            color="error" 
+            endIcon={<DeleteForeverIcon/>}
+          >
+            Sil
+          </Button >
+        </TableCell>
+  
+        <TableCell sx={{backgroundColor:'rgb(209, 209,209)'}} >
+          <Button 
+            className='table_btn'
+            size='small'
+            color="success" 
+            variant="contained"
+            aria-label="add"  
+            endIcon={<BorderColorIcon/>}
+          >
+            Düzenle
+          </Button >
+        </TableCell>
+        
+      </React.Fragment>
+    );
+  }
 
   return (
 <div>
@@ -328,7 +347,7 @@ for (let urun of Urunler) {
           <Autocomplete onChange={(event, value) => {
           setKategoriadi(value);
           setUrunadi(null);
-        }}
+          }}
               className="autocomplete" 
               disablePortal
               options={kategorigir}
@@ -344,22 +363,42 @@ for (let urun of Urunler) {
   
     <div className='input_part'> 
 
-    <TextField type="number" defaultValue = {0} onChange={(e) => setHedef(e.target.value)} sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" defaultValue = {0} onChange={(e) => setTamamlanan(e.target.value)} sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" defaultValue = {0} onChange={(e) => setFire(e.target.value)} sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" defaultValue = {0} onChange={(e) => setSevk(e.target.value)} sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" defaultValue = {0} onChange={(e) => setStok(e.target.value)} sx={{paddingRight:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
-    <TextField type="number" defaultValue = {0} onChange={(e) => setPersonel_sayisi(e.target.value)} sx={{paddingRight:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
-      <Stack  className="field_btn">
-      <Button  color="success" variant='contained' aria-label="add"  sx={{marginTop:1}} onClick={handleClick} endIcon={<LoupeIcon />} >
+    <TextField type="number" defaultValue = {0} 
+     onChange={(e) => setHedef(e.target.value)}
+     sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0} 
+     onChange={(e) => setTamamlanan(e.target.value)}
+     sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setFire(e.target.value)}
+     sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setSevk(e.target.value)}
+     sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setStok(e.target.value)}
+     sx={{paddingRight:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setPersonel_sayisi(e.target.value)}
+     sx={{paddingRight:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
+
+    <Stack  className="field_btn">
+        <Button  color="success" variant='contained' aria-label="add" 
+        sx={{marginTop:1}} onClick={handleClick} endIcon={<LoupeIcon />}
+        >
           KAYDET
-      </Button>
-      </Stack>
+        </Button>
+    </Stack>
 
 {/* ANİMATİON-MASSAGE */} 
       <Snackbar
-      variant="soft"
-      color="success"
+        variant="soft"
+        color="success"
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={massage}
         onClose={handleClose}
@@ -382,10 +421,12 @@ for (let urun of Urunler) {
         <Button color="error" variant='contained' aria-label="add" sx={{marginTop:1}} endIcon={<DeleteForeverIcon/>}>
           SIFIRLA
         </Button>
-      </Stack></div>   
+      </Stack>
+      </div>   
 
-</div>
-  </Card> }
+    </div>
+  </Card> 
+}
 
 {/* DATE TİME PİCKER*/}
   <div> 
@@ -420,7 +461,7 @@ for (let urun of Urunler) {
 
     <Paper className="table">
       <TableVirtuoso
-      // {...rows.sort((a, b) => Number(b.id) - Number(a.id))}  // <--- SIRALAMA
+      // {...rows.sort((a, b) => b.id - a.id)}  // <--- SIRALAMA
         data={rows}
         components={VirtuosoTableComponents}
         fixedHeaderContent={fixedHeaderContent}

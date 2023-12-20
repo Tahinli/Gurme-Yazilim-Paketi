@@ -16,8 +16,6 @@ function getCurrentURL ()
 // Example
 const url = getCurrentURL().toString()
 
-
-console.log(url)
 const productNameVar=url.split("/")
 let productName=productNameVar[4]
 const date=new Date()
