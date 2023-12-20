@@ -174,7 +174,7 @@ export default function SContainer() {
     
 <div>
 {/* INPUT TEXT_FİELDS*/}
-  {showInputPart && <Card 
+  { <Card 
   className='input_card1'
   color='success'
   orientation="horizontal"
@@ -183,8 +183,7 @@ export default function SContainer() {
   >
 
    <div>
-      <div className='input_header1'>             
-          <CancelIcon  className="close_btn1" onClick={close_input_part} />    
+      <div className='input_header1'>               
           <h4>STOK İŞLEMLERİ</h4>
       </div>
           
@@ -275,13 +274,7 @@ export default function SContainer() {
         itemContent={rowContent}
       />
     </Paper>
-{/* ADD-BUTTON*/}
-    <Stack className='add_btn1'>SEVK
-    <Fab color="error" onClick={show_input_part} sx={{ width :35 , height:0}}>
-        <AddIcon />
-    </Fab>
-    
-    </Stack>
+
   </div>
 
 </div>
