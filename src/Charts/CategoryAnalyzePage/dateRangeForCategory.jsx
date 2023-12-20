@@ -41,7 +41,7 @@ export  function DateRangeP() {
         totalHamR+=(hamR[i].CompletedCount/hamR[i].GoalCount);
     }
     totalHamR/=hamR.length
-    console.log(hamR.length)
+
 
     const icecekR = parsedData.filter(function (product) {
         let productDate = new Date(product.Year,product.Month-1,product.Day);

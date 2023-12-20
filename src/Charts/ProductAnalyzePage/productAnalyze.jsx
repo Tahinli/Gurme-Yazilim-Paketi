@@ -46,7 +46,6 @@ export  function DailyProductAnalyze() {
     //GÜNLÜK HESAPLAMA
     var ham=parsedData.filter(function(product){
         const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
-        console.log(dateH.getUTCMonth())
         const productDate = new Date(product.Year,product.Month-1,product.Day);
         return product.Product===productName&&productDate.getUTCMonth()===dateH.getUTCMonth()&&productDate.getUTCDate()===dateH.getUTCDate()&&productDate.getUTCFullYear()===dateH.getUTCFullYear()
     })
@@ -91,8 +90,6 @@ let anotherPW=0
     var hamW=parsedData.filter(function(product){
         const weekStart=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()-(datePerc-1))
         const weekFinal=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()+(7-datePerc),23,59,59)
-        console.log("Hafta Başlangıcı:"+weekStart+"  Hafta Bitişi:"+weekFinal)
-
         const productDate = new Date(product.Year,product.Month-1,product.Day);
         return  product.Product===productName&&(productDate<=weekFinal&&productDate>=weekStart)
     })
@@ -198,7 +195,6 @@ export function BarAnimationDaily() {
         tempCompletedProduct=0
         tempGoalProduct=0
         const filterProduct = parsedData.filter(function (product) {
-            console.log("GÜN " + dateH.getUTCDate() + "AY:" + dateH.getUTCMonth())
             const productDate = new Date(product.Year, product.Month - 1, product.Day);
             return productDate.getUTCMonth() === dateH.getUTCMonth() && productDate.getUTCDate() === dateH.getUTCDate() && productDate.getUTCFullYear() === dateH.getUTCFullYear() && product.Product === productName
         });
