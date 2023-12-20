@@ -1,11 +1,11 @@
-@media screen and (max-width: 650px) {
+@media screen and (max-width: 560px) {
   .imglogo {
-    width: 40% !important;
+    width: 20% !important;
   }
 
   .loginDiv {
-    max-width: 400px !important;
-    border-radius: 30px !important;
+    min-width: 400px !important;
+    width: 100% !important;
   }
   .mainDiv {
     padding: 0 0px;
@@ -20,7 +20,45 @@
   .textf {
     width: 100% !important;
   }
+}
+@media screen and (max-width: 400px) {
+  .loginDiv {
+    min-width: 320px !important;
+  }
+}
+@media screen and (max-width: 1200px) {
+  .imglogo2 {
+    width: 15% !important;
+  }
 
+  .loginDiv2 {
+    width: 100% !important;
+    height: 900px !important;
+  }
+  .buttonDiv2 {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .submitButton2 {
+    width: 80% !important;
+    margin-left: 0px !important;
+    margin-bottom: 20px !important;
+  }
+  .textfield2 {
+    padding-bottom: 20px !important;
+  }
+  .textfield1 {
+    padding-top: 60px !important;
+  }
+  .textf2 {
+    width: 40% !important;
+  }
+  .tabletz {
+    width: 100% !important;
+    padding-left: 0px !important;
+  }
+}
+@media screen and (max-width: 900px) {
   .imglogo2 {
     width: 30% !important;
   }
@@ -48,6 +86,6 @@
     width: 40% !important;
   }
   .tabletz {
-    display: none !important;
+    display: none;
   }
 }
