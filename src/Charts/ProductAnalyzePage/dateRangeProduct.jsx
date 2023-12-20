@@ -2,6 +2,9 @@ import * as React from 'react';
 import {PieChart} from "@mui/x-charts/PieChart";
 import { dataJS } from '../dataJS';
 import { Card } from '@mui/joy';
+import {useState} from "react";
+import DatePicker from "react-datepicker";
+import {Button} from "@mui/material";
 
 const parsedData= dataJS
 let valCompleted,valGoal;
@@ -22,12 +25,16 @@ const date=new Date()
 export const DateRangeProduct = () => {
     let totalGoal=0,totalCompleted=0
     let showChart=false
-    const [value, setValue] = React.useState([
-        new Date(),
-        new Date()
-    ]);
-    const firstDate = new Date(value[0].getUTCFullYear(),value[0].getUTCMonth(),value[0].getUTCDate())
-    const lastDate = new Date(value[1].getUTCFullYear(),value[1].getUTCMonth(),value[1].getUTCDate())
+    const[analyze,setAnalyze]=useState(false)
+    const[refresh,isRefreshed]=useState(false)
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
+    setTimeout(function() {
+        isRefreshed(false)
+    }, 5000);
+
+    const firstDate = new Date(startDate.getUTCFullYear(),startDate.getUTCMonth(),startDate.getUTCDate())
+    const lastDate = new Date(endDate.getUTCFullYear(),endDate.getUTCMonth(),endDate.getUTCDate())
 
     const filterProduct = parsedData.filter(function (product) {
 
@@ -42,39 +49,66 @@ export const DateRangeProduct = () => {
         totalCompleted+=filterProduct[i].CompletedCount
         totalGoal+=filterProduct[i].GoalCount
     }
+    function setValAnalyze(bool){
+        setAnalyze(bool)
+        isRefreshed(bool)
 
-
-
-    valCompleted=totalCompleted
-    valGoal=totalGoal
+    }
+    if(refresh){
+        valCompleted=totalCompleted
+        valGoal=totalGoal
+    }
     const data = [
         { id: 0, value: valCompleted, label: 'Tamamlanan' },
         { id: 1, value: valGoal, label: 'Hedef' },
 
     ];
-    if(value[0]<date&&value[1]<=date){
-        showChart=true
-    }
-    console.log("Tarih değeri"+date+"val"+value[0])
+
+
     return (
         <div className={"ChartsDate"}>
-            <div><Card className={"Charts"}
-                       orientation="vertical"
-                       size="lg"
-                       variant="soft"
-            >
-               
-            </Card>
+            <div className={"dateArea"}>
+                <Card style={{width: '500px', height: '250ppx'}}
+                      color="success"
+                      invertedColors={false}
+                      orientation="vertical"
+                      size="lg"
+                      variant="soft"
+                >
+
+                    <div className={"dateArea"}>
+
+                        <DatePicker
+                            selected={startDate}
+                            onChange={(date) => setStartDate(date)}
+                            selectsStart
+                            startDate={startDate}
+                            endDate={endDate}
+                        />
+                        <DatePicker
+                            selected={endDate}
+                            onChange={(date) => setEndDate(date)}
+                            selectsEnd
+                            startDate={startDate}
+                            endDate={endDate}
+                            minDate={startDate}
+                        />
+
+
+                    </div>
+                    <div className={"dateArea"}>
+                        <Button onClick={() => setValAnalyze(true)} variant="contained">ANALİZ</Button>
+                    </div>
+                </Card>
 
             </div>
-            <br/>
             <div>
-                {showChart&& <Card className={"Charts"} style={{width: '400px', height: '400px'}}
-                                   color="neutral"
-                                   invertedColors={false}
-                                   orientation="vertical"
-                                   size="lg"
-                                   variant="soft"
+                {analyze && <Card className={"Charts"} style={{width: '800px', height: '400px'}}
+                                  color="neutral"
+                                  invertedColors={false}
+                                  orientation="vertical"
+                                  size="lg"
+                                  variant="soft"
                 >
                     <h4 style={{paddingRight: '100px'}}>Seçilen Aralıktaki Verimlilik</h4>
                     <PieChart

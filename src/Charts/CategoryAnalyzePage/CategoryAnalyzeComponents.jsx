@@ -31,7 +31,7 @@ let totalHam=0,totalDrink=0,totalDesert=0
     var ham=parsedData.filter(function(product){
 
         const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
-        console.log(dateH.getUTCMonth())
+
         const productDate = new Date(product.Year,product.Month-1,product.Day);
         return productDate.getUTCMonth()===dateH.getUTCMonth()&&productDate.getUTCDate()===dateH.getUTCDate()&&productDate.getUTCFullYear()===dateH.getUTCFullYear()&&product.Category==="Hamur"
     })
@@ -40,7 +40,7 @@ let totalHam=0,totalDrink=0,totalDesert=0
         goalCount+=ham[i].GoalCount
         completedCount+=ham[i].CompletedCount
     }
-    console.log(ham.length)
+
     totalHam=(totalHam*100)/ham.length
     var icecek=parsedData.filter(function(product){
         const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
@@ -59,7 +59,7 @@ let totalHam=0,totalDrink=0,totalDesert=0
     var tatli=parsedData.filter(function(product){
         const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
         const productDate = new Date(product.Year,product.Month-1,product.Day);
-        console.log(productDate.getUTCMonth())
+
         return productDate.getUTCMonth()===dateH.getUTCMonth()&&productDate.getUTCDate()===dateH.getUTCDate()&&productDate.getUTCFullYear()===dateH.getUTCFullYear()&& product.Category==="Tatlı"
     })
     for(let i=0;i<tatli.length;i++){
@@ -107,12 +107,12 @@ export function CategoryWeeklyAnalyzeComp() {
     var hamW=parsedData.filter(function(product){
         const weekStart=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()-(datePerc-1))
         const weekFinal=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()+(7-datePerc),23,59,59)
-        console.log("Hafta Başlangıcı:"+weekStart+"  Hafta Bitişi:"+weekFinal)
+
 
         const productDate = new Date(product.Year,product.Month-1,product.Day);
         return  product.Category==="Hamur"&&(productDate<=weekFinal&&productDate>=weekStart)
     })
-    console.log("HAMUR UZUNLUK:"+hamW.length)
+
     for(let i=0;i<hamW.length;i++){
         totalHamW+=(hamW[i].CompletedCount/hamW[i].GoalCount);
 
@@ -124,7 +124,7 @@ export function CategoryWeeklyAnalyzeComp() {
     var icecekW=parsedData.filter(function(product){
         const weekStart=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()-(datePerc-1))
         const weekFinal=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()+(7-datePerc),23,59,59)
-        console.log("Hafta Başlangıcı:"+weekStart+"  Hafta Bitişi:"+weekFinal)
+
 
         const productDate = new Date(product.Year,product.Month-1,product.Day);
         return  product.Category==="İçecek"&&(productDate<=weekFinal&&productDate>=weekStart)
@@ -132,26 +132,26 @@ export function CategoryWeeklyAnalyzeComp() {
 
     for(let i=0;i<icecekW.length;i++){
         totalDrinkW+=(icecekW[i].CompletedCount/icecekW[i].GoalCount);
-        console.log("Ürün Değerleri:"+icecekW[i].CompletedCount+"  ,"+icecekW[i].GoalCount)
+
 
     }
-    console.log("içcecek sayısı:"+icecekW.length)
+
     totalDrinkW=(totalDrinkW*100)/icecekW.length
 
     var tatliW=parsedData.filter(function(product){
         const weekStart=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()-(datePerc-1))
         const weekFinal=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()+(7-datePerc),23,59,59)
-        console.log("Hafta Başlangıcı:"+weekStart+"  Hafta Bitişi:"+weekFinal)
+
 
         const productDate = new Date(product.Year,product.Month-1,product.Day);
         return  product.Category==="Tatlı"&&(productDate<=weekFinal&&productDate>=weekStart)
     })
-    console.log("HAMUR UZUNLUK:"+tatliW.length)
+
     for(let i=0;i<tatliW.length;i++){
         totalDesertW+=(tatliW[i].CompletedCount/tatliW[i].GoalCount);
 
     }
-    console.log("tatli sayısı:"+tatliW.length)
+
     totalDesertW=(totalDesertW*100)/tatliW.length
 
 
@@ -272,14 +272,14 @@ export function BarAnimation() {
         }
         setSeriesNb(newValue);
     };
-    console.log("RANGE DEĞERİ:::"+range)
+
     for(let j=range;j>0;j--){
 
         const dateH=new Date()
         dateH.setDate(dateH.getDate()-j)
         tempH=0
         const ham = parsedData.filter(function (product) {
-            console.log("GÜN " + dateH.getUTCDate() + "AY:" + dateH.getUTCMonth())
+
             const productDate = new Date(product.Year, product.Month - 1, product.Day);
             return productDate.getUTCMonth() === dateH.getUTCMonth() && productDate.getUTCDate() === dateH.getUTCDate() && productDate.getUTCFullYear() === dateH.getUTCFullYear() && product.Category === "Hamur"
         });
@@ -288,7 +288,7 @@ export function BarAnimation() {
             tempH+=(ham[i].CompletedCount/ham[i].GoalCount);
 
         }
-        console.log(ham.length)
+
         tempH=tempH /ham.length
         if(ham.length!==0){
             totalHamL[j]=tempH
@@ -300,7 +300,7 @@ export function BarAnimation() {
 
         const icecek = parsedData.filter(function (product) {
 
-            //console.log("GÜN "+dateH.getUTCDate())
+
             const productDate = new Date(product.Year, product.Month - 1, product.Day);
             return productDate.getUTCMonth() === dateH.getUTCMonth() && productDate.getUTCDate() === dateH.getUTCDate() && productDate.getUTCFullYear() === dateH.getUTCFullYear() && product.Category === "İçecek"
         });
@@ -340,9 +340,6 @@ export function BarAnimation() {
 
 
     }
-    console.log("HAMUR DEĞER:"+totalHamL)
-    console.log("Drink ARRRAY:"+ totalDrinkL)
-    console.log("Desert ARRRAY:"+ totalDesertL)
 
     const highlightScope = {
         highlighted: 'series',
@@ -424,7 +421,7 @@ export function BarAnimation() {
     ].map((s) => ({ ...s, highlightScope }));
 
 
-    console.log(totalHamL[1])
+
 
     return (
         <Box sx={{ width: '98%'}}>
