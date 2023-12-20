@@ -55,11 +55,11 @@ const addGunluk = async (urunAdi, userData) => {
     }
 };
 
-const deleteGunluk = async (name) => {
+const deleteGunluk = async (urunIsim, tarih) => {
     try {
         const options = {
             method: 'GET',
-            url: `${apiURL}/gunluk/sil/${name}`,
+            url: `${apiURL}/gunluk/sil/${name}/${tarih}`,
             json: true
         };
         const result = await handleRequest(options)
