@@ -4,7 +4,7 @@
   }
 
   .loginDiv {
-    width: 100% !important;
+    max-width: 400px !important;
     border-radius: 30px !important;
   }
   .mainDiv {
