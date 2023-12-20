@@ -59,7 +59,7 @@ const deleteGunluk = async (urunIsim, tarih) => {
     try {
         const options = {
             method: 'GET',
-            url: `${apiURL}/gunluk/sil/${name}/${tarih}`,
+            url: `${apiURL}/gunluk/sil/${urunIsim}/${tarih}`,
             json: true
         };
         const result = await handleRequest(options)
