@@ -83,13 +83,29 @@ const updateUrun = async (name, userData) => {
         throw error;
     }
 }
+const urunDrop = async () => {
+    try {
+        const options = {
+            method: 'GET',
+            url: `${apiURL}/urun/dusur`,
+            json: true,
+            body: userData
+        };
+        const result = await handleRequest(options)
+        return result
+    }
+    catch (error) {
+        throw error;
+    }
+}
 
 const urunApi = {
     getUrunByName,
     getUrunler,
     addUrun,
     deleteUrun,
-    updateUrun
+    updateUrun,
+    urunDrop
 };
 
 export default urunApi

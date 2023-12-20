@@ -95,13 +95,29 @@ const updateGunluk = async (urunAdi, tarih, userData) => {
         throw error;
     }
 }
+const gunlukDrop = async () => {
+    try {
+        const options = {
+            method: 'GET',
+            url: `${apiURL}/gunluk/dusur`,
+            json: true,
+            body: userData
+        };
+        const result = await handleRequest(options)
+        return result
+    }
+    catch (error) {
+        throw error;
+    }
+}
 
 const gunlukApi = {
     getGunlukByDate,
     getGunlukler,
     addGunluk,
     deleteGunluk,
-    updateGunluk
+    updateGunluk,
+    gunlukDrop
 };
 
 export default gunlukApi
