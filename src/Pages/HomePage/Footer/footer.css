@@ -1,0 +1,33 @@
+.footer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: 80px auto;
+  background-color: #305630;
+  margin-top: 2.5rem;
+  color: #e7dcdc;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.footer ul {
+  display: flex;
+  margin-top:1.5rem;
+  justify-content: space-between;
+  list-style-type: none;
+}
+.footer p {
+  color: #000000;
+  margin-left: 4rem;
+}
+.footer ul li a {
+  color: rgb(189, 185, 185);
+}
+
+.footer ul li a:hover {
+  border-radius: 4px;
+  color: #ffffff;
+}
+.footer_img {
+  border-radius: 100%;
+}

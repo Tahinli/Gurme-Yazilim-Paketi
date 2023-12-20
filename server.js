@@ -4,8 +4,12 @@ import corsOptions from "./config/corsOptions.js";
 import { handleLogin, authenticateToken } from "./src/authController.js"; // Import the handleLogin function
 import allowedOrigins from "./config/allowedOrigins.js";
 import cookieParser from "cookie-parser";
+import URL from "./src/URL/url.js";
 
 const app = express();
+const IP_ADDRESS = URL; // replace with your IP address
+const PORT = process.env.PORT || 5000;
+
 app.use(
   cors({
     origin: allowedOrigins, // or your allowedOrigins function
@@ -23,9 +27,7 @@ app.get("/verify", authenticateToken, (req, res) => {
 
 app.post("/logout", (req, res) => {
   res.clearCookie("auth").status(200).json({ message: "logged out" });
-  console.log(res);
 });
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+app.listen(PORT, IP_ADDRESS, () => {
+  console.log(`Server is running on ${IP_ADDRESS}:${PORT}`);
 });
