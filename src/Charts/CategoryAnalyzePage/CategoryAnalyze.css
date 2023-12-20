@@ -1,0 +1,11 @@
+.pie_charts{
+    display: flex;
+    justify-content:space-between;
+    padding-bottom: 2rem;
+    padding-top: 2rem;
+}
+.sliders{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}

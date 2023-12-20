@@ -32,6 +32,7 @@ import Snackbar from "@mui/joy/Snackbar";
 import PlaylistAddCheckCircleRoundedIcon from "@mui/icons-material/PlaylistAddCheckCircleRounded";
 import urunApi from "../../../api/urun-api";
 import kategoriApi from "../../../api/kategori-api";
+import Autocomplete from '@mui/material/Autocomplete';
 
 const urunler = await urunApi.getUrunler();
 // const urunler = (await urunApi.getUrunler()).map((urun) => urun.isim);
@@ -356,12 +357,10 @@ export default function PContainer() {
       <div>
         <Card
           className="p_inputcard"
-          data-resizable
           sx={{
             textAlign: "center",
             alignItems: "center",
             overflow: "auto",
-            resize: "horizontal",
             "--icon-size": "100px",
           }}
         >
@@ -388,17 +387,18 @@ export default function PContainer() {
 
           <CardContent sx={{ maxWidth: "40ch" }} className="p_cardcontent">
             <h4 className="p_header">Ürün Ekle</h4>
+            <Autocomplete
+              disablePortal
+              id="combo-box-demo"
+              options={''}
+              sx={{ width: 300 }}
+              renderInput={(params) => <TextField {...params} label="Ürün Kategorisi" />}
+            />
             <TextField
               type="text"
               onChange={(e) => setUrunadi(e.target.value)}
               sx={{ paddingTop: 1.5 }}
               label="Ürün Adı"
-              variant="filled"
-            />
-            <TextField
-              type="text"
-              onChange={(e) => setUrunkategorisi(e.target.value)}
-              label="Ürün Kategorisi"
               variant="filled"
             />
             <Button

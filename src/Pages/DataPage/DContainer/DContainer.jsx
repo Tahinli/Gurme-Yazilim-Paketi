@@ -328,7 +328,7 @@ for (let urun of Urunler) {
           <Autocomplete onChange={(event, value) => {
           setKategoriadi(value);
           setUrunadi(null);
-        }}
+          }}
               className="autocomplete" 
               disablePortal
               options={kategorigir}

@@ -40,6 +40,7 @@
     "node": "^21.2.0",
     "npm": "^10.2.5",
     "react": "^18.0.0",
+    "react-datepicker": "^4.25.0",
     "react-dom": "^18.0.0",
     "react-router-dom": "^6.21.0",
     "react-virtuoso": "^4.6.2",

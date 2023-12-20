@@ -6,6 +6,9 @@ import "../HomePage/Footer/footer.css";
 import "../HomePage/Navbar/navbar.css";
 import "../HomePage/Sidebar/sideNav.css";
 import "./Container/container.css";
+import '../Responsive/mobile.css';
+import '../Responsive/tablet.css';
+
 
 const Homepage = () => {
   return (

@@ -10,7 +10,7 @@ import { Card } from '@mui/joy';
 const parsedData= dataJS
 let valHam,valDesert,valDrink;
 
-export  function DateRangeProduct() {
+export  function DateRangeP() {
     let totalHamR=0,totalDesertR=0,totalDrinkR=0;
 
     const[analyze,setAnalyze]=useState(false)

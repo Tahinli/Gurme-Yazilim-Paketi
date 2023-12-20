@@ -19,7 +19,7 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [verify, setVerify] = useState(false);
-  const [verify1, setVerify1] = useState(false);
+  const [verify1, setVerify1] = useState(true);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);

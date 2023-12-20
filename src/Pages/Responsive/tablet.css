@@ -45,7 +45,20 @@
   min-width: 290px;
 }
 
-.navbar{
-  
+.pie_charts{
+  flex-direction: column;
+  min-width:320%;
+  justify-content:space-between;
+}
+
+/*.detailed_chart{
+  transition: 0.3s ease-in-out;
+}
+#zoomin_btn:hover .detailed_chart{
+  transform: scale(2,2);
+}*/
+.auto_card{
+  flex-direction: column;
+  min-width:55%
 }
 }
