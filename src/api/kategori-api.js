@@ -86,7 +86,7 @@ const updateKategori = async (name, userData) => {
         throw error;
     }
 }
-const kategoriDrop = async () => {
+const deleteAll = async () => {
     try {
         const options = {
             method: 'GET',
@@ -108,7 +108,7 @@ const kategoriApi = {
     addKategori,
     deleteKategori,
     updateKategori,
-    kategoriDrop
+    deleteAll
 };
 
 export default kategoriApi

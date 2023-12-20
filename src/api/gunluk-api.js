@@ -95,7 +95,7 @@ const updateGunluk = async (urunAdi, tarih, userData) => {
         throw error;
     }
 }
-const gunlukDrop = async () => {
+const deleteAll = async () => {
     try {
         const options = {
             method: 'GET',
@@ -117,7 +117,7 @@ const gunlukApi = {
     addGunluk,
     deleteGunluk,
     updateGunluk,
-    gunlukDrop
+    deleteAll
 };
 
 export default gunlukApi

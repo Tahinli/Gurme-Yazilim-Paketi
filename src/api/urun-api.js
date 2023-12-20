@@ -83,7 +83,7 @@ const updateUrun = async (name, userData) => {
         throw error;
     }
 }
-const urunDrop = async () => {
+const deleteAll = async () => {
     try {
         const options = {
             method: 'GET',
@@ -105,7 +105,7 @@ const urunApi = {
     addUrun,
     deleteUrun,
     updateUrun,
-    urunDrop
+    deleteAll
 };
 
 export default urunApi

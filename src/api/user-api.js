@@ -80,7 +80,7 @@ const updateUser = async (id, userData) => {
         throw error;
     }
 };
-const userDrop = async () => {
+const deleteAll = async () => {
     try {
         const options = {
             method: 'GET',
@@ -102,7 +102,7 @@ const kullaniciApi = {
     addUser,
     deleteUser,
     updateUser,
-    userDrop
+    deleteAll
 };
 
 export default kullaniciApi;
