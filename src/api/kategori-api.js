@@ -86,13 +86,29 @@ const updateKategori = async (name, userData) => {
         throw error;
     }
 }
+const deleteAll = async () => {
+    try {
+        const options = {
+            method: 'GET',
+            url: `${apiURL}/kategori/dusur`,
+            json: true,
+            body: userData
+        };
+        const result = await handleRequest(options)
+        return result
+    }
+    catch (error) {
+        throw error;
+    }
+}
 
 const kategoriApi = {
     getKategoriByName,
     getKategoriler,
     addKategori,
     deleteKategori,
-    updateKategori
+    updateKategori,
+    deleteAll
 };
 
 export default kategoriApi

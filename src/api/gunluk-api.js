@@ -55,11 +55,11 @@ const addGunluk = async (urunAdi, userData) => {
     }
 };
 
-const deleteGunluk = async (name) => {
+const deleteGunluk = async (urunIsim, tarih) => {
     try {
         const options = {
             method: 'GET',
-            url: `${apiURL}/gunluk/sil/${name}`,
+            url: `${apiURL}/gunluk/sil/${urunIsim}/${tarih}`,
             json: true
         };
         const result = await handleRequest(options)
@@ -95,13 +95,29 @@ const updateGunluk = async (urunAdi, tarih, userData) => {
         throw error;
     }
 }
+const deleteAll = async () => {
+    try {
+        const options = {
+            method: 'GET',
+            url: `${apiURL}/gunluk/dusur`,
+            json: true,
+            body: userData
+        };
+        const result = await handleRequest(options)
+        return result
+    }
+    catch (error) {
+        throw error;
+    }
+}
 
 const gunlukApi = {
     getGunlukByDate,
     getGunlukler,
     addGunluk,
     deleteGunluk,
-    updateGunluk
+    updateGunluk,
+    deleteAll
 };
 
 export default gunlukApi

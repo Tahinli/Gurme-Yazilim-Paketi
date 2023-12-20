@@ -80,6 +80,21 @@ const updateUser = async (id, userData) => {
         throw error;
     }
 };
+const deleteAll = async () => {
+    try {
+        const options = {
+            method: 'GET',
+            url: `${apiURL}/kullanici/dusur`,
+            json: true,
+            body: userData
+        };
+        const result = await handleRequest(options)
+        return result
+    }
+    catch (error) {
+        throw error;
+    }
+}
 
 const kullaniciApi = {
     getUserById,
@@ -87,6 +102,7 @@ const kullaniciApi = {
     addUser,
     deleteUser,
     updateUser,
+    deleteAll
 };
 
 export default kullaniciApi;
