@@ -132,6 +132,20 @@ impl Kullanici
                     }
                 (StatusCode::OK, Json(serde_json::json!(kullanicilar_vector)))
             }
+        async fn dusur(State(state): State<AppState>) -> (StatusCode, Json<Value>)
+            {
+                match state.kullanici_collection.delete_many(doc! {}, None).await
+                    {
+                        Ok(sonuc_degeri) =>
+                            {
+                                (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)))
+                            }
+                        Err(hata_degeri) =>
+                            {
+                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
+                            }
+                    }
+            }
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Kategori
@@ -280,6 +294,20 @@ impl Kategori
                             }
                     }
                 (StatusCode::OK, Json(serde_json::json!(kategoriler_vector)))
+            }
+        async fn dusur(State(state): State<AppState>) -> (StatusCode, Json<Value>)
+            {
+                match state.kategori_collection.delete_many(doc! {}, None).await
+                    {
+                        Ok(sonuc_degeri) =>
+                            {
+                                (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)))
+                            }
+                        Err(hata_degeri) =>
+                            {
+                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
+                            }
+                    }
             }
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
@@ -434,7 +462,20 @@ impl Urun
                     }
                 (StatusCode::OK, Json(serde_json::json!(urunler_vector)))
             }
-
+        async fn dusur(State(state): State<AppState>) -> (StatusCode, Json<Value>)
+            {
+                match state.urun_collection.delete_many(doc! {}, None).await
+                    {
+                        Ok(sonuc_degeri) =>
+                            {
+                                (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)))
+                            }
+                        Err(hata_degeri) =>
+                            {
+                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
+                            }
+                    }
+            }
     }
 #[derive(Debug, Clone, Serialize, Deserialize)]
 struct Gunluk
@@ -645,8 +686,20 @@ impl Gunluk
                     }
                 (StatusCode::OK, Json(serde_json::json!(gunlukler_vector)))
             }
-
-
+        async fn dusur(State(state): State<AppState>) -> (StatusCode, Json<Value>)
+            {
+                match state.gunluk_collection.delete_many(doc! {}, None).await
+                    {
+                        Ok(sonuc_degeri) =>
+                            {
+                                (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)))
+                            }
+                        Err(hata_degeri) =>
+                            {
+                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
+                            }
+                    }
+            }
     }
 async fn collection_hata_ayiklama(sonuc:Result<CreateIndexResult, Error>)
     {
@@ -732,28 +785,32 @@ async fn routing(State(state): State<AppState>) -> Router
         .route("/ekle/:isim/:soyisim/:id/:sifre", get(Kullanici::ekle))
         .route("/sil/:id", get(Kullanici::sil))
         .route("/duzenle/:id/:yeni_isim/:yeni_soyisim/:yeni_id/:yeni_sifre", get(Kullanici::duzenle))
-        .route("/hepsi", get(Kullanici::hepsi));
+        .route("/hepsi", get(Kullanici::hepsi))
+        .route("/dusur", get(Kullanici::dusur));
 
         let kategori_routers = Router::new()
         .route("/:isim", get(Kategori::kategori))
         .route("/ekle/:isim/:ust_kategori", get(Kategori::ekle))
         .route("/sil/:isim", get(Kategori::sil))
         .route("/duzenle/:isim/:yeni_isim/:yeni_ust_kategori", get(Kategori::duzenle))
-        .route("/hepsi", get(Kategori::hepsi));
+        .route("/hepsi", get(Kategori::hepsi))
+        .route("/dusur", get(Kategori::dusur));
 
         let urun_routers = Router::new()
         .route("/:isim", get(Urun::urun))
         .route("/ekle/:isim/:kategori", get(Urun::ekle))
         .route("/sil/:isim", get(Urun::sil))
         .route("/duzenle/:isim/:yeni_isim/:yeni_kategori", get(Urun::duzenle))
-        .route("/hepsi", get(Urun::hepsi));
+        .route("/hepsi", get(Urun::hepsi))
+        .route("/dusur", get(Urun::dusur));
 
         let gunluk_routers = Router::new()
         .route("/:urun/:tarih", get(Gunluk::gunluk))
         .route("/ekle/:urun/:personel_sayisi/:hedeflenen/:ulasilan/:atilan/:stok/:sevk/:tarih", get(Gunluk::ekle))
         .route("/sil/:urun/:tarih", get(Gunluk::sil))
         .route("/duzenle/:urun/:tarih/:yeni_urun/:yeni_personel_sayisi/:yeni_hedeflenen/:yeni_ulasilan/:yeni_atilan/:yeni_stok/:yeni_sevk/:yeni_tarih", get(Gunluk::duzenle))
-        .route("/hepsi", get(Gunluk::hepsi));
+        .route("/hepsi", get(Gunluk::hepsi))
+        .route("/dusur", get(Gunluk::dusur));
 
         let app = Router::new()
             .route("/", get(alive_handler))
