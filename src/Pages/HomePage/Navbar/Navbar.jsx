@@ -19,6 +19,8 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [verify, setVerify] = useState(false);
+  const [verify1, setVerify1] = useState(false);
+
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
@@ -35,7 +37,7 @@ const Navbar = () => {
       }
     );
     navigate("/");
-    verifyUser();
+    await verifyUser();
   };
   const verifyUser = async () => {
     const response = await fetch(URL + "/verify", {
@@ -45,8 +47,8 @@ const Navbar = () => {
       },
       credentials: "include",
     });
-    setVerify(response.status === 200);
-    setVerify(!(response.status !== 200));
+    await setVerify(response.status === 200);
+    await setVerify1(response.status !== 200);
   };
   const buttonClick = () => {
     navigate("/login");
@@ -158,7 +160,7 @@ const Navbar = () => {
                   </Menu>
                 </React.Fragment>
               )}
-              {!verify && (
+              {verify1 && (
                 <Button
                   className="login_btn"
                   color="error"

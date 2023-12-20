@@ -14,6 +14,7 @@
     "@fontsource/inter": "^5.0.16",
     "@fortawesome/free-solid-svg-icons": "^6.5.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@jridgewell/sourcemap-codec": "^1.4.15",
     "@mui/icons-material": "^5.15.0",
     "@mui/joy": "^5.0.0-beta.18",
     "@mui/material": "^5.15.0",
