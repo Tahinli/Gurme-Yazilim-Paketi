@@ -162,6 +162,7 @@ function UserPage() {
   const handleButtonClick = async (e) => {
     e.preventDefault();
     const response = await kullaniciApi.addUser({ isim, soyisim, id, sifre });
+    alert("Kullanıcı Eklendi");
     setRefresh((prev) => !prev); // refresh durumunu günceller
   };
   const handleButtonClick2 = (e) => {
