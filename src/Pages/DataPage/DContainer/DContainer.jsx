@@ -62,7 +62,7 @@ const outAnimation = keyframes`
 
 function getTodayDate() {
   const today = new Date();
-  today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
+  // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   return today.toLocaleDateString('tr-TR', options);
 }
@@ -120,6 +120,12 @@ const columns = [
     dataKey: 'stok',
     numeric: true,
   },
+  {
+    width: 120,
+    label: 'İşlemler',
+    dataKey: 'islem',
+    numeric: false,
+  }
 ];
 
 
@@ -157,22 +163,25 @@ function fixedHeaderContent() {
           {column.label}
         </TableCell>
       ))}
-       <TableCell padding="checkbox"
+       {/* <TableCell padding="checkbox"
          sx={{
             backgroundColor: '#28342b',
-            width:'7%'
+            maxWidth:'48px',
+            borderBottomWidth: 0,
           }}
         >
         </TableCell>
         <TableCell padding="checkbox"
          sx={{
             backgroundColor: '#28342b',
-            paddingLeft:1,
+            paddingLeft:4,
             fontSize:17,
+            maxWidth:'78px',
             color:'white',
+            borderBottomWidth: 0,
           }}
         >  İşlemler
-        </TableCell>
+        </TableCell> */}
     </TableRow>
   );
 }
@@ -180,6 +189,8 @@ function fixedHeaderContent() {
 
 
 export default function DContainer() {
+
+
 
   /// ilk rows'u oluşturmak için
   const [rows, setRows] = useState(
@@ -196,7 +207,6 @@ export default function DContainer() {
   const sortedRows = rows.sort((a, b) => {
     const dateA = new Date(a.tarih.split('.').reverse().join('-'));
     const dateB = new Date(b.tarih.split('.').reverse().join('-'));
-    console.log(`${a.urun_isim} - ${b.urun_isim} = ${dateA-dateB}`)
     return dateB - dateA;
   });
   setRows(sortedRows);
@@ -273,7 +283,7 @@ for (let urun of Urunler) {
 
 ////////////////////////// GUNLUK SILME /////////////////////////////
 const handleDelete = async (row) => {
-  await gunlukApi.deleteGunluk(`${row.urun_isim}`);
+  await gunlukApi.deleteGunluk(`${row.urun_isim}`, `${row.tarih}`);
   console.log(row.urun_isim)
   setRows(prevRows => prevRows.filter(r => r.id !== row.id));
  };
@@ -285,42 +295,32 @@ const handleDelete = async (row) => {
 
    function rowContent(_index, row) {
     return (
-      <React.Fragment>
+      <React.Fragment>  
         {columns.map((column) => (
-          <TableCell
-            key={column.dataKey}
-            align={column.numeric || false ? 'right' : 'left'}
-            sx={{backgroundColor:'rgb(209, 209,209)'}}
-          >
-            {row[column.dataKey]}
-          </TableCell>        
-        ))}
-        <TableCell align="right" sx={{backgroundColor:'rgb(209, 209,209)'}}>
-          <Button 
-            
-            onClick={() => handleDelete(row)}
-            size="small" // makes the button smaller
-            variant="contained" // gives the button an outline
-            color="error" 
-            endIcon={<DeleteForeverIcon/>}
-          >
-            Sil
-          </Button >
-        </TableCell>
-  
-        <TableCell sx={{backgroundColor:'rgb(209, 209,209)'}} >
-          <Button 
-            className='table_btn'
-            size='small'
-            color="success" 
-            variant="contained"
-            aria-label="add"  
-            endIcon={<BorderColorIcon/>}
-          >
-            Düzenle
-          </Button >
-        </TableCell>
-        
+          column.dataKey !== 'islem' ?
+            <TableCell
+                key={column.dataKey}
+                align={column.numeric || false ? 'right' : 'left'}
+                sx={{backgroundColor:'rgb(209, 209,209)'}}
+              >
+                {row[column.dataKey]}
+                {console.log(column.dataKey)} {console.log('//////////////////////////////')} 
+              </TableCell>   
+              : 
+              <TableCell align="right" key={column.dataKey}
+              sx={{backgroundColor:'rgb(209, 209,209)'}}
+              >
+              <Button                
+                onClick={() => handleDelete(row)}
+                size="small" // makes the button smaller
+                variant="contained" // gives the button an outline
+                color="error" 
+                endIcon={<DeleteForeverIcon/>}
+              >
+                Sil
+              </Button >
+            </TableCell>        
+        ))}       
       </React.Fragment>
     );
   }

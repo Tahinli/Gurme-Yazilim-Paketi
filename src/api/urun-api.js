@@ -89,7 +89,6 @@ const deleteAll = async () => {
             method: 'GET',
             url: `${apiURL}/urun/dusur`,
             json: true,
-            body: userData
         };
         const result = await handleRequest(options)
         return result

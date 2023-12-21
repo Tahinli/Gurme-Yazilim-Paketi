@@ -39,6 +39,7 @@ const urunler = await urunApi.getUrunler();
 const kategoriler = (await kategoriApi.getKategoriler()).map(
   (kategori) => kategori.isim
 );
+const butunKategoriler = await kategoriApi.getKategoriler();
 
 const inAnimation = keyframes`
   0% {
@@ -104,13 +105,13 @@ function stableSort(array, comparator) {
 
 const headCells = [
   {
-    id: "name",
+    id: "isim",
     numeric: false,
     disablePadding: true,
     label: "Ürün Adı",
   },
   {
-    id: "calories",
+    id: "kategori",
     numeric: true,
     disablePadding: false,
     label: "Ürün Kategorisi",
@@ -252,7 +253,7 @@ EnhancedTableToolbar.propTypes = {
 // ************************* ANA FONKSIYON  ********************************
 export default function PContainer() {
   const [order, setOrder] = React.useState("asc");
-  const [orderBy, setOrderBy] = React.useState("name");
+  const [orderBy, setOrderBy] = React.useState("isim");
   const [selected, setSelected] = React.useState([]);
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
@@ -263,10 +264,7 @@ export default function PContainer() {
   const [urunkategorisi, setUrunkategorisi] = useState("");
   const animationDuration = 600;
 
-  console.log(rows);
-
-  // console.log(urunler);
-  // console.log(kategoriler);
+  // console.log(butunKategoriler);
   // console.log(urunadi);
   // console.log(urunkategorisi);
 
@@ -333,20 +331,34 @@ export default function PContainer() {
   );
   const [massage, setMassage] = useState(false);
 
-  const handleClick2 = async () => {
+  const addclick = async () => {
     //vvvvvvvvvvvvvv KATEGORI EKLE vvvvvvvvvvvvvvv   (ŞUAN HEM KATEGORİ HEMDE ÜRÜN EKLENİYOR DÜZELTİLECEK)
-    if (!kategoriler.includes(urunkategorisi)) {
-      await kategoriApi.addKategori({
-        isim: urunkategorisi,
-        ust_kategori: null,
-      });
-    }
+    
+    
+      if (!kategoriler.includes(urunkategorisi)) 
+      {
+        try {
+          await kategoriApi.addKategori({
+          isim: urunkategorisi,
+          ust_kategori: null,
+        });
+      }
+        catch (error) {
+          console.error("Kategori eklenirken bir hata oluştu", error);
+        }
+      }
     //vvvvvvvvvvvvvv URUN EKLE vvvvvvvvvvvvvvv
-    await urunApi.addUrun({
-      isim: urunadi,
-      kategori: urunkategorisi,
-    });
+    try {
+        await urunApi.addUrun({
+        isim: urunadi,
+        kategori: urunkategorisi,
+        });
     setMassage(true);
+        } 
+    catch (error) {
+        console.error("Kategori eklenirken bir hata oluştu", error);
+    }
+    
   };
 
   const handleClose2 = () => {
@@ -387,14 +399,23 @@ export default function PContainer() {
 
           <CardContent sx={{ maxWidth: "40ch" }} className="p_cardcontent">
             <h4 className="p_header">Ürün Ekle</h4>
-            <Autocomplete
+            {/* <Autocomplete
               disablePortal
               id="combo-box-demo"
               options={''}
               sx={{ width: 300 }}
               renderInput={(params) => <TextField {...params} label="Ürün Kategorisi" />}
+            /> */}
+            <TextField
+              id = "urunkategorisi"
+              type="text"
+              onChange={(e) => setUrunkategorisi(e.target.value)}
+              sx={{ paddingTop: 1.5 }}
+              label="Kategori Adı"
+              variant="filled"
             />
             <TextField
+              id = "urunadi"
               type="text"
               onChange={(e) => setUrunadi(e.target.value)}
               sx={{ paddingTop: 1.5 }}
@@ -403,7 +424,7 @@ export default function PContainer() {
             />
             <Button
               className="save_btn"
-              onClick={handleClick2}
+              onClick={addclick}
               color="success"
               variant="contained"
               aria-label="add"
