@@ -91,8 +91,7 @@ const deleteAll = async () => {
         const options = {
             method: 'GET',
             url: `${apiURL}/kategori/dusur`,
-            json: true,
-            body: userData
+            json: true
         };
         const result = await handleRequest(options)
         return result
