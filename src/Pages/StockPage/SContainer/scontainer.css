@@ -7,15 +7,15 @@
   margin-left: 5rem;
   padding-top: 7rem;
   width: 40%;
-  height: 300px;
+  height: 250px;
 }
 .input_card11 {
   transition: "all 1s ease-out";
   margin-bottom: 3rem;
   margin-left: 5rem;
   padding-top: 7rem;
-  width: 80%;
-  height: 600px;
+  width: 60%;
+  height: 650px;
 }
 .autocomplete1 {
   display: flex;
@@ -44,7 +44,7 @@
   padding-left: 0.75rem;
   padding-top: 0.85rem;
   margin-left: -0.5rem;
-  width: 10%;
+  width: 15%;
 }
 
 .date_picker1 {
@@ -83,15 +83,15 @@
   margin-left: 5rem;
   padding-top: 7rem;
   width: 600px;
-  height: 200px;
+  height: 250px;
 }
 
-.busra {
+.pie_chart1 {
   margin-top: 120px !important;
-  margin-left: 200px !important;
-  width: 500px !important;
+  margin-left: 100px !important;
+  width: 800px !important;
   height: 1000px !important;
 }
-.Demir {
+.input_sevk1 {
   display: flex;
 }

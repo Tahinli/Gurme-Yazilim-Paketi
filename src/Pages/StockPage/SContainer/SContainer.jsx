@@ -189,14 +189,14 @@ export default function SContainer() {
             <CancelIcon className="close_btn" onClick={close_input_part} />
             <h4 style={{ maxHeight: "70px" }}>STOK ANALİZİ</h4>
             <br />
-            <div className="busra">
+            <div className="pie_chart1">
               <PieAnimation />
             </div>
           </div>
         </Card>
       )}
       {/* INPUT TEXT_FİELDS*/}
-      <div className="Demir">
+      <div className="input_sevk1 ">
         <Card
           className="input_card1"
           color="success"
@@ -239,6 +239,7 @@ export default function SContainer() {
 
             <div className="input_part1">
               <TextField
+                disabled='true'
                 sx={{ paddingRight: 1.5 }}
                 label="Toplam Stok"
                 variant="filled"
@@ -334,7 +335,7 @@ export default function SContainer() {
           />
         </Paper>
         {/* ADD-BUTTON*/}
-        <Stack className="add_btn">
+        <Stack className="add_btn1">
           ANALİZ
           <Fab
             color="error"

@@ -27,6 +27,8 @@ import Snackbar from '@mui/joy/Snackbar';
 import { keyframes } from '@mui/system';
 import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
 
+import { PieAnimation } from "./stockpiechart2";
+
 const inAnimation = keyframes`
   0% {
     transform: scale(0);
@@ -49,45 +51,43 @@ const outAnimation = keyframes`
   }
 `;
 
-
 const sample = [
-  ['Frozen yoghurt', 159, 6.0, 24, 4.0],
-  ['Ice cream sandwich', 237, 9.0, 37, 4.3],
-  ['Eclair', 262, 16.0, 24, 6.0],
-  ['Cupcake', 305, 3.7, 67, 4.3],
-  ['Gingerbread', 356, 16.0, 49, 3.9],
+  ["Frozen yoghurt", 159, 6.0, 24, 4.0],
+  ["Ice cream sandwich", 237, 9.0, 37, 4.3],
+  ["Eclair", 262, 16.0, 24, 6.0],
+  ["Cupcake", 305, 3.7, 67, 4.3],
+  ["Gingerbread", 356, 16.0, 49, 3.9],
 ];
 const sample2 = [
-  ['Frozen yoghurt'],
-  ['Ice cream sandwich'],
-  ['Eclair'],
-  ['Cupcake'],
-  ['Gingerbread'],
+  ["Frozen yoghurt"],
+  ["Ice cream sandwich"],
+  ["Eclair"],
+  ["Cupcake"],
+  ["Gingerbread"],
 ];
 
 function createData(id, dessert, calories) {
-  return { id, dessert, calories};
+  return { id, dessert, calories };
 }
 
 const columns = [
   {
     width: 20,
-    label: 'Ürünler',
-    dataKey: 'dessert',
+    label: "Ürünler",
+    dataKey: "dessert",
   },
   {
     width: 20,
-    label: 'Tarih',
-    dataKey: 'calories',
+    label: "Tarih",
+    dataKey: "calories",
     numeric: true,
   },
   {
     width: 20,
-    label: 'Sevk Miktarı',
-    dataKey: 'fat',
+    label: "Sevk Miktarı",
+    dataKey: "fat",
     numeric: true,
   },
-
 ];
 
 const rows = Array.from({ length: 200 }, (_, index) => {
@@ -100,11 +100,16 @@ const VirtuosoTableComponents = {
     <TableContainer component={Paper} {...props} ref={ref} />
   )),
   Table: (props) => (
-    <Table {...props} sx={{ borderCollapse: 'separate', tableLayout: 'fixed' }} />
+    <Table
+      {...props}
+      sx={{ borderCollapse: "separate", tableLayout: "fixed" }}
+    />
   ),
   TableHead,
   TableRow: ({ item: _item, ...props }) => <TableRow {...props} />,
-  TableBody: React.forwardRef((props, ref) => <TableBody {...props} ref={ref} />),
+  TableBody: React.forwardRef((props, ref) => (
+    <TableBody {...props} ref={ref} />
+  )),
 };
 
 function fixedHeaderContent() {
@@ -114,11 +119,11 @@ function fixedHeaderContent() {
         <TableCell
           key={column.dataKey}
           variant="head"
-          align={column.numeric || false ? 'right' : 'left'}
+          align={column.numeric || false ? "right" : "left"}
           style={{ width: column.width }}
           sx={{
-            backgroundColor: '#28342b',
-            color:'white',
+            backgroundColor: "#28342b",
+            color: "white",
             fontSize: 17,
           }}
         >
@@ -135,7 +140,7 @@ function rowContent(_index, row) {
       {columns.map((column) => (
         <TableCell
           key={column.dataKey}
-          align={column.numeric || false ? 'right' : 'left'}
+          align={column.numeric || false ? "right" : "left"}
         >
           {row[column.dataKey]}
         </TableCell>
@@ -144,161 +149,201 @@ function rowContent(_index, row) {
   );
 }
 
-export default function TContainer() {
+export default function SContainer() {
   const [value, setValue] = useState([
-    dayjs('2022-04-17'),
-    dayjs('2022-04-21'),
+    dayjs("2022-04-17"),
+    dayjs("2022-04-21"),
   ]);
 
-   const [showInputPart,setShow]= useState(false);
+  const [showInputPart, setShow] = useState(false);
 
-   const show_input_part = () => {
+  const show_input_part = () => {
     setShow(true);
-   }
-   const close_input_part = () => {
+  };
+  const close_input_part = () => {
     setShow(false);
-   }
+  };
 
-   const animationDuration = 600;
-   const [massage, setMassage] = useState(false);
+  const animationDuration = 600;
+  const [massage, setMassage] = useState(false);
 
-   const handleClick = () => {
-     setMassage(true);
-   };
- 
-   const handleClose = () => {
-     setMassage(false);
-   };
+  const handleClick = () => {
+    setMassage(true);
+  };
+
+  const handleClose = () => {
+    setMassage(false);
+  };
 
   return (
-    
-<div>
-   {/* INPUT TEXT_FİELDS2*/}
-   {showInputPart && <Card 
-  className='input_card22'
-  color='success'
-  orientation="horizontal"
-  size="lg"
-  variant='outlined'
-  >
+    <div>
+      {/* INPUT TEXT_FİELDS1*/}
+      {showInputPart && (
+        <Card
+          className="input_card22"
+          color="success"
+          orientation="horizontal"
+          size="lg"
+          variant="outlined"
+        >
+          <div className="input_header2">
+            <CancelIcon className="close_btn" onClick={close_input_part} />
+            <h4 style={{ maxHeight: "70px" }}>SEVK ANALİZİ</h4>
+            <br />
+            <div className="pie_chart2">
+              <PieAnimation />
+            </div>
+          </div>
+        </Card>
+      )}
+      {/* INPUT TEXT_FİELDS*/}
+      <div className="input_sevk2">
+        <Card
+          className="input_card2"
+          color="success"
+          orientation="horizontal"
+          size="lg"
+          variant="outlined"
+        >
+          <div>
+            <div className="input_header2">
+              <h4>SEVK İŞLEMLERİ</h4>
+            </div>
 
-   <div>
-      <div className='input_header'>             
-          <CancelIcon  className="close_btn" onClick={close_input_part} />    
-          <h4>SEVK ANALİZİ</h4>
-      </div>
-      </div>
-      </Card>
-  }
-{/* INPUT TEXT_FİELDS*/}
-  { <Card 
-  className='input_card2'
-  color='success'
-  orientation="horizontal"
-  size="lg"
-  variant='outlined'
-  >
-
-   <div>
-      <div className='input_header2'>               
-          <h4>SEVK İŞLEMLERİ</h4>
-      </div>
-          
-{/* AUTOCOMPLETE*/}
-    <div className="autocomplete2">
-          <Autocomplete className="autocomplete2" 
-              disablePortal
-              options={sample2}
-              renderInput={(params) => <TextField className='auto_cmplete2' {...params} label="Ürün Katagorisi" />}
-          />
-          <Autocomplete className="autocomplete2"
-              disablePortal
-              options={sample2}
-              renderInput={(params) => <TextField className='auto_cmplete2' {...params} label="Ürünler" />}
-          />
-    </div>
-  
-    <div className='input_part2'> 
-    <TextField sx={{paddingRight:1.5}} label="Günlük Toplam Sevk" variant="filled" />
-    <TextField sx={{paddingRight:1.5}} label="Haftalık Toplam Sevk" variant="filled" />
-    <TextField sx={{paddingRight:1.5}} label="Aylık Toplam Sevk" variant="filled" />
-
-
-{/* ANİMATİON-MASSAGE */} 
-      <Snackbar
-      variant="soft"
-      color="success"
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={massage}
-        onClose={handleClose}
-        autoHideDuration={1000}
-        animationDuration={animationDuration}
-        startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
-        sx={{
-          ...(open && {
-            animation: `${inAnimation} ${animationDuration}ms forwards`,
-          }),
-          ...(!open && {
-            animation: `${outAnimation} ${animationDuration}ms forwards`,
-          }),
-        }}
-      >
-        Sevk İşlemi Başarıyla Gerçekleşti
-      </Snackbar>
-</div>   
-
-</div>
-  </Card> }
-
-{/* DATE TİME PİCKER*/}
-  <div> 
-  <Card className="date_card2"
-  color='danger'
-  orientation="horizontal"
-  size="lg"
-  variant='outlined'
-  >
-      <div className="date_picker2">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DateRangePicker', 'DateRangePicker']}>
-                <DemoItem label="Filtrele" component="DateRangePicker">
-                  <DateRangePicker
-                    value={value}
-                    onChange={(newValue) => setValue(newValue)}
+            {/* AUTOCOMPLETE*/}
+            <div className="autocomplete2">
+              <Autocomplete
+                className="autocomplete2"
+                disablePortal
+                options={sample2}
+                renderInput={(params) => (
+                  <TextField
+                    className="auto_cmplete2"
+                    {...params}
+                    label="Ürün Katagorisi"
                   />
-                </DemoItem>
-            </DemoContainer>
-          </LocalizationProvider>
-          <Button className='list_btn2' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
+                )}
+              />
+              <Autocomplete
+                className="autocomplete2"
+                disablePortal
+                options={sample2}
+                renderInput={(params) => (
+                  <TextField
+                    className="auto_cmplete2"
+                    {...params}
+                    label="Ürünler"
+                  />
+                )}
+              />
+            </div>
+
+            <div className="input_part2">
+              <TextField
+                disabled='true'
+                sx={{ paddingRight: 1.5 }}
+                label="Günlük Toplam Sevk"
+                variant="filled"
+              />
+              <TextField
+                disabled='true'
+                sx={{ paddingRight: 1.5 }}
+                label="Haftalık Toplam Sevk"
+                variant="filled"
+              />
+               <TextField
+                disabled='true'
+                sx={{ paddingRight: 1.5 }}
+                label="Aylık Toplam Sevk"
+                variant="filled"
+                
+              />
+
+              
+
+              {/* ANİMATİON-MASSAGE */}
+              <Snackbar
+                variant="soft"
+                color="success"
+                anchorOrigin={{ vertical: "top", horizontal: "right" }}
+                open={massage}
+                onClose={handleClose}
+                autoHideDuration={1000}
+                animationDuration={animationDuration}
+                startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
+                sx={{
+                  ...(open && {
+                    animation: `${inAnimation} ${animationDuration}ms forwards`,
+                  }),
+                  ...(!open && {
+                    animation: `${outAnimation} ${animationDuration}ms forwards`,
+                  }),
+                }}
+              >
+                
+              </Snackbar>
+            </div>
+          </div>
+        </Card>
+
+        <div>
+          <Card
+            className="date_card2"
+            color="danger"
+            orientation="horizontal"
+            size="lg"
+            variant="outlined"
+          >
+            <div className="date_picker2">
+              <LocalizationProvider dateAdapter={AdapterDayjs}>
+                <DemoContainer
+                  components={["DateRangePicker", "DateRangePicker"]}
+                >
+                  <DemoItem label="Filtrele" component="DateRangePicker">
+                    <DateRangePicker
+                      value={value}
+                      onChange={(newValue) => setValue(newValue)}
+                    />
+                  </DemoItem>
+                </DemoContainer>
+              </LocalizationProvider>
+              <Button
+                className="list_btn2"
+                color="error"
+                variant="contained"
+                aria-label="add"
+                sx={{ marginTop: 1 }}
+              >
+                LİSTELE
+              </Button>
+            </div>
+          </Card>
+        </div>
       </div>
-     
-</Card></div>
 
+      <div className="add_table2">
+        <Stack className="add1" sx={{ backgroundColor: "#28342b" }}></Stack>
 
-      <div  className='add_table2' >
-      <Stack className="add2" sx={{backgroundColor:'#28342b'}}></Stack>
-
-    <Paper className="table2">
-      <TableVirtuoso 
-        data={rows}
-        components={VirtuosoTableComponents}
-        fixedHeaderContent={fixedHeaderContent}
-        itemContent={rowContent}
-      />
-    </Paper>
-     {/* ADD-BUTTON*/}
-     <Stack className='add_btn'>ANALİZ
-    <Fab color="error" onClick={show_input_part} sx={{ width :35 , height:0}}>
-        <AddIcon />
-    </Fab>
-    </Stack>
-
-
-  </div>
-
-</div>
-
+        <Paper className="table2">
+          <TableVirtuoso
+            data={rows}
+            components={VirtuosoTableComponents}
+            fixedHeaderContent={fixedHeaderContent}
+            itemContent={rowContent}
+          />
+        </Paper>
+        {/* ADD-BUTTON*/}
+        <Stack className="add_btn2">
+          ANALİZ
+          <Fab
+            color="error"
+            onClick={show_input_part}
+            sx={{ width: 35, height: 0 }}
+          >
+            <AddIcon />
+          </Fab>
+        </Stack>
+      </div>
+    </div>
   );
-
-
 }
