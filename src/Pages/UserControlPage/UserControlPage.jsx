@@ -47,17 +47,20 @@ function UserPage() {
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
-
-    const editedRow = rows.find((row) => row.id === id);
-    if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
   };
 
   const processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    kullaniciApi.updateUser(newRow.id, newRow);
+    setRows(
+      rows.map((row) => {
+        if (row.i === newRow.i) {
+          kullaniciApi.updateUser(row.id, newRow);
+          return updatedRow;
+        }
+        return row;
+      })
+    );
+
     alert("Kullanıcı Güncellendi");
 
     return updatedRow;
@@ -71,23 +74,34 @@ function UserPage() {
     });
   };
   useEffect(() => {
-    const talha = async () => {
+    const fetchUsers = async () => {
       const users = await kullaniciApi.getUsers();
-      const newRows = users.map((user) =>
-        createData(user.isim, user.soyisim, user.id, user.sifre)
-      );
+      let i = 0;
+      const newRows = users.map((user) => {
+        const rowData = createData(
+          i,
+          user.isim,
+          user.soyisim,
+          user.id,
+          user.sifre
+        );
+        i++;
+        return rowData;
+      });
+
       setRows(newRows);
     };
-    talha();
+    fetchUsers();
   }, [refresh]);
 
   const userRef = useRef();
+  const [value, setValue] = useState("");
   const [sifre, setPwd] = useState("");
   const [isim, setIsim] = useState("");
   const [soyisim, setSoyIsim] = useState("");
   const [id, setId] = useState("");
-  function createData(isim, soyisim, id, sifre) {
-    return { isim, soyisim, id, sifre };
+  function createData(i, isim, soyisim, id, sifre) {
+    return { i, isim, soyisim, id, sifre };
   }
   const columns = [
     { field: "isim", headerName: "İsim", width: 200, editable: true },
@@ -239,7 +253,7 @@ function UserPage() {
                 columns={columns}
                 initialState={{
                   pagination: {
-                    paginationModel: { page: 0, pageSize: 5 },
+                    paginationModel: { page: 0, pageSize: 10 },
                   },
                 }}
                 pageSizeOptions={[5, 10]}

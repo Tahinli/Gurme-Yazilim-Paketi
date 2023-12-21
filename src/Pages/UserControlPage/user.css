@@ -12,11 +12,11 @@
 }
 .buttonDiv2 {
   display: flex;
-  padding-top: 50px;
+  padding-top: 22px;
   justify-content: space-evenly;
 }
 .textfield1 {
-  padding-top: 60px;
+  padding-top: 30px;
   display: flex;
   flex-direction: row;
   align-items: center;
@@ -32,8 +32,7 @@
 }
 .imglogo2 {
   width: 12%;
-  padding-top: 50px;
-  padding-bottom: 50px;
+  padding-bottom: 10px;
 }
 .textf2 {
   width: 35%;
