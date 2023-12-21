@@ -1,92 +1,97 @@
-*{
-    font-size: 15px;
+* {
+  font-size: 15px;
 }
-.input_card1{
-    display: inline-block;
-    transition: 'all 1s ease-out';
-    margin-bottom: 3rem;
-    margin-left: 5rem;
-    padding-top: 7rem;
-    width: 50%;
-    height: 300px;
+.input_card1 {
+  transition: "all 1s ease-out";
+  margin-bottom: 3rem;
+  margin-left: 5rem;
+  padding-top: 7rem;
+  width: 40%;
+  height: 300px;
 }
-.input_card11{
-    transition: 'all 1s ease-out';
-    margin-bottom: 3rem;
-    margin-left: 5rem;
-    padding-top: 7rem;
-    width: 80%;
-    height: 600px;
+.input_card11 {
+  transition: "all 1s ease-out";
+  margin-bottom: 3rem;
+  margin-left: 5rem;
+  padding-top: 7rem;
+  width: 80%;
+  height: 600px;
 }
-.autocomplete1{
-    display: flex;
-    width: 60%;
-    margin-bottom: 1rem;
-    margin-right: 1rem;  
+.autocomplete1 {
+  display: flex;
+  width: 60%;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
 }
-.table1{
-    height: 470px;
-    width: 70%;
-}
-
-.add1{
-   padding-right: 1rem;
-   margin-right: 0.50rem;
+.table1 {
+  height: 470px;
+  width: 70%;
 }
 
-.input_part1{
-    width: 100%;
-    display: flex;
-    padding-bottom: 7rem;   
-    transition: 'all 1s ease-out';
+.add1 {
+  padding-right: 1rem;
+  margin-right: 0.5rem;
 }
 
-.field_btn1{
-   
-    padding-left: 0.75rem;
-    padding-top: 0.85rem;
-    margin-left: -0.5rem;
-    width:10%;
+.input_part1 {
+  width: 100%;
+  display: flex;
+  padding-bottom: 7rem;
+  transition: "all 1s ease-out";
 }
 
-.date_picker1{
-width: 100%;
-margin-top: -5rem;
-margin-bottom: 3rem;
-margin-left: -0.4rem;
-padding-top: 7rem;
+.field_btn1 {
+  padding-left: 0.75rem;
+  padding-top: 0.85rem;
+  margin-left: -0.5rem;
+  width: 10%;
 }
 
-.add_table1{
-    display: flex;
-    margin-left: 5rem;
-}
-.close_btn1{
-    margin-top: 1rem;
-}
-.close_btn:hover1{
-    color: red;
+.date_picker1 {
+  width: 100%;
+  margin-top: -5rem;
+  margin-bottom: 3rem;
+  margin-left: -0.4rem;
+  padding-top: 7rem;
 }
 
-.input_header1{
-    display: flex;
+.add_table1 {
+  display: flex;
+  margin-left: 5rem;
+}
+.close_btn1 {
+  margin-top: 1rem;
+}
+.close_btn:hover1 {
+  color: red;
 }
 
-.input_header1 h4{
-    padding-left: 1rem;
+.input_header1 {
+  display: flex;
 }
 
-.add_btn1{
-    margin-left: 1rem;
+.input_header1 h4 {
+  padding-left: 1rem;
 }
 
-.date_card1{
-    margin-bottom: 3rem;
-    margin-left: 5rem;
-    padding-top: 7rem;
-    width: 35%;
-    height: 200px;
+.add_btn1 {
+  margin-left: 1rem;
 }
-.pie{
-    margin-bottom:10% ;
+
+.date_card1 {
+  margin-bottom: 3rem;
+  margin-left: 5rem;
+  padding-top: 7rem;
+  width: 600px;
+  height: 200px;
+}
+
+.busra {
+  margin-top: 120px !important;
+  margin-left: 200px !important;
+  width: 500px !important;
+  height: 1000px !important;
+}
+.Demir {
+  display: flex;
 }
