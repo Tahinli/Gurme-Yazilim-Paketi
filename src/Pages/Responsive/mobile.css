@@ -42,5 +42,6 @@
   }
   .pie_charts{
     flex-direction: column;
+    min-width:100%;
     }
 }

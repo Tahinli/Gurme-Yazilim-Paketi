@@ -6,6 +6,8 @@ import {Button} from "@mui/material";
 import {useEffect, useState} from "react";
 import {useNavigate} from "react-router-dom";
 import './CategoryAnalyze.css';
+import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
+import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 
 
 const options = ['Hamur', 'Tatlı','İçecek'];
@@ -18,7 +20,10 @@ export default function ControllableStates({ onValue2Change }) {
     const [inputValue2, setInputValue2] =useState('');
     const navigate = useNavigate();
     let productName;
-
+    const goto_product= () => {
+        { navigate('/Products/'+productName) }
+       
+      };
    function setProduct(newData){
        setValue(newData)
    }
@@ -51,11 +56,23 @@ export default function ControllableStates({ onValue2Change }) {
             .replaceAll('ç','c');
     };
     productName=pName(value2)
+    const [showProduct,setProducts]= useState(false);
+
+    const show_products= () => {
+     setProducts(!showProduct);
+    }
     return (
         <div id={"categoryComplete"}>
-
-
-            <Card className='auto_card'
+            
+                <Button 
+                    color='error'
+                    onClick={show_products}
+                    size='medium'
+                    variant="contained"
+                    endIcon={ showProduct || false ?  <ArrowCircleUpIcon/> : <ArrowCircleDownIcon/> }
+                    > Detaylı Ürün Analizi İçin:
+                </Button >
+            {showProduct &&<Card className='auto_card'
                   color="neutral"
                   invertedColors={false}
                   orientation="vertical"
@@ -96,15 +113,14 @@ export default function ControllableStates({ onValue2Change }) {
                     renderInput={(params) => <TextField {...params} label="Ürün"/>}
                 />}
               
-                <Button onClick={()=>{navigate('/Products/'+productName) 
-                window.location.reload() }}
+                <Button onClick={goto_product}
                 variant="contained"
                 color='error'
                 sx={{width: '40%', minWidth:130}}
                 >
                 ÜRÜNE GİT
                 </Button>
-            </Card>
+            </Card>}
 
 
         </div>

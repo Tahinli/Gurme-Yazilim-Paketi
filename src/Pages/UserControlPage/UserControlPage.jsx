@@ -47,17 +47,20 @@ function UserPage() {
       ...rowModesModel,
       [id]: { mode: GridRowModes.View, ignoreModifications: true },
     });
-
-    const editedRow = rows.find((row) => row.id === id);
-    if (editedRow.isNew) {
-      setRows(rows.filter((row) => row.id !== id));
-    }
   };
 
   const processRowUpdate = (newRow) => {
     const updatedRow = { ...newRow, isNew: false };
-    setRows(rows.map((row) => (row.id === newRow.id ? updatedRow : row)));
-    kullaniciApi.updateUser(newRow.id, newRow);
+    setRows(
+      rows.map((row) => {
+        if (row.i === newRow.i) {
+          kullaniciApi.updateUser(row.id, newRow);
+          return updatedRow;
+        }
+        return row;
+      })
+    );
+
     alert("Kullanıcı Güncellendi");
 
     return updatedRow;
@@ -71,35 +74,34 @@ function UserPage() {
     });
   };
   useEffect(() => {
-    const talha = async () => {
+    const fetchUsers = async () => {
       const users = await kullaniciApi.getUsers();
-      const newRows = users.map((user) =>
-        createData(user.isim, user.soyisim, user.id, user.sifre)
-      );
+      let i = 0;
+      const newRows = users.map((user) => {
+        const rowData = createData(
+          i,
+          user.isim,
+          user.soyisim,
+          user.id,
+          user.sifre
+        );
+        i++;
+        return rowData;
+      });
+
       setRows(newRows);
     };
-    talha();
+    fetchUsers();
   }, [refresh]);
-  useEffect(() => {
-    document.body.style.alignItems = "center";
 
-    document.body.style.minWidth = "320px";
-    document.body.style.minHeight = "100vh";
-    document.body.style.display = "flex";
-    document.body.style.textAlign = "center";
-    document.body.style.justifyContent = "center";
-    document.body.style.backgroundImage = `url(${backgroundImage})`;
-    return () => {
-      document.body.style.backgroundImage = "none";
-    };
-  }, []);
   const userRef = useRef();
+  const [value, setValue] = useState("");
   const [sifre, setPwd] = useState("");
   const [isim, setIsim] = useState("");
   const [soyisim, setSoyIsim] = useState("");
   const [id, setId] = useState("");
-  function createData(isim, soyisim, id, sifre) {
-    return { isim, soyisim, id, sifre };
+  function createData(i, isim, soyisim, id, sifre) {
+    return { i, isim, soyisim, id, sifre };
   }
   const columns = [
     { field: "isim", headerName: "İsim", width: 200, editable: true },
@@ -162,106 +164,134 @@ function UserPage() {
   const handleButtonClick = async (e) => {
     e.preventDefault();
     const response = await kullaniciApi.addUser({ isim, soyisim, id, sifre });
+    alert("Kullanıcı Eklendi");
     setRefresh((prev) => !prev); // refresh durumunu günceller
   };
   const handleButtonClick2 = (e) => {
     e.preventDefault();
     navigate("/");
   };
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (wrapper) {
+      wrapper.style.alignItems = "center";
+      wrapper.style.minWidth = "320px";
+      wrapper.style.minHeight = "100vh";
+      wrapper.style.display = "flex";
+      wrapper.style.textAlign = "center";
+      wrapper.style.justifyContent = "center";
+      wrapper.style.backgroundImage = `url(${backgroundImage})`;
+    }
+    return () => {
+      if (wrapper) {
+        wrapper.style.backgroundImage = "none";
+      }
+    };
+  }, []);
 
   return (
-    <div>
-      <div className="logodiv2">
-        <img className="imglogo2" src={logo} alt="Logo" />
-      </div>
-      <div className="loginDiv2">
-        <div className="textfield1">
-          <TextField
-            className="textf2"
-            id="outlined-basic"
-            label="İsim"
-            variant="outlined"
-            ref={userRef}
-            autoComplete="off"
-            onChange={(e) => setIsim(e.target.value)}
-            required
-          />
+    <div ref={wrapperRef}>
+      {" "}
+      {
+        <div>
+          <div className="logodiv2">
+            <img className="imglogo2" src={logo} alt="Logo" />
+          </div>
+          <div className="loginDiv2">
+            <div className="textfield1">
+              <TextField
+                className="textf2"
+                id="outlined-basic"
+                label="İsim"
+                variant="outlined"
+                ref={userRef}
+                autoComplete="off"
+                onChange={(e) => setIsim(e.target.value)}
+                required
+              />
 
-          <TextField
-            className="textf2"
-            id="outlined-basic"
-            label=" Soyisim"
-            variant="outlined"
-            onChange={(e) => setSoyIsim(e.target.value)}
-            required
-          />
-        </div>
-        <div className="textfield2">
-          <TextField
-            className="textf2"
-            id="outlined-basic"
-            label="Kullanıcı Adı"
-            variant="outlined"
-            ref={userRef}
-            autoComplete="off"
-            onChange={(e) => setId(e.target.value)}
-            required
-          />
+              <TextField
+                className="textf2"
+                id="outlined-basic"
+                label=" Soyisim"
+                variant="outlined"
+                onChange={(e) => setSoyIsim(e.target.value)}
+                required
+              />
+            </div>
+            <div className="textfield2">
+              <TextField
+                className="textf2"
+                id="outlined-basic"
+                label="Kullanıcı Adı"
+                variant="outlined"
+                ref={userRef}
+                autoComplete="off"
+                onChange={(e) => setId(e.target.value)}
+                required
+              />
 
-          <TextField
-            type="password"
-            className="textf2"
-            id="outlined-basic"
-            label="Şifre"
-            variant="outlined"
-            onChange={(e) => setPwd(e.target.value)}
-            required
-          />
-        </div>
+              <TextField
+                type="password"
+                className="textf2"
+                id="outlined-basic"
+                label="Şifre"
+                variant="outlined"
+                onChange={(e) => setPwd(e.target.value)}
+                required
+              />
+            </div>
 
-        <div className="tabletz" style={{ width: "90%", paddingLeft: "120px" }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSizeOptions={[5, 10]}
-            editMode="row"
-            processRowUpdate={processRowUpdate}
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            onProcessRowUpdateError={(error) => {
-              console.error(
-                "An error occurred while processing row update:",
-                error
-              );
-            }}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
-          />
+            <div
+              className="tabletz"
+              style={{ width: "90%", paddingLeft: "120px" }}
+            >
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: 0, pageSize: 10 },
+                  },
+                }}
+                pageSizeOptions={[5, 10]}
+                editMode="row"
+                processRowUpdate={processRowUpdate}
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStop={handleRowEditStop}
+                onProcessRowUpdateError={(error) => {
+                  console.error(
+                    "An error occurred while processing row update:",
+                    error
+                  );
+                }}
+                slotProps={{
+                  toolbar: { setRows, setRowModesModel },
+                }}
+              />
+            </div>
+            <div className="buttonDiv2">
+              <Button
+                variant="contained"
+                className="submitButton2"
+                onClick={handleButtonClick}
+              >
+                Kayıt Ekle
+              </Button>
+              <Button
+                variant="contained"
+                className="submitButton2"
+                onClick={handleButtonClick2}
+              >
+                Ana Sayfaya Dön
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="buttonDiv2">
-          <Button
-            variant="contained"
-            className="submitButton2"
-            onClick={handleButtonClick}
-          >
-            Kayıt Ekle
-          </Button>
-          <Button
-            variant="contained"
-            className="submitButton2"
-            onClick={handleButtonClick2}
-          >
-            Ana Sayfaya Dön
-          </Button>
-        </div>
-      </div>
+      }{" "}
     </div>
   );
 }

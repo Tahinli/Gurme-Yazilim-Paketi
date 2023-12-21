@@ -11,7 +11,7 @@ const Footr = () => {
             <a href="https://www.cemens.com.tr/" target="_blanck">
               <img
                 className="footer_img"
-                src="src/assets/img/cemens_resmi.jpg"
+                src="/src/assets/img/cemens_resmi.jpg"
                 width={35}
                 height={25}
               ></img>

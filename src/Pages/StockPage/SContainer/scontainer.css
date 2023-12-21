@@ -1,80 +1,97 @@
-*{
-    font-size: 15px;
+* {
+  font-size: 15px;
 }
-.input_card1{
-    transition: 'all 1s ease-out';
-    margin-bottom: 3rem;
-    margin-left: 5rem;
-    padding-top: 7rem;
-    width: 70%;
-    height: 300px;
+.input_card1 {
+  transition: "all 1s ease-out";
+  margin-bottom: 3rem;
+  margin-left: 5rem;
+  padding-top: 7rem;
+  width: 40%;
+  height: 250px;
 }
-.autocomplete1{
-    display: flex;
-    width: 60%;
-    margin-bottom: 1rem;
-    margin-right: 1rem;  
+.input_card11 {
+  transition: "all 1s ease-out";
+  margin-bottom: 3rem;
+  margin-left: 5rem;
+  padding-top: 7rem;
+  width: 60%;
+  height: 650px;
 }
-.table1{
-    height: 470px;
-    width: 70%;
+.autocomplete1 {
+  display: flex;
+  width: 60%;
+  margin-bottom: 1rem;
+  margin-right: 1rem;
 }
-
-.add1{
-   padding-right: 1rem;
-   margin-right: 0.50rem;
-}
-
-.input_part1{
-    width: 100%;
-    display: flex;
-    padding-bottom: 7rem;   
-    transition: 'all 1s ease-out';
+.table1 {
+  height: 470px;
+  width: 70%;
 }
 
-.field_btn1{
-   
-    padding-left: 0.75rem;
-    padding-top: 0.85rem;
-    margin-left: -0.5rem;
-    width:10%;
+.add1 {
+  padding-right: 1rem;
+  margin-right: 0.5rem;
 }
 
-.date_picker1{
-width: 100%;
-margin-top: -5rem;
-margin-bottom: 3rem;
-margin-left: -0.4rem;
-padding-top: 7rem;
+.input_part1 {
+  width: 100%;
+  display: flex;
+  padding-bottom: 7rem;
+  transition: "all 1s ease-out";
 }
 
-.add_table1{
-    display: flex;
-    margin-left: 5rem;
-}
-.close_btn1{
-    margin-top: 1rem;
-}
-.close_btn:hover1{
-    color: red;
+.field_btn1 {
+  padding-left: 0.75rem;
+  padding-top: 0.85rem;
+  margin-left: -0.5rem;
+  width: 15%;
 }
 
-.input_header1{
-    display: flex;
+.date_picker1 {
+  width: 100%;
+  margin-top: -5rem;
+  margin-bottom: 3rem;
+  margin-left: -0.4rem;
+  padding-top: 7rem;
 }
 
-.input_header1 h4{
-    padding-left: 1rem;
+.add_table1 {
+  display: flex;
+  margin-left: 5rem;
+}
+.close_btn1 {
+  margin-top: 1rem;
+}
+.close_btn:hover1 {
+  color: red;
 }
 
-.add_btn1{
-    margin-left: 1rem;
+.input_header1 {
+  display: flex;
 }
 
-.date_card1{
-    margin-bottom: 3rem;
-    margin-left: 5rem;
-    padding-top: 7rem;
-    width: 35%;
-    height: 200px;
+.input_header1 h4 {
+  padding-left: 1rem;
+}
+
+.add_btn1 {
+  margin-left: 1rem;
+}
+
+.date_card1 {
+  margin-bottom: 3rem;
+  margin-left: 5rem;
+  padding-top: 7rem;
+  width: 600px;
+  height: 250px;
+}
+
+.pie_chart1 {
+  margin-top: 120px !important;
+  margin-left: 100px !important;
+  width: 800px !important;
+  height: 1000px !important;
+}
+.input_sevk1 {
+  display: flex;
 }

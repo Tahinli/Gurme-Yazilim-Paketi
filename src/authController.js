@@ -9,7 +9,13 @@ const handleLogin = async (req, res) => {
     return res
       .status(400)
       .json({ message: "Username and password are required." });
-  const dbuser = await kullaniciApi.getUserById(user);
+
+  let dbuser;
+  try {
+    dbuser = await kullaniciApi.getUserById(user);
+  } catch (err) {
+    return res.status(401).json({ message: "Kullanıcı Bulunamadı" });
+  }
 
   if (pwd == dbuser.sifre) {
     // create JWTs

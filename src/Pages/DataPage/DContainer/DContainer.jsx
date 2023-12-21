@@ -30,7 +30,11 @@ import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCh
 import urunApi from '../../../api/urun-api'
 import gunlukApi from '../../../api/gunluk-api'
 import kategoriApi from '../../../api/kategori-api';
-import { ka } from 'date-fns/locale';
+import { fi, ka } from 'date-fns/locale';
+import Dialog from '@mui/material/Dialog';
+import DialogActions from '@mui/material/DialogActions';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 
 const Urunler = await urunApi.getUrunler();
 const Gunlukler = await gunlukApi.getGunlukler();
@@ -62,7 +66,7 @@ const outAnimation = keyframes`
 
 function getTodayDate() {
   const today = new Date();
-  today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
+  // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   return today.toLocaleDateString('tr-TR', options);
 }
@@ -120,6 +124,12 @@ const columns = [
     dataKey: 'stok',
     numeric: true,
   },
+  {
+    width: 120,
+    label: 'İşlemler',
+    dataKey: 'islem',
+    numeric: false,
+  }
 ];
 
 
@@ -157,22 +167,25 @@ function fixedHeaderContent() {
           {column.label}
         </TableCell>
       ))}
-       <TableCell padding="checkbox"
+       {/* <TableCell padding="checkbox"
          sx={{
             backgroundColor: '#28342b',
-            width:'7%'
+            maxWidth:'48px',
+            borderBottomWidth: 0,
           }}
         >
         </TableCell>
         <TableCell padding="checkbox"
          sx={{
             backgroundColor: '#28342b',
-            paddingLeft:1,
+            paddingLeft:4,
             fontSize:17,
+            maxWidth:'78px',
             color:'white',
+            borderBottomWidth: 0,
           }}
         >  İşlemler
-        </TableCell>
+        </TableCell> */}
     </TableRow>
   );
 }
@@ -180,6 +193,16 @@ function fixedHeaderContent() {
 
 
 export default function DContainer() {
+
+  const [open, setOpen] = useState(false);
+
+  const handleClickOpen = () => {
+    setOpen(true);
+  };
+
+  const handleClickClose = () => {
+    setOpen(false);
+  };
 
   /// ilk rows'u oluşturmak için
   const [rows, setRows] = useState(
@@ -196,7 +219,6 @@ export default function DContainer() {
   const sortedRows = rows.sort((a, b) => {
     const dateA = new Date(a.tarih.split('.').reverse().join('-'));
     const dateB = new Date(b.tarih.split('.').reverse().join('-'));
-    console.log(`${a.urun_isim} - ${b.urun_isim} = ${dateA-dateB}`)
     return dateB - dateA;
   });
   setRows(sortedRows);
@@ -212,6 +234,7 @@ export default function DContainer() {
   const [ sevk, setSevk] = useState(0); 
   const [ stok, setStok] = useState(0); 
   const [ personel_sayisi, setPersonel_sayisi] = useState(0);
+  const [ tarih, setTarih] = useState(''); //tarih
 
   const urungir = [];
 for (let urun of Urunler) {
@@ -249,7 +272,8 @@ for (let urun of Urunler) {
         kategoriadi === null || kategoriadi === undefined || kategoriadi === '')
       )
     {
-          await gunlukApi.addGunluk (`${urunadi}`,
+      try {
+        await gunlukApi.addGunluk (`${urunadi}`,
         {
           personel_sayisi: personel_sayisi,
           hedeflenen: hedef,
@@ -257,9 +281,9 @@ for (let urun of Urunler) {
           atilan: fire,
           stok : stok,
           sevk : sevk,
-
+      
           tarih: getTodayDate(),
-      });
+        });
       //////////////////////////////////////////////////////////////////////
       // vvvvvvvvvvvv ROWSU DEGISTIREREK TABLOYU GUNCELLER vvvvvvvvvvvvvvvvvvv
           setRows([
@@ -268,15 +292,65 @@ for (let urun of Urunler) {
           ]);//id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi, sevk, stok
       //////////////////////////////////////////////////////////////////////
           setMassage(true);
+        } catch (error) {
+          console.error("An error occurred:", error);
+        }
    };
 }
 
 ////////////////////////// GUNLUK SILME /////////////////////////////
 const handleDelete = async (row) => {
-  await gunlukApi.deleteGunluk(`${row.urun_isim}`);
-  console.log(row.urun_isim)
-  setRows(prevRows => prevRows.filter(r => r.id !== row.id));
- };
+  try {
+    await gunlukApi.deleteGunluk(`${row.urun_isim}`, `${row.tarih}`);
+    setRows(prevRows => prevRows.filter(r => r.id !== row.id));
+  } catch (error) {
+    console.error("An error occurred while deleting:", error);
+  }
+};
+ /////////////////////////////////////////////////////////////////////
+
+ ////////////////////////// GUNLUK DÜZENLEME /////////////////////////////
+ const handleEdit = async (row,_personel_sayisi,_hedef,_tamamlanan,_fire,_stok,_sevk,_tarih) => {
+  console.log('edit')
+  console.log(row, parseInt(_personel_sayisi),parseInt(_hedef),parseInt(_tamamlanan),parseInt(_fire),parseInt(_stok),parseInt(_sevk),_tarih)
+  try {
+    await gunlukApi.updateGunluk(`${row.urun_isim}`, `${row.tarih}`, {
+      yeni_urun : row.urun_isim,
+      yeni_personel_sayisi: parseInt(_personel_sayisi),
+      yeni_hedeflenen: parseInt(_hedef),
+      yeni_ulasilan: parseInt(_tamamlanan),
+      yeni_atilan: parseInt(_fire),
+      yeni_stok : parseInt(_stok),
+      yeni_sevk : parseInt(_sevk),
+      yeni_tarih: _tarih,  ///DUZENLE
+    });
+    const updatedRow = {
+      ...row,
+      personel_sayisi: parseInt(_personel_sayisi),
+      hedef: parseInt(_hedef),
+      tamamlanan: parseInt(_tamamlanan),
+      fire: parseInt(_fire),
+      stok: parseInt(_stok),
+      sevk: parseInt(_sevk),
+      tarih: _tarih,
+    };
+
+    // Create a new rows array with the updated row
+    const updatedRows = [
+      ...rows.slice(0, row.id),
+      updatedRow,
+      ...rows.slice(row.id + 1),
+    ];
+
+    // Update the rows state
+    setRows(updatedRows);
+  } catch (error) {
+    console.error("An error occurred while updating:", error);
+  }
+  finally{
+    handleClickClose();
+  }
+};
  /////////////////////////////////////////////////////////////////////
 
    const handleClose = () => {
@@ -285,42 +359,73 @@ const handleDelete = async (row) => {
 
    function rowContent(_index, row) {
     return (
-      <React.Fragment>
+      <React.Fragment>  
         {columns.map((column) => (
-          <TableCell
-            key={column.dataKey}
-            align={column.numeric || false ? 'right' : 'left'}
-            sx={{backgroundColor:'rgb(209, 209,209)'}}
-          >
-            {row[column.dataKey]}
-          </TableCell>        
-        ))}
-        <TableCell align="right" sx={{backgroundColor:'rgb(209, 209,209)'}}>
-          <Button 
-            
-            onClick={() => handleDelete(row)}
-            size="small" // makes the button smaller
-            variant="contained" // gives the button an outline
-            color="error" 
-            endIcon={<DeleteForeverIcon/>}
-          >
-            Sil
-          </Button >
-        </TableCell>
-  
-        <TableCell sx={{backgroundColor:'rgb(209, 209,209)'}} >
-          <Button 
-            className='table_btn'
-            size='small'
-            color="success" 
-            variant="contained"
-            aria-label="add"  
-            endIcon={<BorderColorIcon/>}
-          >
-            Düzenle
-          </Button >
-        </TableCell>
-        
+          column.dataKey !== 'islem' ?
+            <TableCell
+                key={column.dataKey}
+                align={column.numeric || false ? 'right' : 'left'}
+                sx={{backgroundColor:'rgb(209, 209,209)'}}
+              >
+                {row[column.dataKey]}
+              </TableCell>   
+              : 
+              <TableCell align="right" key={column.dataKey} sx={{backgroundColor:'rgb(209, 209,209)'}}>
+                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
+                  <Button                
+                    onClick={() => handleDelete(row)}
+                    size="small" // makes the button smaller
+                    variant="contained" // gives the button an outline
+                    color="error" 
+                    endIcon={<DeleteForeverIcon/>}
+                  >
+                    Sil
+                  </Button >
+                <div>
+                  <Button
+                    className='table_btn'
+                    onClick={handleClickOpen}
+                    size='small'
+                    color="success"
+                    variant="contained"
+                    aria-label="add"
+                    endIcon={<BorderColorIcon />}
+                  >
+                    Düzenle
+                  </Button>
+                  
+                  <Dialog open={open} onClose={handleClickClose} maxWidth="xl" >
+                    <DialogTitle sx={{backgroundColor:'rgb(72, 194, 102)'}}>DÜZENLE</DialogTitle>
+                        <p style={{paddingLeft:20,marginBottom:0 ,color:'red',fontSize:17}}
+                        >
+                          (Tarihi 'gg.aa.yyyy' Şeklinde Giriniz.)
+                        </p>
+                    
+                    <Card  
+                     color='neutral'
+                     orientation="horizontal"
+                     size="lg"
+                     variant='soft'
+                     sx={{width:'100%'}}
+                     > 
+                        <TextField onChange={(e) => setPersonel_sayisi(e.target.value)} type="number" autoFocus margin="dense" label="Personel Sayısı" fullWidth />
+                        <TextField onChange={(e) => setTarih(e.target.value)} margin="dense" label="Tarih" fullWidth />
+                        <TextField onChange={(e) => setHedef(e.target.value)} type="number" autoFocus margin="dense" label="Hedef" fullWidth />
+                        <TextField onChange={(e) => setTamamlanan(e.target.value)} type="number" margin="dense" label="Tamamlanan" fullWidth />
+                        <TextField onChange={(e) => setFire(e.target.value)} type="number" autoFocus margin="dense" label="Fire" fullWidth />
+                        <TextField onChange={(e) => setSevk(e.target.value)} type="number" margin="dense" label="Sevk" fullWidth />
+                        <TextField onChange={(e) => setStok(e.target.value)} type="number" autoFocus margin="dense" label="Stok" fullWidth />
+                    </Card>
+
+                        <DialogActions sx={{alignItems:'left'}}>
+                        <Button variant="contained" color="error" onClick={handleClickClose}>İptal</Button>
+                        <Button variant="contained" color="success" onClick={()=> handleEdit( row,personel_sayisi,hedef,tamamlanan,fire,stok,sevk,tarih )}>Güncelle</Button>
+                        </DialogActions>               
+                  </Dialog>
+               </div>
+              </div>
+              </TableCell>    
+        ))}       
       </React.Fragment>
     );
   }
