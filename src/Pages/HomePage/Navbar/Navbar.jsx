@@ -19,7 +19,7 @@ const Navbar = () => {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
   const [verify, setVerify] = useState(false);
-  const [verify1, setVerify1] = useState(true);
+  const [verify1, setVerify1] = useState(false);
 
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
@@ -47,8 +47,8 @@ const Navbar = () => {
       },
       credentials: "include",
     });
-    setVerify(response.status === 200);
-    setVerify1(response.status !== 200);
+    await setVerify(response.status === 200);
+    await setVerify1(response.status !== 200);
   };
   const buttonClick = () => {
     navigate("/login");
