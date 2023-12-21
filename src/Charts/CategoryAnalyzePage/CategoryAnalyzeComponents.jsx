@@ -8,8 +8,22 @@ import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Checkbox from '@mui/material/Checkbox';
+import urunApi from "../../api/urun-api.js";
+import gunlukApi from "../../api/gunluk-api.js";
+import kategoriApi from "../../api/kategori-api.js";
+import {ca} from "date-fns/locale";
+
+const productList = await urunApi.getUrunler();
+const logList = await gunlukApi.getGunlukler();
+// const urungir = (await urunApi.getUrunler()).map((urun) => urun.isim);
+const catList = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
 
 
+
+//console.log(testData)
+
+console.log(catList)
+console.log(catList.length)
 let tempH=0,tempD=0,tempDrink=0
 var goalCount=0
 var completedCount=0
@@ -22,18 +36,78 @@ var datePerc=date.getUTCDay()
 if(date.getUTCDay()===0){
     datePerc=7
 }
+filterByCatDaily()
+var data = catList.map((label, index) => ({
+    id: index,
+    value: 0,
+    label: label
+}));
 
-export function CategoryDailyAnalyzeComp() {
+function getTodayDate() {
+    const today = new Date();
+    // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return today.toLocaleDateString('tr-TR', options);
+}
+function convertDate(date){
+   return new Date(date.split('.').reverse().join('-'))
+}
+
+async function filterByCatDaily() {
+    const todayLog = logList.filter(gunluk => gunluk.tarih === getTodayDate());
+
+    console.log(todayLog.length);
+
+    for (let j = 0; j < catList.length; j++) {
+        let totalVal = 0;
+
+        await Promise.all(todayLog.map(async (log) => {
+            const productCategory = await urunApi.getUrunByName(log.urun_isim);
+
+            if (catList[j] === productCategory.kategori.isim) {
+                console.log(log);
+                console.log(productCategory);
+                totalVal += log.ulasilan / log.hedeflenen;
+                console.log(`totalVal: ` + totalVal);
+            }
+        }));
+
+        data.find(predicate => predicate.label === catList[j]).value = totalVal;
+    }
+
+    console.log(data);
+}
+async function createData(){
+    const [data,setData]=useState([])
+
+}
+async function filterByCatRange(date1,date2){
+    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=convertDate(date1)&&convertDate(gunluk.tarih)<=convertDate(date2)))
+    console.log(rangeLog.length)
+    let arrProduct=[]
+    for(let i=0;i<rangeLog.length;i++){
+        arrProduct[i]=await urunApi.getUrunByName(rangeLog[i].urun_isim)
+    }
+    console.log(arrProduct)
+    return rangeLog
+}
+
+export  function  CategoryDailyAnalyzeComp() {
+ //console.log(await await filterByCatRange('17.12.2023','18.12.2023')[0].urun_isim)
+
+
 let totalHam=0,totalDrink=0,totalDesert=0
 
     //GÜNLÜK HESAPLAMA
-
+    // console.log(getTodayDate())
+   // for(let j=0;j<kategorigir.)
     var ham=parsedData.filter(function(product){
 
-        const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
+        const dateH=new Date(getTodayDate().split('.').reverse().join('-'))
+       // console.log(dateH)
 
         const productDate = new Date(product.Year,product.Month-1,product.Day);
-        return productDate.getUTCMonth()===dateH.getUTCMonth()&&productDate.getUTCDate()===dateH.getUTCDate()&&productDate.getUTCFullYear()===dateH.getUTCFullYear()&&product.Category==="Hamur"
+        return false
     })
     for(let i=0;i<ham.length;i++){
         totalHam+=(ham[i].CompletedCount/ham[i].GoalCount);
@@ -71,11 +145,7 @@ let totalHam=0,totalDrink=0,totalDesert=0
 
 
 
- const data = [
-        { id: 0, value: totalHam, label: 'Hamur' },
-        { id: 1, value: totalDesert, label: 'Tatlı' },
-        { id: 2, value: totalDrink, label: 'İçecek' },
-    ];
+
 
   return (
     <>
@@ -468,7 +538,7 @@ export function BarAnimation() {
                 color='error'
             />
             </div>
-            
+
         </Box>
     );
 }
