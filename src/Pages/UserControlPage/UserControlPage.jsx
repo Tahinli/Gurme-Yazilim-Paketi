@@ -80,19 +80,7 @@ function UserPage() {
     };
     talha();
   }, [refresh]);
-  useEffect(() => {
-    document.body.style.alignItems = "center";
 
-    document.body.style.minWidth = "320px";
-    document.body.style.minHeight = "100vh";
-    document.body.style.display = "flex";
-    document.body.style.textAlign = "center";
-    document.body.style.justifyContent = "center";
-    document.body.style.backgroundImage = `url(${backgroundImage})`;
-    return () => {
-      document.body.style.backgroundImage = "none";
-    };
-  }, []);
   const userRef = useRef();
   const [sifre, setPwd] = useState("");
   const [isim, setIsim] = useState("");
@@ -169,100 +157,127 @@ function UserPage() {
     e.preventDefault();
     navigate("/");
   };
+  const wrapperRef = useRef(null);
+
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (wrapper) {
+      wrapper.style.alignItems = "center";
+      wrapper.style.minWidth = "320px";
+      wrapper.style.minHeight = "100vh";
+      wrapper.style.display = "flex";
+      wrapper.style.textAlign = "center";
+      wrapper.style.justifyContent = "center";
+      wrapper.style.backgroundImage = `url(${backgroundImage})`;
+    }
+    return () => {
+      if (wrapper) {
+        wrapper.style.backgroundImage = "none";
+      }
+    };
+  }, []);
 
   return (
-    <div>
-      <div className="logodiv2">
-        <img className="imglogo2" src={logo} alt="Logo" />
-      </div>
-      <div className="loginDiv2">
-        <div className="textfield1">
-          <TextField
-            className="textf2"
-            id="outlined-basic"
-            label="İsim"
-            variant="outlined"
-            ref={userRef}
-            autoComplete="off"
-            onChange={(e) => setIsim(e.target.value)}
-            required
-          />
+    <div ref={wrapperRef}>
+      {" "}
+      {
+        <div>
+          <div className="logodiv2">
+            <img className="imglogo2" src={logo} alt="Logo" />
+          </div>
+          <div className="loginDiv2">
+            <div className="textfield1">
+              <TextField
+                className="textf2"
+                id="outlined-basic"
+                label="İsim"
+                variant="outlined"
+                ref={userRef}
+                autoComplete="off"
+                onChange={(e) => setIsim(e.target.value)}
+                required
+              />
 
-          <TextField
-            className="textf2"
-            id="outlined-basic"
-            label=" Soyisim"
-            variant="outlined"
-            onChange={(e) => setSoyIsim(e.target.value)}
-            required
-          />
-        </div>
-        <div className="textfield2">
-          <TextField
-            className="textf2"
-            id="outlined-basic"
-            label="Kullanıcı Adı"
-            variant="outlined"
-            ref={userRef}
-            autoComplete="off"
-            onChange={(e) => setId(e.target.value)}
-            required
-          />
+              <TextField
+                className="textf2"
+                id="outlined-basic"
+                label=" Soyisim"
+                variant="outlined"
+                onChange={(e) => setSoyIsim(e.target.value)}
+                required
+              />
+            </div>
+            <div className="textfield2">
+              <TextField
+                className="textf2"
+                id="outlined-basic"
+                label="Kullanıcı Adı"
+                variant="outlined"
+                ref={userRef}
+                autoComplete="off"
+                onChange={(e) => setId(e.target.value)}
+                required
+              />
 
-          <TextField
-            type="password"
-            className="textf2"
-            id="outlined-basic"
-            label="Şifre"
-            variant="outlined"
-            onChange={(e) => setPwd(e.target.value)}
-            required
-          />
-        </div>
+              <TextField
+                type="password"
+                className="textf2"
+                id="outlined-basic"
+                label="Şifre"
+                variant="outlined"
+                onChange={(e) => setPwd(e.target.value)}
+                required
+              />
+            </div>
 
-        <div className="tabletz" style={{ width: "90%", paddingLeft: "120px" }}>
-          <DataGrid
-            rows={rows}
-            columns={columns}
-            initialState={{
-              pagination: {
-                paginationModel: { page: 0, pageSize: 5 },
-              },
-            }}
-            pageSizeOptions={[5, 10]}
-            editMode="row"
-            processRowUpdate={processRowUpdate}
-            rowModesModel={rowModesModel}
-            onRowModesModelChange={handleRowModesModelChange}
-            onRowEditStop={handleRowEditStop}
-            onProcessRowUpdateError={(error) => {
-              console.error(
-                "An error occurred while processing row update:",
-                error
-              );
-            }}
-            slotProps={{
-              toolbar: { setRows, setRowModesModel },
-            }}
-          />
+            <div
+              className="tabletz"
+              style={{ width: "90%", paddingLeft: "120px" }}
+            >
+              <DataGrid
+                rows={rows}
+                columns={columns}
+                initialState={{
+                  pagination: {
+                    paginationModel: { page: 0, pageSize: 5 },
+                  },
+                }}
+                pageSizeOptions={[5, 10]}
+                editMode="row"
+                processRowUpdate={processRowUpdate}
+                rowModesModel={rowModesModel}
+                onRowModesModelChange={handleRowModesModelChange}
+                onRowEditStop={handleRowEditStop}
+                onProcessRowUpdateError={(error) => {
+                  console.error(
+                    "An error occurred while processing row update:",
+                    error
+                  );
+                }}
+                slotProps={{
+                  toolbar: { setRows, setRowModesModel },
+                }}
+              />
+            </div>
+            <div className="buttonDiv2">
+              <Button
+                variant="contained"
+                className="submitButton2"
+                onClick={handleButtonClick}
+              >
+                Kayıt Ekle
+              </Button>
+              <Button
+                variant="contained"
+                className="submitButton2"
+                onClick={handleButtonClick2}
+              >
+                Ana Sayfaya Dön
+              </Button>
+            </div>
+          </div>
         </div>
-        <div className="buttonDiv2">
-          <Button
-            variant="contained"
-            className="submitButton2"
-            onClick={handleButtonClick}
-          >
-            Kayıt Ekle
-          </Button>
-          <Button
-            variant="contained"
-            className="submitButton2"
-            onClick={handleButtonClick2}
-          >
-            Ana Sayfaya Dön
-          </Button>
-        </div>
-      </div>
+      }{" "}
     </div>
   );
 }

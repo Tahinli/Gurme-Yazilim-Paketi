@@ -13,6 +13,8 @@ import URL from "../../URL/server";
 const LOGIN_URL = URL + "/auth";
 
 function Login() {
+  const wrapperRef = useRef(null);
+
   const navigate = useNavigate();
   const { login } = useContext(AuthContext);
   const errRef = useRef();
@@ -21,20 +23,6 @@ function Login() {
   const [pwd, setPwd] = useState("");
   const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
-
-  useEffect(() => {
-    document.body.style.alignItems = "center";
-
-    document.body.style.minWidth = "320px";
-    document.body.style.minHeight = "100vh";
-    document.body.style.display = "flex";
-    document.body.style.textAlign = "center";
-    document.body.style.justifyContent = "center";
-    document.body.style.backgroundImage = `url(${backgroundImage})`;
-    return () => {
-      document.body.style.backgroundImage = "none";
-    };
-  }, []);
 
   useEffect(() => {
     userRef.current.focus();
@@ -72,45 +60,67 @@ function Login() {
       }
     }
   };
+  useEffect(() => {
+    const wrapper = wrapperRef.current;
+    if (wrapper) {
+      wrapper.style.alignItems = "center";
+      wrapper.style.minWidth = "320px";
+      wrapper.style.minHeight = "100vh";
+      wrapper.style.display = "flex";
+      wrapper.style.textAlign = "center";
+      wrapper.style.justifyContent = "center";
+      wrapper.style.backgroundImage = `url(${backgroundImage})`;
+    }
+    return () => {
+      if (wrapper) {
+        wrapper.style.backgroundImage = "none";
+      }
+    };
+  }, []);
 
   return (
-    <div className="loginDiv">
-      <div className="logodiv">
-        <img className="imglogo" src={logo} alt="Logo" />
-      </div>
-      <div className="textfield">
-        <TextField
-          className="textf"
-          id="outlined-basic"
-          label="Kullanıcı Adı"
-          variant="outlined"
-          ref={userRef}
-          autoComplete="off"
-          onChange={(e) => setUser(e.target.value)}
-          required
-        />
+    <div ref={wrapperRef}>
+      {" "}
+      {
+        <div className="loginDiv">
+          <div className="logodiv">
+            <img className="imglogo" src={logo} alt="Logo" />
+          </div>
+          <div className="textfield">
+            <TextField
+              className="textf"
+              id="outlined-basic"
+              label="Kullanıcı Adı"
+              variant="outlined"
+              ref={userRef}
+              autoComplete="off"
+              onChange={(e) => setUser(e.target.value)}
+              required
+            />
 
-        <br />
-        <TextField
-          type="password"
-          className="textf"
-          id="sifre"
-          label="Şifre"
-          variant="outlined"
-          onChange={(e) => setPwd(e.target.value)}
-          required
-        />
-      </div>
-      <br />
-      <div className="buttonDiv">
-        <Button
-          variant="contained"
-          className="submitButton"
-          onClick={handleButtonClick}
-        >
-          Giriş Yap
-        </Button>
-      </div>
+            <br />
+            <TextField
+              type="password"
+              className="textf"
+              id="sifre"
+              label="Şifre"
+              variant="outlined"
+              onChange={(e) => setPwd(e.target.value)}
+              required
+            />
+          </div>
+          <br />
+          <div className="buttonDiv">
+            <Button
+              variant="contained"
+              className="submitButton"
+              onClick={handleButtonClick}
+            >
+              Giriş Yap
+            </Button>
+          </div>
+        </div>
+      }{" "}
     </div>
   );
 }

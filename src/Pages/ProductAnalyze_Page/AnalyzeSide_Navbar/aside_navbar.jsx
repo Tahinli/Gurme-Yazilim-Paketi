@@ -16,7 +16,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import ProductPageAnalyze from "../../../Charts/ProductAnalyzePage/ProductAnalyzePage";
 import { useNavigate } from "react-router-dom";
 import { display } from "@mui/system";
-import FoodBankIcon from '@mui/icons-material/FoodBank';
+import FoodBankIcon from "@mui/icons-material/FoodBank";
 
 const drawerWidth = 270;
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -34,7 +34,7 @@ const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
         easing: theme.transitions.easing.easeOut,
         duration: theme.transitions.duration.enteringScreen,
       }),
-      marginLeft: drawerWidth -250 ,
+      marginLeft: drawerWidth - 250,
     }),
     position: "relative",
   })
@@ -86,9 +86,8 @@ const Drawer = styled(MuiDrawer, {
   }),
 }));
 
-export default function SideNavbar() { 
-  
-  const [open, setOpen] = React.useState(false)
+export default function SideNavbar() {
+  const [open, setOpen] = React.useState(false);
 
   const navigate = useNavigate();
   const handleClick1 = () => {
@@ -117,7 +116,7 @@ export default function SideNavbar() {
           <DrawerHeader>
             <img
               className="header_img"
-              src="/src/assets/img/cemens_resmi.jpg"
+              src="/Products/src/assets/img/cemens_resmi.jpg"
               width={30}
               height={20}
               alt="Çemen's Gurme"
@@ -146,49 +145,49 @@ export default function SideNavbar() {
           >
             <ListItemButton onClick={handleClick1}>
               <ListItemIcon>
-                <HomeIcon  sx={{fontSize:30}}/>
+                <HomeIcon sx={{ fontSize: 30 }} />
               </ListItemIcon>
-              <ListItemText primary="Ana Sayfa"/>
+              <ListItemText primary="Ana Sayfa" />
             </ListItemButton>
 
-            <ListItemButton onClick={handleClick2} >
+            <ListItemButton onClick={handleClick2}>
               <ListItemIcon>
-                <NoteAltIcon  sx={{fontSize:27}}/>
+                <NoteAltIcon sx={{ fontSize: 27 }} />
               </ListItemIcon>
               <ListItemText primary="Veri Girişi" />
             </ListItemButton>
 
-            <ListItemButton onClick={handleClick3} >
+            <ListItemButton onClick={handleClick3}>
               <ListItemIcon>
-                <InventoryIcon  sx={{fontSize:27}}/>
+                <InventoryIcon sx={{ fontSize: 27 }} />
               </ListItemIcon>
               <ListItemText primary="Stok Takibi" />
             </ListItemButton>
 
             <ListItemButton onClick={handleClick4}>
               <ListItemIcon>
-                <PlagiarismIcon   sx={{fontSize:30}}/>
+                <PlagiarismIcon sx={{ fontSize: 30 }} />
               </ListItemIcon>
               <ListItemText primary="Sevk Takibi" />
             </ListItemButton>
 
             <ListItemButton onClick={handleClick5}>
               <ListItemIcon>
-                <FoodBankIcon  sx={{fontSize:33}}/>
+                <FoodBankIcon sx={{ fontSize: 33 }} />
               </ListItemIcon>
               <ListItemText primary="Ürünler" />
             </ListItemButton>
 
             <img
               className="sideBar_img"
-              src="/src/assets/img/cemens_cover.jpeg"
+              src="/Products/src/assets/img/cemens_cover.jpeg"
               alt="Çemen's Gurme"
             ></img>
           </List>
         </Drawer>
 
         <Main open={open}>
-          <ProductPageAnalyze/>          
+          <ProductPageAnalyze />
         </Main>
       </Box>
     </div>
