@@ -4,11 +4,10 @@ import logo from "../../assets/img/logo.png";
 import Button from "@mui/material/Button";
 import React, { useRef, useState, useEffect, useContext } from "react"; // Add useEffect here
 import backgroundImage from "../../assets/img/photo.jpg";
-import Popup from "reactjs-popup";
 import "reactjs-popup/dist/index.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { AuthContext } from "../../AuthProvider";
+
 import URL from "../../URL/server";
 const LOGIN_URL = URL + "/auth";
 
@@ -16,21 +15,16 @@ function Login() {
   const wrapperRef = useRef(null);
 
   const navigate = useNavigate();
-  const { login } = useContext(AuthContext);
+
   const errRef = useRef();
   const userRef = useRef();
   const [user, setUser] = useState("");
   const [pwd, setPwd] = useState("");
-  const [errMsg, setErrMsg] = useState("");
   const [success, setSuccess] = useState(false);
 
   useEffect(() => {
     userRef.current.focus();
   }, []);
-
-  useEffect(() => {
-    setErrMsg("");
-  }, [user, pwd]);
 
   const handleButtonClick = async (e) => {
     e.preventDefault();
@@ -46,17 +40,17 @@ function Login() {
       );
 
       const accessToken = response?.data.accessToken;
-      login(user, accessToken);
+
       navigate("/");
     } catch (err) {
       if (!err?.response) {
-        setErrMsg("No Server Response");
+        alert("No Server Response");
       } else if (err.response?.status === 400) {
-        setErrMsg("Missing Username or Password");
+        alert("Kullanıcı Adı Ve Şifre Girilmedi");
       } else if (err.response?.status === 401) {
-        setErrMsg("Unauthorized");
+        alert("Böyle Kullanıcı Bulunamadı");
       } else {
-        setErrMsg("Login Failed");
+        alert("Login Failed");
       }
     }
   };
