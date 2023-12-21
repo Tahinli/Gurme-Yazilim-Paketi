@@ -6,6 +6,7 @@ import {PieChart} from "@mui/x-charts/PieChart";
 import {dataJS} from "../dataJS.js";
 import {Button, responsiveFontSizes} from "@mui/material";
 import { Card } from '@mui/joy';
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const parsedData= dataJS
 let valHam,valDesert,valDrink;
@@ -66,7 +67,6 @@ export  function DateRangeP() {
     function setValAnalyze(bool){
         setAnalyze(bool)
         isRefreshed(bool)
-
     }
 
     if(refresh){
@@ -80,21 +80,23 @@ export  function DateRangeP() {
         { id: 1, value: valDesert, label: 'Tatlı' },
         { id: 2, value: valDrink, label: 'İçecek' },
     ];
-
+    const close_datepicker = () => {
+        setAnalyze(false);
+      };
 
     return (
         <div className={"ChartsDate"}>
-            <div className={"dateArea"}>
-                <Card style={{width: '500px', height: '250ppx'}}
-                      color="success"
+            <div>
+                <Card style={{width: '30%', height: '150px'}}
+                sx={{alignItems:'center'}}
+                      color="neutral"
                       invertedColors={false}
                       orientation="vertical"
                       size="lg"
                       variant="soft"
                 >
-
-                    <div className={"dateArea"}>
-
+                     Filtrele:
+                    <div className={"dateArea"} style={{display:'flex'}}>
                         <DatePicker
                             selected={startDate}
                             onChange={(date) => setStartDate(date)}
@@ -110,23 +112,22 @@ export  function DateRangeP() {
                             endDate={endDate}
                             minDate={startDate}
                         />
-
-
                     </div>
-                    <div className={"dateArea"}>
-                        <Button onClick={() => setValAnalyze(true)} variant="contained">ANALİZ</Button>
-                    </div>
+                        <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning">ANALİZ</Button>
+                   
                 </Card>
 
             </div>
             <div>
-                {analyze && <Card className={"Charts"} style={{width: '800px', height: '400px'}}
+                {analyze && <Card className={"Charts"} style={{width: '65%', height: '400px', marginTop:15}}
                                   color="neutral"
                                   invertedColors={false}
                                   orientation="vertical"
                                   size="lg"
-                                  variant="soft"
+                                  variant="soft" 
                 >
+                    <CancelIcon onClick={close_datepicker} variant="contained" color="warning"/>
+
                     <h4 style={{paddingRight: '100px'}}>Seçilen Aralıktaki Verimlilik</h4>
                     <PieChart
                         series={[

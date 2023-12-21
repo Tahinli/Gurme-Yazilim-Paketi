@@ -13,7 +13,7 @@ import InventoryIcon from "@mui/icons-material/Inventory";
 import PlagiarismIcon from "@mui/icons-material/Plagiarism";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
-import Container from "../../HomePage/Container/Container";
+import ProductPageAnalyze from "../../../Charts/ProductAnalyzePage/ProductAnalyzePage";
 import { useNavigate } from "react-router-dom";
 import { display } from "@mui/system";
 import FoodBankIcon from '@mui/icons-material/FoodBank';
@@ -117,7 +117,7 @@ export default function SideNavbar() {
           <DrawerHeader>
             <img
               className="header_img"
-              src="src/assets/img/cemens_resmi.jpg"
+              src="/Products/src/assets/img/cemens_resmi.jpg"
               width={30}
               height={20}
               alt="Çemen's Gurme"
@@ -181,14 +181,14 @@ export default function SideNavbar() {
 
             <img
               className="sideBar_img"
-              src="src/assets/img/cemens_cover.jpeg"
+              src="/Products/src/assets/img/cemens_cover.jpeg"
               alt="Çemen's Gurme"
             ></img>
           </List>
         </Drawer>
 
         <Main open={open}>
-          <Container className="home"/>          
+          <ProductPageAnalyze/>          
         </Main>
       </Box>
     </div>

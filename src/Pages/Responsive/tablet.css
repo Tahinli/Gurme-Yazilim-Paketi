@@ -47,7 +47,7 @@
 
 .pie_charts{
   flex-direction: column;
-  min-width:320%;
+  min-width:300%;
   justify-content:space-between;
 }
 

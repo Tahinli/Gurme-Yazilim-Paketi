@@ -17,7 +17,7 @@ import {Card} from "@mui/joy";
 import React from "react";
 
 export function CategoryAnalyzeP(){
-    const [showDetails,setDetails]= useState(false);
+    const [showDetails,setDetails]= useState(true);
 
     const show_details= () => {
      setDetails(!showDetails);
@@ -28,8 +28,9 @@ export function CategoryAnalyzeP(){
                 <ControllableStates/>
             </div>
             <br/>
-          <DateRangeP/>
-            <div className="pie_charts" >
+         <DateRangeP/>
+            <div className="pie_charts" > 
+            
                 <Card className={"pie_card"}
                       color="neutral"
                       invertedColors={false}
@@ -66,13 +67,12 @@ export function CategoryAnalyzeP(){
 
         <Button 
           onClick={show_details}
-          size='small'
+          size='xlarge'
           color="error" 
           variant="contained"
           aria-label="add"  
-          endIcon={ showDetails || false ?  <ArrowCircleUpIcon/> : <ArrowCircleDownIcon/> }
         >
-          Detaylı Bilgi İçin Tıklayınız
+            { showDetails || false ?  <ArrowCircleUpIcon/> : <ArrowCircleDownIcon/> }
         </Button >
             {showDetails && <Card 
                       className="detailed_chart"

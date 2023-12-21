@@ -393,22 +393,34 @@ const handleDelete = async (row) => {
                   >
                     Düzenle
                   </Button>
-                  <Dialog open={open} onClose={handleClickClose}>
-                    <DialogTitle>Düzenle</DialogTitle>
-                    <DialogContent>
-                    <TextField onChange={(e) => setPersonel_sayisi(e.target.value)} type="number" autoFocus margin="dense" label="Personel Sayısı" fullWidth />
-                    <TextField onChange={(e) => setTarih(e.target.value)} margin="dense" label="Tarih" fullWidth />
-                    <TextField onChange={(e) => setHedef(e.target.value)} type="number" autoFocus margin="dense" label="Hedef" fullWidth />
-                    <TextField onChange={(e) => setTamamlanan(e.target.value)} type="number" margin="dense" label="Tamamlanan" fullWidth />
-                    <TextField onChange={(e) => setFire(e.target.value)} type="number" autoFocus margin="dense" label="Fire" fullWidth />
-                    <TextField onChange={(e) => setSevk(e.target.value)} type="number" margin="dense" label="Sevk" fullWidth />
-                    <TextField onChange={(e) => setStok(e.target.value)} type="number" autoFocus margin="dense" label="Stok" fullWidth />
-                      TARİHİ 'gg.aa.yyyy' ŞEKLİNDE GİRİNİZ
-                    </DialogContent>
-                    <DialogActions>
-                      <Button onClick={handleClickClose}>Cancel</Button>
-                      <Button onClick={()=> handleEdit( row,personel_sayisi,hedef,tamamlanan,fire,stok,sevk,tarih )}>Save</Button>
-                    </DialogActions>
+                  
+                  <Dialog open={open} onClose={handleClickClose} maxWidth="xl" >
+                    <DialogTitle sx={{backgroundColor:'rgb(72, 194, 102)'}}>DÜZENLE</DialogTitle>
+                        <p style={{paddingLeft:20,marginBottom:0 ,color:'red',fontSize:17}}
+                        >
+                          (Tarihi 'gg.aa.yyyy' Şeklinde Giriniz.)
+                        </p>
+                    
+                    <Card  
+                     color='neutral'
+                     orientation="horizontal"
+                     size="lg"
+                     variant='soft'
+                     sx={{width:'100%'}}
+                     > 
+                        <TextField onChange={(e) => setPersonel_sayisi(e.target.value)} type="number" autoFocus margin="dense" label="Personel Sayısı" fullWidth />
+                        <TextField onChange={(e) => setTarih(e.target.value)} margin="dense" label="Tarih" fullWidth />
+                        <TextField onChange={(e) => setHedef(e.target.value)} type="number" autoFocus margin="dense" label="Hedef" fullWidth />
+                        <TextField onChange={(e) => setTamamlanan(e.target.value)} type="number" margin="dense" label="Tamamlanan" fullWidth />
+                        <TextField onChange={(e) => setFire(e.target.value)} type="number" autoFocus margin="dense" label="Fire" fullWidth />
+                        <TextField onChange={(e) => setSevk(e.target.value)} type="number" margin="dense" label="Sevk" fullWidth />
+                        <TextField onChange={(e) => setStok(e.target.value)} type="number" autoFocus margin="dense" label="Stok" fullWidth />
+                    </Card>
+
+                        <DialogActions sx={{alignItems:'left'}}>
+                        <Button variant="contained" color="error" onClick={handleClickClose}>İptal</Button>
+                        <Button variant="contained" color="success" onClick={()=> handleEdit( row,personel_sayisi,hedef,tamamlanan,fire,stok,sevk,tarih )}>Güncelle</Button>
+                        </DialogActions>               
                   </Dialog>
                </div>
               </div>
