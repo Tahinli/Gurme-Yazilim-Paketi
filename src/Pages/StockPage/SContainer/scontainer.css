@@ -2,12 +2,21 @@
     font-size: 15px;
 }
 .input_card1{
+    display: inline-block;
     transition: 'all 1s ease-out';
     margin-bottom: 3rem;
     margin-left: 5rem;
     padding-top: 7rem;
-    width: 70%;
+    width: 50%;
     height: 300px;
+}
+.input_card11{
+    transition: 'all 1s ease-out';
+    margin-bottom: 3rem;
+    margin-left: 5rem;
+    padding-top: 7rem;
+    width: 80%;
+    height: 600px;
 }
 .autocomplete1{
     display: flex;
@@ -77,4 +86,7 @@ padding-top: 7rem;
     padding-top: 7rem;
     width: 35%;
     height: 200px;
+}
+.pie{
+    margin-bottom:10% ;
 }

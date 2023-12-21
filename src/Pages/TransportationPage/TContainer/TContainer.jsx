@@ -83,7 +83,7 @@ const columns = [
   },
   {
     width: 20,
-    label: 'Sevk',
+    label: 'Sevk Miktarı',
     dataKey: 'fat',
     numeric: true,
   },
@@ -173,6 +173,23 @@ export default function TContainer() {
   return (
     
 <div>
+   {/* INPUT TEXT_FİELDS2*/}
+   {showInputPart && <Card 
+  className='input_card22'
+  color='success'
+  orientation="horizontal"
+  size="lg"
+  variant='outlined'
+  >
+
+   <div>
+      <div className='input_header'>             
+          <CancelIcon  className="close_btn" onClick={close_input_part} />    
+          <h4>SEVK ANALİZİ</h4>
+      </div>
+      </div>
+      </Card>
+  }
 {/* INPUT TEXT_FİELDS*/}
   { <Card 
   className='input_card2'
@@ -254,7 +271,7 @@ export default function TContainer() {
           </LocalizationProvider>
           <Button className='list_btn2' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
       </div>
-      <img src="src/assets/img/genel.png" width={140}></img>
+     
 </Card></div>
 
 
@@ -269,6 +286,13 @@ export default function TContainer() {
         itemContent={rowContent}
       />
     </Paper>
+     {/* ADD-BUTTON*/}
+     <Stack className='add_btn'>ANALİZ
+    <Fab color="error" onClick={show_input_part} sx={{ width :35 , height:0}}>
+        <AddIcon />
+    </Fab>
+    </Stack>
+
 
   </div>
 

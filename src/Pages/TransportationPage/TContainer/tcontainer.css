@@ -6,8 +6,16 @@
     margin-bottom: 3rem;
     margin-left: 5rem;
     padding-top: 7rem;
-    width: 70%;
+    width: 52%;
     height: 300px;
+}
+.input_card22{
+    transition: 'all 1s ease-out';
+    margin-bottom: 3rem;
+    margin-left: 5rem;
+    padding-top: 7rem;
+    width: 80%;
+    height: 400px;
 }
 .autocomplete2{
     display: flex;

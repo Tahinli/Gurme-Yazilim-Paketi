@@ -26,6 +26,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Snackbar from '@mui/joy/Snackbar';
 import { keyframes } from '@mui/system';
 import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
+import {PieAnimation} from './stockpiechart'; 
 
 const inAnimation = keyframes`
   0% {
@@ -83,7 +84,7 @@ const columns = [
   },
   {
     width: 20,
-    label: 'Stok',
+    label: 'Stok Miktarı',
     dataKey: 'fat',
     numeric: true,
   },
@@ -173,6 +174,26 @@ export default function SContainer() {
   return (
     
 <div>
+  {/* INPUT TEXT_FİELDS1*/}
+  {showInputPart && <Card 
+  className='input_card11'
+  color='success'
+  orientation="horizontal"
+  size="lg"
+  variant='outlined'
+  >
+
+   
+      <div className='input_header1'>             
+          <CancelIcon  className="close_btn" onClick={close_input_part} />    
+          <h4 style={{maxHeight:'70px'}}>STOK ANALİZİ</h4>
+          <br/>
+          <PieAnimation />
+        
+    
+    </div>
+      </Card>
+  }
 {/* INPUT TEXT_FİELDS*/}
   { <Card 
   className='input_card1'
@@ -183,8 +204,11 @@ export default function SContainer() {
   >
 
    <div>
+    
       <div className='input_header1'>               
           <h4>STOK İŞLEMLERİ</h4>
+          
+
       </div>
           
 {/* AUTOCOMPLETE*/}
@@ -237,9 +261,8 @@ export default function SContainer() {
 
 </div>
   </Card> }
-
-{/* DATE TİME PİCKER*/}
-  <div> 
+  {/* DATE TİME PİCKER*/}
+<div> 
   <Card className="date_card1"
   color='danger'
   orientation="horizontal"
@@ -259,8 +282,9 @@ export default function SContainer() {
           </LocalizationProvider>
           <Button className='list_btn1' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
       </div>
-      <img src="src/assets/img/genel.png" width={140}></img>
+      
 </Card></div>
+
 
 
       <div  className='add_table1' >
@@ -274,6 +298,12 @@ export default function SContainer() {
         itemContent={rowContent}
       />
     </Paper>
+    {/* ADD-BUTTON*/}
+    <Stack className='add_btn'>ANALİZ
+    <Fab color="error" onClick={show_input_part} sx={{ width :35 , height:0}}>
+        <AddIcon />
+    </Fab>
+    </Stack>
 
   </div>
 
