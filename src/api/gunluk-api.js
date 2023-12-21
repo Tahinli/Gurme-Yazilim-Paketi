@@ -84,7 +84,7 @@ const updateGunluk = async (urunAdi, tarih, userData) => {
     try {
         const options = {
             method: 'GET',
-            url: `${apiURL}/gunluk/duzenle/${urunAdi}/${tarih}/${yeni_urun}/${yeni_personel_sayisi}/${yeni_hedeflenen}/${yeni_ulasilan}/${yeni_atilan}/${yeni_stok}/${yeni_sevk}}/${yeni_tarih}`,
+            url: `${apiURL}/gunluk/duzenle/${urunAdi}/${tarih}/${yeni_urun}/${yeni_personel_sayisi}/${yeni_hedeflenen}/${yeni_ulasilan}/${yeni_atilan}/${yeni_stok}/${yeni_sevk}/${yeni_tarih}`,
             json: true,
             body: userData
         };
