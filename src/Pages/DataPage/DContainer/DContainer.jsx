@@ -38,6 +38,8 @@ import DialogTitle from '@mui/material/DialogTitle';
 import { useEffect } from 'react';
 
 
+
+
 const inAnimation = keyframes`
   0% {
     transform: scale(0);
@@ -215,7 +217,6 @@ export default function DContainer() {
     };
 
     fetchData();
-    console.log(rows)
 }, []);
 
   async function updateUrunler() {
@@ -251,11 +252,19 @@ export default function DContainer() {
     setUrungir(newUrungir);
   }
     
-
-
   const [open, setOpen] = useState(false);
 
+
+  const [rowname, setRowname] = useState('');
+  const [rowtarih, setRowtarih] = useState('');
+  const [rowindex, setRowindex] = useState(null);
+
   const handleClickOpen = (row) => {
+    
+    setRowindex(rows.findIndex(r => r.id === row.id))
+    setRowname(row.urun_isim);
+    setRowtarih(row.tarih);
+
     console.log(row)
     editsetPersonel_sayisi(row.personel_sayisi);
     editsetHedef(row.hedeflenen);
@@ -281,8 +290,8 @@ useEffect(() => {
             Selection.ulasilan, Selection.atilan,
             Selection.personel_sayisi, Selection.sevk, Selection.stok);
     }));
+    
 }, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
-
 
 /// rows'u tarihe göre sıralamak için
   useEffect(() => {
@@ -309,7 +318,7 @@ useEffect(() => {
     setShow(false);
    }
 
-   const animationDuration = 600;
+   const animationDuration = 1000;
    const [massage, setMassage] = useState(false);
 
 
@@ -359,40 +368,44 @@ const handleDelete = async (row) => {
  /////////////////////////////////////////////////////////////////////
 
  ////////////////////////// GUNLUK DÜZENLEME /////////////////////////////
- const handleEdit = async (row,_personel_sayisi,_hedef,_tamamlanan,_fire,_stok,_sevk,_tarih) => {
+ const handleEdit = async () => {
   console.log('edit')
-  console.log(row, parseInt(_personel_sayisi),parseInt(_hedef),parseInt(_tamamlanan),parseInt(_fire),parseInt(_stok),parseInt(_sevk),_tarih)
+  console.log(rowname,rowtarih, (editpersonel_sayisi),(edithedef),(edittamamlanan),(editfire),(editstok),(editsevk),edittarih)
   try {
-    await gunlukApi.updateGunluk(`${row.urun_isim}`, `${row.tarih}`, {
-      yeni_urun : row.urun_isim,
-      yeni_personel_sayisi: parseInt(_personel_sayisi),
-      yeni_hedeflenen: parseInt(_hedef),
-      yeni_ulasilan: parseInt(_tamamlanan),
-      yeni_atilan: parseInt(_fire),
-      yeni_stok : parseInt(_stok),
-      yeni_sevk : parseInt(_sevk),
-      yeni_tarih: _tarih, 
+    await gunlukApi.updateGunluk(`${rowname}`, `${rowtarih}`, {
+      yeni_urun : rowname,
+      yeni_personel_sayisi: (editpersonel_sayisi),
+      yeni_hedeflenen: (edithedef),
+      yeni_ulasilan: (edittamamlanan),
+      yeni_atilan: (editfire),
+      yeni_stok : (editstok),
+      yeni_sevk : (editsevk),
+      yeni_tarih: rowtarih, 
     });
-    // const updatedRow = {
-    //   ...row,
-    //   personel_sayisi: parseInt(_personel_sayisi),
-    //   hedef: parseInt(_hedef),
-    //   tamamlanan: parseInt(_tamamlanan),
-    //   fire: parseInt(_fire),
-    //   stok: parseInt(_stok),
-    //   sevk: parseInt(_sevk),
-    //   tarih: _tarih,
-    // };
+
+    // Find the row index of the row we want to update
+
+const updatedRow = {
+  ...rows[rowindex],
+  personel_sayisi: parseInt(editpersonel_sayisi),
+  hedeflenen: parseInt(edithedef),
+  ulasilan: parseInt(edittamamlanan),
+  atilan: parseInt(editfire),
+  stok: parseInt(editstok),
+  sevk: parseInt(editsevk),
+  tarih: rowtarih,
+};
 
     // Create a new rows array with the updated row
-    // const updatedRows = [
-    //   ...rows.slice(0, row.id),
-    //   updatedRow,
-    //   ...rows.slice(row.id + 1),
-    // ];
-
+    const updatedRows = [
+      ...rows.slice(0, rowindex),
+      updatedRow,
+      ...rows.slice(rowindex + 1),
+    ];
+    console.log(updatedRows);
     // Update the rows state
-    // setRows(updatedRows);
+    setRows(updatedRows);
+    
   } catch (error) {
     console.error("An error occurred while updating:", error);
   }
@@ -468,7 +481,7 @@ const handleDelete = async (row) => {
 
                         <DialogActions sx={{alignItems:'left'}}>
                         <Button variant="contained" color="error" onClick={() => handleClickClose()}>İptal</Button>
-                        <Button variant="contained" color="success" onClick={()=> handleEdit( row,editpersonel_sayisi,edithedef,edittamamlanan,editfire,editstok,editsevk,edittarih )}>Güncelle</Button>
+                        <Button variant="contained" color="success" onClick={()=> handleEdit()}>Güncelle</Button>
                         </DialogActions>               
                   </Dialog>
                </div>
@@ -548,15 +561,21 @@ const handleDelete = async (row) => {
           KAYDET
         </Button>
     </Stack>
-
-{/* ANİMATİON-MASSAGE */} 
-      <Snackbar
+      <Stack  className="field_btn">
+        <Button color="error" variant='contained' aria-label="add" sx={{marginTop:1}} endIcon={<DeleteForeverIcon/>}>
+          SIFIRLA
+        </Button>
+      </Stack>
+      </div>   
+    </div>
+    {/* ANİMATİON-MASSAGE */} 
+    <Snackbar
         variant="soft"
         color="success"
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={massage}
         onClose={handleClose}
-        autoHideDuration={1000}
+        autoHideDuration={2000}
         animationDuration={animationDuration}
         startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
         sx={{
@@ -570,15 +589,6 @@ const handleDelete = async (row) => {
       >
         Verileriniz Başarıyla Kaydedildi
       </Snackbar>
-
-      <Stack  className="field_btn">
-        <Button color="error" variant='contained' aria-label="add" sx={{marginTop:1}} endIcon={<DeleteForeverIcon/>}>
-          SIFIRLA
-        </Button>
-      </Stack>
-      </div>   
-
-    </div>
   </Card> 
 }
 
