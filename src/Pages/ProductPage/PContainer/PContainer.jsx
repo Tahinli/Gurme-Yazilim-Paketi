@@ -337,27 +337,20 @@ export default function PContainer() {
     
       if (!kategoriler.includes(urunkategorisi)) 
       {
-        try {
+        
           await kategoriApi.addKategori({
           isim: urunkategorisi,
           ust_kategori: null,
         });
-      }
-        catch (error) {
-          console.error("Kategori eklenirken bir hata oluştu", error);
-        }
+        kategoriler.push(urunkategorisi);
       }
     //vvvvvvvvvvvvvv URUN EKLE vvvvvvvvvvvvvvv
-    try {
+    
         await urunApi.addUrun({
         isim: urunadi,
         kategori: urunkategorisi,
         });
     setMassage(true);
-        } 
-    catch (error) {
-        console.error("Kategori eklenirken bir hata oluştu", error);
-    }
     
   };
 

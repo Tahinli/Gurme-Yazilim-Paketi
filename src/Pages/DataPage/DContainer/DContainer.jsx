@@ -36,10 +36,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 
-const Urunler = await urunApi.getUrunler();
 const Gunlukler = await gunlukApi.getGunlukler();
-// const urungir = (await urunApi.getUrunler()).map((urun) => urun.isim);
-const kategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
 
 const inAnimation = keyframes`
   0% {
@@ -167,25 +164,6 @@ function fixedHeaderContent() {
           {column.label}
         </TableCell>
       ))}
-       {/* <TableCell padding="checkbox"
-         sx={{
-            backgroundColor: '#28342b',
-            maxWidth:'48px',
-            borderBottomWidth: 0,
-          }}
-        >
-        </TableCell>
-        <TableCell padding="checkbox"
-         sx={{
-            backgroundColor: '#28342b',
-            paddingLeft:4,
-            fontSize:17,
-            maxWidth:'78px',
-            color:'white',
-            borderBottomWidth: 0,
-          }}
-        >  İşlemler
-        </TableCell> */}
     </TableRow>
   );
 }
@@ -193,6 +171,56 @@ function fixedHeaderContent() {
 
 
 export default function DContainer() {
+
+
+  const [ urunadi, setUrunadi ] = useState('');
+  const [ kategoriadi, setKategoriadi ] = useState(''); 
+  const [ hedef, setHedef ] = useState(0); //hedeflenen
+  const [ tamamlanan, setTamamlanan] = useState(0); //ulasilan
+  const [ fire, setFire] = useState(0); //atilan
+  const [ sevk, setSevk] = useState(0); 
+  const [ stok, setStok] = useState(0); 
+  const [ personel_sayisi, setPersonel_sayisi] = useState(0);
+  const [ tarih, setTarih] = useState(''); //tarih
+  const [kategorigir, setKategorigir] = useState([]);
+  const [urungir, setUrungir] = useState([]);
+  const [Urunler, setUrunler] = useState([]);
+
+
+  async function updateUrunler() {
+    try {
+      const newUrunler = await urunApi.getUrunler(); // urunApi.getUrunler() is a placeholder for your actual API call
+      setUrunler(newUrunler);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+  
+  React.useEffect(() => {
+    updateUrunler();
+  }, [kategoriadi]);
+
+  async function updatekategorigir() {
+    console.log('updatekategorigir')
+    try {
+      const newKategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
+      setKategorigir(newKategorigir);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+
+  function updateurungir() {
+    console.log('updateurungir')
+    const newUrungir = [];
+    for (let urun of Urunler) {
+      if(urun.kategori_isim === kategoriadi)
+        newUrungir.push(urun.isim);
+    }
+    setUrungir(newUrungir);
+  }
+    
+
 
   const [open, setOpen] = useState(false);
 
@@ -226,21 +254,8 @@ export default function DContainer() {
 }, [rows]);
   /////////////////////////////////////////
 
-  const [ urunadi, setUrunadi ] = useState('');
-  const [ kategoriadi, setKategoriadi ] = useState(''); 
-  const [ hedef, setHedef ] = useState(0); //hedeflenen
-  const [ tamamlanan, setTamamlanan] = useState(0); //ulasilan
-  const [ fire, setFire] = useState(0); //atilan
-  const [ sevk, setSevk] = useState(0); 
-  const [ stok, setStok] = useState(0); 
-  const [ personel_sayisi, setPersonel_sayisi] = useState(0);
-  const [ tarih, setTarih] = useState(''); //tarih
+  
 
-  const urungir = [];
-for (let urun of Urunler) {
-  if(urun.kategori_isim === kategoriadi)
-  urungir.push(urun.isim);
-}
 
   // console.log(Gunlukler)
 
@@ -456,13 +471,13 @@ const handleDelete = async (row) => {
               className="autocomplete" 
               disablePortal
               options={kategorigir}
-              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürün Kategorisi" />}
+              renderInput={(params) => <TextField onFocus={async () => await updatekategorigir()} className='auto_cmplete' {...params} label="Ürün Kategorisi" />}
           />
           <Autocomplete onChange={(event, value) => setUrunadi(value)}
               className="autocomplete"
               disablePortal
               options={urungir}
-              renderInput={(params) => <TextField className='auto_cmplete' {...params} label="Ürünler" />}
+              renderInput={(params) => <TextField onFocus={() => updateurungir()} className='auto_cmplete' {...params} label="Ürünler" />}
           />
     </div>
   
