@@ -35,8 +35,8 @@ import Dialog from '@mui/material/Dialog';
 import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
+import { useEffect } from 'react';
 
-const Gunlukler = await gunlukApi.getGunlukler();
 
 const inAnimation = keyframes`
   0% {
@@ -66,6 +66,10 @@ function getTodayDate() {
   // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   return today.toLocaleDateString('tr-TR', options);
+}
+
+function convertDate(date){
+  return new Date(date.split('.').reverse().join('-'))
 }
 
 function createData(id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi, sevk, stok) {
@@ -172,7 +176,7 @@ function fixedHeaderContent() {
 
 export default function DContainer() {
 
-
+  const [Gunlukler, setGunlukler] = useState([]);
   const [ urunadi, setUrunadi ] = useState('');
   const [ kategoriadi, setKategoriadi ] = useState(''); 
   const [ hedef, setHedef ] = useState(0); //hedeflenen
@@ -186,17 +190,44 @@ export default function DContainer() {
   const [urungir, setUrungir] = useState([]);
   const [Urunler, setUrunler] = useState([]);
 
+  const [ edithedef, editsetHedef ] = useState(0); //hedeflenen
+  const [ edittamamlanan, editsetTamamlanan] = useState(0); //ulasilan
+  const [ editfire, editsetFire] = useState(0); //atilan
+  const [ editsevk, editsetSevk] = useState(0); 
+  const [ editstok, editsetStok] = useState(0); 
+  const [ editpersonel_sayisi, editsetPersonel_sayisi] = useState(0);
+  const [ edittarih, editsetTarih] = useState(''); //tarih
+
+  const [rows, setRows] = useState([]);
+
+  async function updateGunlukler() {
+    try {
+      const newGunlukler = await gunlukApi.getGunlukler();
+      setGunlukler(newGunlukler);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+        await updateGunlukler();
+    };
+
+    fetchData();
+    console.log(rows)
+}, []);
 
   async function updateUrunler() {
     try {
-      const newUrunler = await urunApi.getUrunler(); // urunApi.getUrunler() is a placeholder for your actual API call
+      const newUrunler = await urunApi.getUrunler(); 
       setUrunler(newUrunler);
     } catch (error) {
       console.error("An error occurred:", error);
     }
   }
   
-  React.useEffect(() => {
+  useEffect(() => {
     updateUrunler();
   }, [kategoriadi]);
 
@@ -224,7 +255,16 @@ export default function DContainer() {
 
   const [open, setOpen] = useState(false);
 
-  const handleClickOpen = () => {
+  const handleClickOpen = (row) => {
+    console.log(row)
+    editsetPersonel_sayisi(row.personel_sayisi);
+    editsetHedef(row.hedeflenen);
+    editsetTamamlanan(row.ulasilan);
+    editsetFire(row.atilan);
+    editsetStok(row.stok);
+    editsetSevk(row.sevk);
+    editsetTarih(row.tarih);
+    
     setOpen(true);
   };
 
@@ -233,37 +273,31 @@ export default function DContainer() {
   };
 
   /// ilk rows'u oluşturmak için
-  const [rows, setRows] = useState(
-    Array.from({ length: Gunlukler.length }, (_, index) => {
-      const Selection = Gunlukler[index];
-      return createData(index, Selection.urun_isim,
-         Selection.tarih, Selection.hedeflenen, 
-         Selection.ulasilan, Selection.atilan,
-         Selection.personel_sayisi, Selection.sevk, Selection.stok);
-    })
-  );
+useEffect(() => {
+    setRows(Array.from({ length: Gunlukler.length }, (_, index) => {
+        const Selection = Gunlukler[index];
+        return createData(index, Selection.urun_isim,
+            Selection.tarih, Selection.hedeflenen, 
+            Selection.ulasilan, Selection.atilan,
+            Selection.personel_sayisi, Selection.sevk, Selection.stok);
+    }));
+}, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
 
-  React.useEffect(() => {
+
+/// rows'u tarihe göre sıralamak için
+  useEffect(() => {
   const sortedRows = rows.sort((a, b) => {
     const dateA = new Date(a.tarih.split('.').reverse().join('-'));
     const dateB = new Date(b.tarih.split('.').reverse().join('-'));
     return dateB - dateA;
   });
   setRows(sortedRows);
-  
 }, [rows]);
   /////////////////////////////////////////
 
-  
-
-
-  // console.log(Gunlukler)
-
-
-
   const [value, setValue] = useState([
-    dayjs('2022-04-17'),
-    dayjs('2022-04-21'),
+    dayjs( convertDate( getTodayDate() ) ),
+    dayjs( convertDate( getTodayDate() ) ),
   ]);
 
    const [showInputPart,setShow]= useState(false);
@@ -337,28 +371,28 @@ const handleDelete = async (row) => {
       yeni_atilan: parseInt(_fire),
       yeni_stok : parseInt(_stok),
       yeni_sevk : parseInt(_sevk),
-      yeni_tarih: _tarih,  ///DUZENLE
+      yeni_tarih: _tarih, 
     });
-    const updatedRow = {
-      ...row,
-      personel_sayisi: parseInt(_personel_sayisi),
-      hedef: parseInt(_hedef),
-      tamamlanan: parseInt(_tamamlanan),
-      fire: parseInt(_fire),
-      stok: parseInt(_stok),
-      sevk: parseInt(_sevk),
-      tarih: _tarih,
-    };
+    // const updatedRow = {
+    //   ...row,
+    //   personel_sayisi: parseInt(_personel_sayisi),
+    //   hedef: parseInt(_hedef),
+    //   tamamlanan: parseInt(_tamamlanan),
+    //   fire: parseInt(_fire),
+    //   stok: parseInt(_stok),
+    //   sevk: parseInt(_sevk),
+    //   tarih: _tarih,
+    // };
 
     // Create a new rows array with the updated row
-    const updatedRows = [
-      ...rows.slice(0, row.id),
-      updatedRow,
-      ...rows.slice(row.id + 1),
-    ];
+    // const updatedRows = [
+    //   ...rows.slice(0, row.id),
+    //   updatedRow,
+    //   ...rows.slice(row.id + 1),
+    // ];
 
     // Update the rows state
-    setRows(updatedRows);
+    // setRows(updatedRows);
   } catch (error) {
     console.error("An error occurred while updating:", error);
   }
@@ -399,7 +433,7 @@ const handleDelete = async (row) => {
                 <div>
                   <Button
                     className='table_btn'
-                    onClick={handleClickOpen}
+                    onClick={() => handleClickOpen(row)}
                     size='small'
                     color="success"
                     variant="contained"
@@ -409,7 +443,7 @@ const handleDelete = async (row) => {
                     Düzenle
                   </Button>
                   
-                  <Dialog open={open} onClose={handleClickClose} maxWidth="xl" >
+                  <Dialog open={open} onClose={()=>handleClickClose()} maxWidth="xl" >
                     <DialogTitle sx={{backgroundColor:'rgb(72, 194, 102)'}}>DÜZENLE</DialogTitle>
                         <p style={{paddingLeft:20,marginBottom:0 ,color:'red',fontSize:17}}
                         >
@@ -423,18 +457,18 @@ const handleDelete = async (row) => {
                      variant='soft'
                      sx={{width:'100%'}}
                      > 
-                        <TextField onChange={(e) => setPersonel_sayisi(e.target.value)} type="number" autoFocus margin="dense" label="Personel Sayısı" fullWidth />
-                        <TextField onChange={(e) => setTarih(e.target.value)} margin="dense" label="Tarih" fullWidth />
-                        <TextField onChange={(e) => setHedef(e.target.value)} type="number" autoFocus margin="dense" label="Hedef" fullWidth />
-                        <TextField onChange={(e) => setTamamlanan(e.target.value)} type="number" margin="dense" label="Tamamlanan" fullWidth />
-                        <TextField onChange={(e) => setFire(e.target.value)} type="number" autoFocus margin="dense" label="Fire" fullWidth />
-                        <TextField onChange={(e) => setSevk(e.target.value)} type="number" margin="dense" label="Sevk" fullWidth />
-                        <TextField onChange={(e) => setStok(e.target.value)} type="number" autoFocus margin="dense" label="Stok" fullWidth />
+                        <TextField onChange={(e) => editsetPersonel_sayisi(e.target.value)} type="number" autoFocus margin="dense" label="Personel Sayısı" fullWidth defaultValue={editpersonel_sayisi} inputProps={{ min: 0 }}/>
+                        <TextField onChange={(e) => editsetTarih(e.target.value)} margin="dense" label="Tarih" fullWidth defaultValue={edittarih}/>
+                        <TextField onChange={(e) => editsetHedef(e.target.value)} type="number" autoFocus margin="dense" label="Hedef" fullWidth defaultValue={edithedef} inputProps={{ min: 0 }}/>
+                        <TextField onChange={(e) => editsetTamamlanan(e.target.value)} type="number" margin="dense" label="Tamamlanan" fullWidth defaultValue={edittamamlanan} inputProps={{ min: 0 }}/>
+                        <TextField onChange={(e) => editsetFire(e.target.value)} type="number" autoFocus margin="dense" label="Fire" fullWidth defaultValue={editfire} inputProps={{ min: 0 }}/>
+                        <TextField onChange={(e) => editsetSevk(e.target.value)} type="number" margin="dense" label="Sevk" fullWidth defaultValue={editsevk} inputProps={{ min: 0 }}/>
+                        <TextField onChange={(e) => editsetStok(e.target.value)} type="number" autoFocus margin="dense" label="Stok" fullWidth defaultValue={editstok} inputProps={{ min: 0 }}/>
                     </Card>
 
                         <DialogActions sx={{alignItems:'left'}}>
-                        <Button variant="contained" color="error" onClick={handleClickClose}>İptal</Button>
-                        <Button variant="contained" color="success" onClick={()=> handleEdit( row,personel_sayisi,hedef,tamamlanan,fire,stok,sevk,tarih )}>Güncelle</Button>
+                        <Button variant="contained" color="error" onClick={() => handleClickClose()}>İptal</Button>
+                        <Button variant="contained" color="success" onClick={()=> handleEdit( row,editpersonel_sayisi,edithedef,edittamamlanan,editfire,editstok,editsevk,edittarih )}>Güncelle</Button>
                         </DialogActions>               
                   </Dialog>
                </div>
@@ -458,7 +492,7 @@ const handleDelete = async (row) => {
 
    <div>
       <div className='input_header'>             
-          <CancelIcon  className="close_btn" onClick={close_input_part} />    
+          <CancelIcon  className="close_btn" onClick={()=> close_input_part()} />    
           <h4>VERİ GİRİŞİ</h4>
       </div>
           
@@ -509,7 +543,7 @@ const handleDelete = async (row) => {
 
     <Stack  className="field_btn">
         <Button  color="success" variant='contained' aria-label="add" 
-        sx={{marginTop:1}} onClick={handleClick} endIcon={<LoupeIcon />}
+        sx={{marginTop:1}} onClick={() => handleClick()} endIcon={<LoupeIcon />}
         >
           KAYDET
         </Button>
@@ -570,7 +604,7 @@ const handleDelete = async (row) => {
           </LocalizationProvider>
           <Button className='list_btn' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
       </div>
-      <img src="src/assets/img/genel.png"></img>
+      <img src="src/assets/img/genel.png"/>
     </div>
       
 </Card></div>
@@ -590,7 +624,7 @@ const handleDelete = async (row) => {
     </Paper>
 {/* ADD-BUTTON*/}
     <Stack className='add_btn'>EKLE
-    <Fab color="error" onClick={show_input_part} sx={{ width :35 , height:0}}>
+    <Fab color="error" onClick={() => show_input_part()} sx={{ width :35 , height:0}}>
         <AddIcon />
     </Fab>
     </Stack>

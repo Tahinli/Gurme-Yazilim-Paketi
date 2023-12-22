@@ -99,3 +99,13 @@ padding-top: 7rem;
 .table_btn{
     width:13ch;
 }
+@media screen and (max-width: 600px) {
+    .table {
+      width: 100%;
+      min-width: 100%;
+    }
+    .date_card {
+      width: 100%;
+      min-width: 100%;
+    }
+  }
