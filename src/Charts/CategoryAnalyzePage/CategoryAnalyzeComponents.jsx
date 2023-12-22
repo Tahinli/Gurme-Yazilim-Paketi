@@ -11,7 +11,8 @@ import Checkbox from '@mui/material/Checkbox';
 import urunApi from "../../api/urun-api.js";
 import gunlukApi from "../../api/gunluk-api.js";
 import kategoriApi from "../../api/kategori-api.js";
-import {ca} from "date-fns/locale";
+import {ca, da} from "date-fns/locale";
+import Gunluk from "../../api/gunluk-api.js";
 
 const productList = await urunApi.getUrunler();
 const logList = await gunlukApi.getGunlukler();
@@ -25,8 +26,7 @@ const catList = (await kategoriApi.getKategoriler()).map((kategori) => kategori.
 console.log(catList)
 console.log(catList.length)
 let tempH=0,tempD=0,tempDrink=0
-var goalCount=0
-var completedCount=0
+
 let totalHamL=[],totalDesertL=[],totalDrinkL=[];
 let range
 var parsedData=dataJS;
@@ -36,12 +36,27 @@ var datePerc=date.getUTCDay()
 if(date.getUTCDay()===0){
     datePerc=7
 }
-filterByCatDaily()
-var data = catList.map((label, index) => ({
+
+var DailyData = catList.map((label, index) => ({
     id: index,
     value: 0,
     label: label
 }));
+await filterByCatDaily()
+
+var monthData = catList.map((label, index) => ({
+    id: index,
+    value: 0,
+    label: label
+}));
+await filterByCatMonth()
+
+var weekData = catList.map((label, index) => ({
+    id: index,
+    value: 0,
+    label: label
+}));
+await filterByCatWeek()
 
 function getTodayDate() {
     const today = new Date();
@@ -50,7 +65,7 @@ function getTodayDate() {
     return today.toLocaleDateString('tr-TR', options);
 }
 function convertDate(date){
-   return new Date(date.split('.').reverse().join('-'))
+    return new Date(date.split('.').reverse().join('-'))
 }
 
 async function filterByCatDaily() {
@@ -60,11 +75,12 @@ async function filterByCatDaily() {
 
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
-
+        let count=0
         await Promise.all(todayLog.map(async (log) => {
             const productCategory = await urunApi.getUrunByName(log.urun_isim);
 
             if (catList[j] === productCategory.kategori.isim) {
+                count++
                 console.log(log);
                 console.log(productCategory);
                 totalVal += log.ulasilan / log.hedeflenen;
@@ -72,165 +88,111 @@ async function filterByCatDaily() {
             }
         }));
 
-        data.find(predicate => predicate.label === catList[j]).value = totalVal;
+        DailyData.find(predicate => predicate.label === catList[j]).value = (totalVal/count)*100;
     }
 
-    console.log(data);
+    console.log(DailyData);
 }
 async function createData(){
     const [data,setData]=useState([])
 
 }
-async function filterByCatRange(date1,date2){
-    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=convertDate(date1)&&convertDate(gunluk.tarih)<=convertDate(date2)))
-    console.log(rangeLog.length)
-    let arrProduct=[]
-    for(let i=0;i<rangeLog.length;i++){
-        arrProduct[i]=await urunApi.getUrunByName(rangeLog[i].urun_isim)
+async function filterByCatMonth()
+{
+
+    let todayValues=getTodayDate().split('.')
+    const date1=new Date(`${todayValues[2]}-${todayValues[1]}`)
+    const date2=new Date(date1)
+    date2.setMonth(date2.getMonth()+1)
+    date2.setDate(date2.getDate()-1)
+
+    console.log("Tarih 1:"+date1+"Tarih 2 :"+date2)
+
+    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
+    console.log(convertDate('23.12.2023')<convertDate('25.12.2023'))
+    for (let j = 0; j < catList.length; j++) {
+        let totalVal = 0;
+        let count=0
+        await Promise.all(rangeLog.map(async (MonthLog) => {
+            const productCategory = await urunApi.getUrunByName(MonthLog.urun_isim);
+
+            if (catList[j] === productCategory.kategori.isim) {
+                count++
+                console.log("AylıkLog:"+MonthLog);
+                console.log(productCategory);
+                totalVal += MonthLog.ulasilan / MonthLog.hedeflenen;
+                console.log(`totalVal: ` + totalVal);
+            }
+        }));
+
+        monthData.find(predicate => predicate.label === catList[j]).value = (totalVal/count)*100;
     }
-    console.log(arrProduct)
-    return rangeLog
+
 }
+async function filterByCatWeek()
+{
 
+    let todayValues=getTodayDate().split('.')
+    const date1=new Date(`${todayValues[2]}-${todayValues[1]}-${todayValues[0]}`)
+    date1.setDate(date1.getDate()-(datePerc-1))
+    const date2=new Date(date1)
+    date2.setDate(date2.getDate()+6)
+    let d1=date1.toLocaleString('tr-TR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    let d2 = date2.toLocaleString('tr-TR', { year: 'numeric', month: '2-digit', day: '2-digit' });
+    const firstRange=convertDate(d1)
+    const lastRange=convertDate(d2)
+    console.log("İlk Date Değer:"+date1+"2. Date Değer:"+date2)
+    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=firstRange&&convertDate(gunluk.tarih)<=lastRange))
+    for (let j = 0; j < catList.length; j++) {
+        let totalVal = 0;
+        let count=0
+        await Promise.all(rangeLog.map(async (WeekLog) => {
+            const productCategory = await urunApi.getUrunByName(WeekLog.urun_isim);
+
+            if (catList[j] === productCategory.kategori.isim) {
+                count++
+                console.log(WeekLog);
+                console.log(productCategory);
+                totalVal += WeekLog.ulasilan / WeekLog.hedeflenen;
+                console.log(`totalVal: ` + totalVal);
+            }
+        }));
+
+        weekData.find(predicate => predicate.label === catList[j]).value = (totalVal/count)*100;
+    }
+
+}
+//GÜNLÜK HESAPLAMA
 export  function  CategoryDailyAnalyzeComp() {
- //console.log(await await filterByCatRange('17.12.2023','18.12.2023')[0].urun_isim)
+    const data=DailyData
+    return (
+        <>
+            <div style={{width: '100%', height: '100%'}} >
+                <div >
 
-
-let totalHam=0,totalDrink=0,totalDesert=0
-
-    //GÜNLÜK HESAPLAMA
-    // console.log(getTodayDate())
-   // for(let j=0;j<kategorigir.)
-    var ham=parsedData.filter(function(product){
-
-        const dateH=new Date(getTodayDate().split('.').reverse().join('-'))
-       // console.log(dateH)
-
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-        return false
-    })
-    for(let i=0;i<ham.length;i++){
-        totalHam+=(ham[i].CompletedCount/ham[i].GoalCount);
-        goalCount+=ham[i].GoalCount
-        completedCount+=ham[i].CompletedCount
-    }
-
-    totalHam=(totalHam*100)/ham.length
-    var icecek=parsedData.filter(function(product){
-        const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-
-        return productDate.getUTCMonth()===dateH.getUTCMonth()&&productDate.getUTCDate()===dateH.getUTCDate()&&productDate.getUTCFullYear()===dateH.getUTCFullYear()&&product.Category==="İçecek"
-    })
-
-    for(let i=0;i<icecek.length;i++){
-        totalDrink+=(icecek[i].CompletedCount/icecek[i].GoalCount);
-        goalCount+=icecek[i].GoalCount
-        completedCount+=icecek[i].CompletedCount
-    }
-    totalDrink=(totalDrink*100)/icecek.length
-
-    var tatli=parsedData.filter(function(product){
-        const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-
-        return productDate.getUTCMonth()===dateH.getUTCMonth()&&productDate.getUTCDate()===dateH.getUTCDate()&&productDate.getUTCFullYear()===dateH.getUTCFullYear()&& product.Category==="Tatlı"
-    })
-    for(let i=0;i<tatli.length;i++){
-        totalDesert+=(tatli[i].CompletedCount/tatli[i].GoalCount);
-        goalCount+=tatli[i].GoalCount
-        completedCount+=tatli[i].CompletedCount
-    }
-    totalDesert=(totalDesert*100)/tatli.length
-
-
-
-
-
-  return (
-    <>
-        <div style={{width: '100%', height: '100%'}} >
-            <div >
-
-                 <h1 className={"Font"} style={{paddingRight: '100px'}}>Günlük Verimlilik</h1>
-                <div style={{width: '100%', height: '100%'}}>
-                    <PieChart
-                        series={[
-                            {
-                                data,
-                                highlightScope: { faded: 'global', highlighted: 'item' },
-                                faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
-                            },
-                        ]}
-                        height={300}
-                    />
+                    <h1 className={"Font"} style={{paddingRight: '100px'}}>Günlük Verimlilik</h1>
+                    <div style={{width: '100%', height: '100%'}}>
+                        <PieChart
+                            series={[
+                                {
+                                    data,
+                                    highlightScope: { faded: 'global', highlighted: 'item' },
+                                    faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
+                                },
+                            ]}
+                            height={300}
+                        />
+                    </div>
                 </div>
             </div>
-        </div>
-    </>
-  )
+        </>
+    )
 }
 export function CategoryWeeklyAnalyzeComp() {
-    let totalHamW=0,totalDrinkW=0,totalDesertW=0
+
 
 //HAFTALIK HESAPLAMA
-    var hamW=parsedData.filter(function(product){
-        const weekStart=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()-(datePerc-1))
-        const weekFinal=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()+(7-datePerc),23,59,59)
-
-
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-        return  product.Category==="Hamur"&&(productDate<=weekFinal&&productDate>=weekStart)
-    })
-
-    for(let i=0;i<hamW.length;i++){
-        totalHamW+=(hamW[i].CompletedCount/hamW[i].GoalCount);
-
-
-    }
-
-    totalHamW=(totalHamW*100)/hamW.length
-
-    var icecekW=parsedData.filter(function(product){
-        const weekStart=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()-(datePerc-1))
-        const weekFinal=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()+(7-datePerc),23,59,59)
-
-
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-        return  product.Category==="İçecek"&&(productDate<=weekFinal&&productDate>=weekStart)
-    })
-
-    for(let i=0;i<icecekW.length;i++){
-        totalDrinkW+=(icecekW[i].CompletedCount/icecekW[i].GoalCount);
-
-
-    }
-
-    totalDrinkW=(totalDrinkW*100)/icecekW.length
-
-    var tatliW=parsedData.filter(function(product){
-        const weekStart=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()-(datePerc-1))
-        const weekFinal=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()+(7-datePerc),23,59,59)
-
-
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-        return  product.Category==="Tatlı"&&(productDate<=weekFinal&&productDate>=weekStart)
-    })
-
-    for(let i=0;i<tatliW.length;i++){
-        totalDesertW+=(tatliW[i].CompletedCount/tatliW[i].GoalCount);
-
-    }
-
-    totalDesertW=(totalDesertW*100)/tatliW.length
-
-
-
-    const data = [
-        { id: 0, value: totalHamW, label: 'Hamur' },
-        { id: 1, value: totalDesertW, label: 'Tatlı' },
-        { id: 2, value: totalDrinkW, label: 'İçecek' },
-    ];
+    const data=weekData
 
     return (
         <>
@@ -255,48 +217,11 @@ export function CategoryWeeklyAnalyzeComp() {
         </>
     )
 }
-export function CategoryMonthlyAnalyzeComp() {
-let totalHamM=0,totalDrinkM=0,totalDesertM=0
 //AYLIK HESAPLAMA
-    var hamM=parsedData.filter(function(product){
-        const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-        return product.Category==="Hamur"&&productDate.getUTCMonth()===dateH.getUTCMonth()&&productDate.getUTCFullYear()===dateH.getUTCFullYear()
-    })
-    for(let i=0;i<hamM.length;i++){
-        totalHamM+=(hamM[i].CompletedCount/hamM[i].GoalCount);
+export function CategoryMonthlyAnalyzeComp() {
 
-    }
-    totalHamM=(totalHamM*100)/hamM.length
-    var icecekM=parsedData.filter(function(product){
-        const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-        return product.Category==="İçecek"&&productDate.getUTCMonth()===dateH.getUTCMonth()&&productDate.getUTCFullYear()===dateH.getUTCFullYear()
-    })
 
-    for(let i=0;i<icecekM.length;i++){
-        totalDrinkM+=(icecekM[i].CompletedCount/icecekM[i].GoalCount);
-
-    }
-    totalDrinkM=(totalDrinkM*100)/icecekM.length
-
-    var tatliM=parsedData.filter(function(product){
-        const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-        return product.Category==="Tatlı"&&productDate.getUTCMonth()===dateH.getUTCMonth()&&productDate.getUTCFullYear()===dateH.getUTCFullYear()
-    })
-    for(let i=0;i<tatliM.length;i++){
-        totalDesertM+=(tatliM[i].CompletedCount/tatliM[i].GoalCount);
-
-    }
-    totalDesertM=(totalDesertM*100)/tatliM.length
-
-    const data = [
-        { id: 0, value: totalHamM, label: 'Hamur' },
-        { id: 1, value: totalDesertM, label: 'Tatlı' },
-        { id: 2, value: totalDrinkM, label: 'İçecek' },
-    ];
-
+    const data=monthData
     return (
         <>
             <div style={{width: '100%', height: '100%'}} >
@@ -327,7 +252,7 @@ export function BarAnimation() {
     const [seriesNb, setSeriesNb] =useState(3);
     const [itemNb, setItemNb] = useState(30);
     const [skipAnimation, setSkipAnimation] = useState(false);
-     range=itemNb
+    range=itemNb
 
 
     const handleItemNbChange = (event, newValue) => {
@@ -512,31 +437,31 @@ export function BarAnimation() {
             />
             <div className='sliders'>
                 <Typography id="input-item-number" sx={{fontSize:16, backgroundColor:'rgb(235, 230, 230)'}} gutterBottom>
-                Günlerin Aralık Sayısı
-            </Typography>
-            <Slider
-                value={itemNb}
-                onChange={handleItemNbChange}
-                valueLabelDisplay="auto"
-                min={1}
-                max={30}
-                sx={{width:'50%'}}
-                aria-labelledby="input-item-number"
-                color='error'
-            />
-            <Typography id="input-series-number" sx={{fontSize:16, backgroundColor:'rgb(235, 230, 230)'}} gutterBottom>
-                Kategori Sayısı
-            </Typography>
-            <Slider
-                value={seriesNb}
-                onChange={handleSeriesNbChange}
-                valueLabelDisplay="auto"
-                min={1}
-                max={10}
-                sx={{width:'30%'}}
-                aria-labelledby="input-series-number"
-                color='error'
-            />
+                    Günlerin Aralık Sayısı
+                </Typography>
+                <Slider
+                    value={itemNb}
+                    onChange={handleItemNbChange}
+                    valueLabelDisplay="auto"
+                    min={1}
+                    max={30}
+                    sx={{width:'50%'}}
+                    aria-labelledby="input-item-number"
+                    color='error'
+                />
+                <Typography id="input-series-number" sx={{fontSize:16, backgroundColor:'rgb(235, 230, 230)'}} gutterBottom>
+                    Kategori Sayısı
+                </Typography>
+                <Slider
+                    value={seriesNb}
+                    onChange={handleSeriesNbChange}
+                    valueLabelDisplay="auto"
+                    min={1}
+                    max={10}
+                    sx={{width:'30%'}}
+                    aria-labelledby="input-series-number"
+                    color='error'
+                />
             </div>
 
         </Box>
