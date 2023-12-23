@@ -383,7 +383,7 @@ const handleDelete = async (row) => {
       yeni_tarih: rowtarih, 
     });
 
-    // Find the row index of the row we want to update
+    // Güncellenmiş row'u oluştur
 
 const updatedRow = {
   ...rows[rowindex],
@@ -396,7 +396,7 @@ const updatedRow = {
   tarih: rowtarih,
 };
 
-    // Create a new rows array with the updated row
+    // Yeni bir rows dizisi oluştur ve güncellenmiş row'u içine ekle
     const updatedRows = [
       ...rows.slice(0, rowindex),
       updatedRow,
@@ -455,7 +455,6 @@ const updatedRow = {
                   >
                     Düzenle
                   </Button>
-                  
                   <Dialog open={open} onClose={()=>handleClickClose()} maxWidth="xl" >
                     <DialogTitle sx={{backgroundColor:'rgb(72, 194, 102)'}}>DÜZENLE</DialogTitle>
                         <p style={{paddingLeft:20,marginBottom:0 ,color:'red',fontSize:17}}
