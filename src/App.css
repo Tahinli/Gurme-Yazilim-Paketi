@@ -95,9 +95,14 @@ body {
 }
 
 
+
+/*OTHER PAGES*/
 @media screen and (max-width:1700px){
 .buttons_input{
   display: flex;
+}
+.table_btns{
+  flex-direction: column;
 }
 }
 
@@ -145,6 +150,16 @@ body {
   .selected_analyze{
     width: 98.8% !important;
    }
+   
+  /*EDİT_PART*/
+  .edit_card{
+    flex-direction: column !important;
+  }
+  .edit_dialog p{
+    padding-left:2rem !important;
+    font-size: 18px !important;
+    width: 350px;
+  }
 }
 
 @media screen and (max-width:768px){

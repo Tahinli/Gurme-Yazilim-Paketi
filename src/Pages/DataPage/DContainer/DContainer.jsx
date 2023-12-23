@@ -123,7 +123,7 @@ const columns = [
     numeric: true,
   },
   {
-    width: 120,
+    width: 70,
     label: 'İşlemler',
     dataKey: 'islem',
     numeric: false,
@@ -430,30 +430,21 @@ console.log(updatedRows);
               </TableCell>   
               : 
               <TableCell align="right" key={column.dataKey} sx={{backgroundColor:'rgb(209, 209,209)'}}>
-                <div style={{ display: 'flex', justifyContent: 'space-between' }}>
-                  <Button                
-                    onClick={() => handleDelete(row)}
-                    size="small" // makes the button smaller
-                    variant="contained" // gives the button an outline
-                    color="error" 
-                    endIcon={<DeleteForeverIcon/>}
-                  >
-                    Sil
-                  </Button >
-               
-                  <Button
-                    className='table_btn'
+                <div className=' table_btns' style={{ display: 'flex'}}>   
+                    <DeleteForeverIcon 
+                    onClick={() => handleDelete(row)} 
+                    color="error"
+                    sx={{fontSize:30,marginRight:2.5}}
+                     />
+                 
+                    <BorderColorIcon
                     onClick={() => handleClickOpen(row)}
-                    size='small'
                     color="success"
-                    variant="contained"
-                    aria-label="add"
-                    endIcon={<BorderColorIcon />}
-                  >
-                    Düzenle
-                  </Button>
-                   <div>
-                  <Dialog open={open} onClose={()=>handleClickClose()} maxWidth="xl" >
+                    sx={{fontSize:30}}
+                    />    
+                <div>
+
+                  <Dialog open={open} onClose={()=>handleClickClose()} maxWidth="xl" className='edit_dialog'>
                     <DialogTitle sx={{backgroundColor:'rgb(72, 194, 102)'}}>DÜZENLE</DialogTitle>
                         <p style={{paddingLeft:20,marginBottom:0 ,color:'red',fontSize:17}}
                         >
@@ -461,6 +452,7 @@ console.log(updatedRows);
                         </p>
                     
                     <Card  
+                     className='edit_card'
                      color='neutral'
                      orientation="horizontal"
                      size="lg"
@@ -598,32 +590,6 @@ console.log(updatedRows);
 }
 
 {/* DATE TİME PİCKER*/}
-  {/*<div> 
-  <Card className="date_card"
-  color='danger'
-  orientation="horizontal"
-  size="lg"
-  variant='outlined'
-  >
-    <div className='div_div'>
-      <div className="date_picker">
-          <LocalizationProvider dateAdapter={AdapterDayjs}>
-            <DemoContainer components={['DateRangePicker', 'DateRangePicker']}>
-                <DemoItem label="Filtrele" component="DateRangePicker">
-                  <DateRangePicker
-                    value={value}
-                    onChange={(newValue) => setValue(newValue)}
-                  />
-                </DemoItem>
-            </DemoContainer>
-          </LocalizationProvider>
-          <Button className='list_btn' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button>
-      </div>
-      <img src="src/assets/img/genel.png"/>
-    </div>
-      
-</Card></div>*/}
-
           <div>
              <Card className="date_card"
                       color='danger'
@@ -665,6 +631,7 @@ console.log(updatedRows);
         components={VirtuosoTableComponents}
         fixedHeaderContent={fixedHeaderContent}
         itemContent={rowContent}
+        sx={{zIndex:0}}
       />
     </Paper>
 {/* ADD-BUTTON*/}
