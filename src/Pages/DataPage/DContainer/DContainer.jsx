@@ -15,10 +15,6 @@ import Button from '@mui/material/Button';
 import Fab from '@mui/material/Fab';
 import AddIcon from '@mui/icons-material/Add';
 import dayjs from 'dayjs';
-import { DemoContainer, DemoItem } from '@mui/x-date-pickers/internals/demo';
-import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
-import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { DateRangePicker } from '@mui/x-date-pickers-pro/DateRangePicker';
 import { useState } from 'react';
 import Card from '@mui/joy/Card';
 import CancelIcon from '@mui/icons-material/Cancel';
@@ -36,8 +32,7 @@ import DialogActions from '@mui/material/DialogActions';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useEffect } from 'react';
-
-
+import DatePicker from "react-datepicker";
 
 
 const inAnimation = keyframes`
@@ -217,7 +212,7 @@ export default function DContainer() {
     };
 
     fetchData();
-}, []);
+    }, []);
 
   async function updateUrunler() {
     try {
@@ -252,6 +247,8 @@ export default function DContainer() {
     setUrungir(newUrungir);
   }
     
+
+
   const [open, setOpen] = useState(false);
 
 
@@ -260,7 +257,7 @@ export default function DContainer() {
   const [rowindex, setRowindex] = useState(null);
 
   const handleClickOpen = (row) => {
-    
+
     setRowindex(rows.findIndex(r => r.id === row.id))
     setRowname(row.urun_isim);
     setRowtarih(row.tarih);
@@ -290,7 +287,7 @@ useEffect(() => {
             Selection.ulasilan, Selection.atilan,
             Selection.personel_sayisi, Selection.sevk, Selection.stok);
     }));
-    
+
 }, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
 
 /// rows'u tarihe göre sıralamak için
@@ -318,7 +315,7 @@ useEffect(() => {
     setShow(false);
    }
 
-   const animationDuration = 1000;
+   const animationDuration = 600;
    const [massage, setMassage] = useState(false);
 
 
@@ -386,26 +383,26 @@ const handleDelete = async (row) => {
     // Güncellenmiş row'u oluştur
 
 const updatedRow = {
-  ...rows[rowindex],
+    ...rows[rowindex],
   personel_sayisi: parseInt(editpersonel_sayisi),
-  hedeflenen: parseInt(edithedef),
-  ulasilan: parseInt(edittamamlanan),
-  atilan: parseInt(editfire),
-  stok: parseInt(editstok),
-  sevk: parseInt(editsevk),
-  tarih: rowtarih,
-};
+    hedeflenen: parseInt(edithedef),
+    ulasilan: parseInt(edittamamlanan),
+    atilan: parseInt(editfire),
+    stok: parseInt(editstok),
+    sevk: parseInt(editsevk),
+    tarih: rowtarih,
+    };
 
     // Yeni bir rows dizisi oluştur ve güncellenmiş row'u içine ekle
     const updatedRows = [
-      ...rows.slice(0, rowindex),
-      updatedRow,
-      ...rows.slice(rowindex + 1),
+    ...rows.slice(0, rowindex),
+    updatedRow,
+    ...rows.slice(rowindex + 1),
     ];
-    console.log(updatedRows);
+console.log(updatedRows);
     // Update the rows state
     setRows(updatedRows);
-    
+
   } catch (error) {
     console.error("An error occurred while updating:", error);
   }
@@ -455,6 +452,7 @@ const updatedRow = {
                   >
                     Düzenle
                   </Button>
+                  
                   <Dialog open={open} onClose={()=>handleClickClose()} maxWidth="xl" >
                     <DialogTitle sx={{backgroundColor:'rgb(72, 194, 102)'}}>DÜZENLE</DialogTitle>
                         <p style={{paddingLeft:20,marginBottom:0 ,color:'red',fontSize:17}}
@@ -490,6 +488,8 @@ const updatedRow = {
       </React.Fragment>
     );
   }
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
 
   return (
 <div>
@@ -501,8 +501,8 @@ const updatedRow = {
   size="lg"
   variant='outlined'
   >
-
-   <div>
+<div className='input_part'>
+<div className='auto_text_btn' >
       <div className='input_header'>             
           <CancelIcon  className="close_btn" onClick={()=> close_input_part()} />    
           <h4>VERİ GİRİŞİ</h4>
@@ -527,54 +527,49 @@ const updatedRow = {
           />
     </div>
   
-    <div className='input_part'> 
+    <div> 
 
     <TextField type="number" defaultValue = {0} 
      onChange={(e) => setHedef(e.target.value)}
-     sx={{paddingRight:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
+     sx={{paddingRight:1.5,paddingTop:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
 
     <TextField type="number" defaultValue = {0} 
      onChange={(e) => setTamamlanan(e.target.value)}
-     sx={{paddingRight:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
+     sx={{paddingRight:1.5,paddingTop:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
 
     <TextField type="number" defaultValue = {0}
      onChange={(e) => setFire(e.target.value)}
-     sx={{paddingRight:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+     sx={{paddingRight:1.5,paddingTop:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
 
     <TextField type="number" defaultValue = {0}
      onChange={(e) => setSevk(e.target.value)}
-     sx={{paddingRight:1}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
+     sx={{paddingRight:1.5,paddingTop:1.5}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
 
     <TextField type="number" defaultValue = {0}
      onChange={(e) => setStok(e.target.value)}
-     sx={{paddingRight:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+     sx={{paddingRight:1.5,paddingTop:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
 
     <TextField type="number" defaultValue = {0}
      onChange={(e) => setPersonel_sayisi(e.target.value)}
-     sx={{paddingRight:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
+     sx={{paddingRight:1.5,paddingTop:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
 
-    <Stack  className="field_btn">
+<div className='buttons_input'>
+  <Stack  className="field_btn">
         <Button  color="success" variant='contained' aria-label="add" 
         sx={{marginTop:1}} onClick={() => handleClick()} endIcon={<LoupeIcon />}
         >
           KAYDET
         </Button>
     </Stack>
-      <Stack  className="field_btn">
-        <Button color="error" variant='contained' aria-label="add" sx={{marginTop:1}} endIcon={<DeleteForeverIcon/>}>
-          SIFIRLA
-        </Button>
-      </Stack>
-      </div>   
-    </div>
-    {/* ANİMATİON-MASSAGE */} 
-    <Snackbar
+
+{/* ANİMATİON-MASSAGE */} 
+      <Snackbar
         variant="soft"
         color="success"
         anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
         open={massage}
         onClose={handleClose}
-        autoHideDuration={2000}
+        autoHideDuration={1000}
         animationDuration={animationDuration}
         startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
         sx={{
@@ -588,11 +583,22 @@ const updatedRow = {
       >
         Verileriniz Başarıyla Kaydedildi
       </Snackbar>
-  </Card> 
+
+      <Stack  className="field_btn">
+        <Button color="error" variant='contained' aria-label="add" sx={{marginTop:1}} endIcon={<DeleteForeverIcon/>}>
+          SIFIRLA
+        </Button>
+      </Stack>
+</div>
+    
+      </div>   
+    </div>
+  </div>
+</Card> 
 }
 
 {/* DATE TİME PİCKER*/}
-  <div> 
+  {/*<div> 
   <Card className="date_card"
   color='danger'
   orientation="horizontal"
@@ -616,8 +622,38 @@ const updatedRow = {
       <img src="src/assets/img/genel.png"/>
     </div>
       
-</Card></div>
+</Card></div>*/}
 
+          <div>
+             <Card className="date_card"
+                      color='danger'
+                      orientation="horizontal"
+                      size="lg"
+                      variant='outlined'
+             >
+                <div className='div_div'>Filtrele:
+                  <div className="date_picker">
+                      <DatePicker
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                      />
+                      <DatePicker
+                          selected={endDate}
+                          onChange={(date) => setEndDate(date)}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          minDate={startDate}
+                      />
+                    </div>
+                    <Button className='list_btn' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button> 
+                  </div>   
+                    <img src="src/assets/img/genel.png"/>
+                </Card>
+            </div>
 
       <div  className='add_table' >
       <Stack className="add" sx={{backgroundColor:'#28342b'}}></Stack>

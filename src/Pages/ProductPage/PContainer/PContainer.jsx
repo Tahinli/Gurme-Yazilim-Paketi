@@ -359,7 +359,7 @@ export default function PContainer() {
   };
   return (
     <div className="product_body">
-      <div>
+      <div className="pp_input">
         <Card
           className="p_inputcard"
           sx={{

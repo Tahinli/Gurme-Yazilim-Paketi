@@ -2,6 +2,7 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-width: 520px;
   height: 80px auto;
   background-color: #305630;
   margin-top: 2.5rem;
@@ -18,7 +19,6 @@
 }
 .footer p {
   color: #000000;
-  margin-left: 4rem;
 }
 .footer ul li a {
   color: rgb(189, 185, 185);

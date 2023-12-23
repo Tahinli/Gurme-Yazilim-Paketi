@@ -86,10 +86,11 @@ export  function DateRangeP() {
 
     return (
         <div className={"ChartsDate"}>
-            <div>
-                <Card style={{width: '30%', height: '150px'}}
-                sx={{alignItems:'center'}}
-                      color="neutral"
+            <div >
+                <Card className="Filter_part"
+                      style={{width: '30%'}}
+                      sx={{alignItems:'center'}}
+                      color="warning"
                       invertedColors={false}
                       orientation="vertical"
                       size="lg"
@@ -114,12 +115,11 @@ export  function DateRangeP() {
                         />
                     </div>
                         <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning">ANALİZ</Button>
-                   
                 </Card>
 
             </div>
             <div>
-                {analyze && <Card className={"Charts"} style={{width: '65%', height: '400px', marginTop:15}}
+                {analyze && <Card className='selected_analyze' style={{width: '65%', height: '400px', marginTop:15}}
                                   color="neutral"
                                   invertedColors={false}
                                   orientation="vertical"

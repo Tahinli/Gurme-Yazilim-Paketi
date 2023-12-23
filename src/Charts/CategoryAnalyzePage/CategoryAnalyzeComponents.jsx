@@ -467,11 +467,3 @@ export function BarAnimation() {
         </Box>
     );
 }
-
-
-
-
-
-
-
-

@@ -20,9 +20,9 @@ export default function ControllableStates({ onValue2Change }) {
     const [inputValue2, setInputValue2] =useState('');
     const navigate = useNavigate();
     let productName;
+
     const goto_product= () => {
         { navigate('/Products/'+productName) }
-       
       };
    function setProduct(newData){
        setValue(newData)
@@ -62,9 +62,10 @@ export default function ControllableStates({ onValue2Change }) {
      setProducts(!showProduct);
     }
     return (
-        <div id={"categoryComplete"}>
-            
+        <div style={{paddingBottom:10,paddingTop:20}}>
                 <Button 
+                    className='detailed_productbtn'
+                    sx={{ width: 248,height:25,marginBottom: '10px'}}            
                     color='error'
                     onClick={show_products}
                     size='medium'
@@ -72,13 +73,14 @@ export default function ControllableStates({ onValue2Change }) {
                     endIcon={ showProduct || false ?  <ArrowCircleUpIcon/> : <ArrowCircleDownIcon/> }
                     > Detaylı Ürün Analizi İçin:
                 </Button >
+
             {showProduct &&<Card className='auto_card'
                   color="neutral"
                   invertedColors={false}
                   orientation="vertical"
                   size="lg"
                   variant="soft"
-                  sx={{width:'30%',maxWidth:'30%', alignItems:'center'}}
+                  sx={{width:275, alignItems:'center'}}
             >
                 <Autocomplete
                     value={value}
@@ -116,7 +118,7 @@ export default function ControllableStates({ onValue2Change }) {
                 <Button onClick={goto_product}
                 variant="contained"
                 color='error'
-                sx={{width: '40%', minWidth:130}}
+                sx={{width: '40%', minWidth:120}}
                 >
                 ÜRÜNE GİT
                 </Button>

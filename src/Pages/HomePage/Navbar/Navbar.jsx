@@ -67,10 +67,20 @@ const Navbar = () => {
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         ></link>
-        <div className="container">
+        <div>
           <nav className="navbar">
-            <h1 className="header">ÇEMEN'S GURME</h1>
-            <ul className="navbar_links">
+            <div style={{width:'20%',textAlign:'end',flexGrow:0.56}}>
+              <h1 className="header">ÇEMEN'S GURME</h1>   
+            </div>
+            
+           
+            <ul>
+              <div className="navbar_rightbox" >
+              <img
+                className="logo"
+                src="/src/assets/img/cemens_logo.jpg"
+                alt="Çemen's Gurme"
+                ></img>
               {verify && (
                 <React.Fragment>
                   <Box
@@ -78,13 +88,14 @@ const Navbar = () => {
                       display: "flex",
                       alignItems: "center",
                       textAlign: "center",
+                      marginRight:-1.5
                     }}
+                    className='login_lpart'
                   >
                     <IconButton
                       className="login_menu"
                       onClick={handleClick}
                       size="small"
-                      sx={{ ml: 2, paddingRight: 5 }}
                       aria-controls={open ? "account-menu" : undefined}
                       aria-haspopup="true"
                       aria-expanded={open ? "true" : undefined}
@@ -162,26 +173,22 @@ const Navbar = () => {
               )}
               {verify1 && (
                 <Button
-                  className="login_btn"
+                  className="login_button"
                   color="error"
                   variant="contained"
                   aria-label="add"
-                  sx={{ marginTop: 1 }}
                   onClick={buttonClick}
                   startIcon={<LoginIcon />}
                 >
                   GİRİŞ YAP
                 </Button>
-              )}
+              )} 
+              </div>
             </ul>
           </nav>
-        </div>
+        </div>   
       </header>
-      <img
-        className="logo"
-        src="/src/assets/img/cemens_logo.jpg"
-        alt="Çemen's Gurme"
-      ></img>
+      
     </div>
   );
 };

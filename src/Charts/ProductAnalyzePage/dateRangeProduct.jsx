@@ -5,6 +5,7 @@ import { Card } from '@mui/joy';
 import {useState} from "react";
 import DatePicker from "react-datepicker";
 import {Button} from "@mui/material";
+import CancelIcon from '@mui/icons-material/Cancel';
 
 const parsedData= dataJS
 let valCompleted,valGoal;
@@ -63,20 +64,27 @@ export const DateRangeProduct = () => {
         { id: 1, value: valGoal, label: 'Hedef' },
 
     ];
+    const close_datepicker = () => {
+        setAnalyze(false);
+      };
 
 
     return (
         <div className={"ChartsDate"}>
-            <div className={"dateArea"}>
-                <Card style={{width: '500px', height: '250ppx'}}
-                      color="success"
-                      invertedColors={false}
-                      orientation="vertical"
-                      size="lg"
-                      variant="soft"
-                >
 
-                    <div className={"dateArea"}>
+            <div style={{display:'flex'}}>
+            <div className={"dateArea"}>
+                <Card 
+                    style={{width: '30%',minWidth:'100%', height: '150px'}}
+                    sx={{alignItems:'center'}}
+                    color="neutral"
+                    invertedColors={false}
+                    orientation="vertical"
+                    size="lg"
+                    variant="soft"
+                >
+                    Filtrele:
+                    <div className={"dateArea"} style={{display:'flex'}}>
 
                         <DatePicker
                             selected={startDate}
@@ -97,20 +105,23 @@ export const DateRangeProduct = () => {
 
                     </div>
                     <div className={"dateArea"}>
-                        <Button onClick={() => setValAnalyze(true)} variant="contained">ANALİZ</Button>
+                    <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning">ANALİZ</Button>
                     </div>
                 </Card>
 
             </div>
             <div>
-                {analyze && <Card className={"Charts"} style={{width: '800px', height: '400px'}}
-                                  color="neutral"
-                                  invertedColors={false}
-                                  orientation="vertical"
-                                  size="lg"
-                                  variant="soft"
+                {analyze && <Card  style={{width: '100%',minWidth:'100%', height: '400px'}}
+                               
+                               color="warning"
+                               invertedColors={false}
+                               orientation="vertical"
+                               size="lg"
+                               variant="soft"
                 >
-                    <h4 style={{paddingRight: '100px'}}>Seçilen Aralıktaki Verimlilik</h4>
+                    <CancelIcon onClick={close_datepicker} variant="contained" color="warning"/>
+
+                    <h4>Seçilen Aralıktaki Verimlilik</h4>
                     <PieChart
                         series={[
                             {
@@ -122,9 +133,14 @@ export const DateRangeProduct = () => {
                         height={300}
                     />
                 </Card>}
-
             </div>
-        </div>
+            </div>
+            
+            </div>
+            
+
+
+ 
 
 
     )

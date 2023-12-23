@@ -6,7 +6,7 @@ import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import './CategoryAnalyze.css';
 import { useState } from 'react';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+
 import {
     BarAnimation,
     CategoryDailyAnalyzeComp,
@@ -24,10 +24,9 @@ export function CategoryAnalyzeP(){
     }
     return (
         <div >
-            <div className={"ChartsDiv"}>
+            <div>
                 <ControllableStates/>
             </div>
-            <br/>
          <DateRangeP/>
             <div className="pie_charts" > 
             

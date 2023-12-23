@@ -93,3 +93,172 @@ body {
   margin: 0px;
   padding: 0px;
 }
+
+
+@media screen and (max-width:1700px){
+.buttons_input{
+  display: flex;
+}
+}
+
+@media screen and (max-width:1500px){
+  .dateArea{
+    flex-direction: column;
+  }
+  .Filter_part{
+    width:30% !important;
+    min-width: 265px;
+  }
+
+  /*DATAPAGE*/
+ .input_part{
+  flex-direction: column;
+  width: 100%;
+}
+
+}
+
+@media screen and (max-width:1200px){
+  .pie_charts{
+    flex-direction: column;
+    width: 330% !important;
+  }
+  .pie_card{
+    margin-bottom: 2rem;
+  }
+  .detailed_productbtn{
+    width:300%
+  }
+  /*NAVBAR*/
+  .navbar h1{
+    font-size: 20px;
+    margin-left: 5.3rem;
+    text-align: start;
+  }
+  .logo{
+    min-width: 33%;
+  }
+  /*//////*/
+  .date_card{
+    max-width:90% !important;
+  }
+  .selected_analyze{
+    width: 98.8% !important;
+   }
+}
+
+@media screen and (max-width:768px){
+  .autocomplete{
+    flex-direction: column;
+    width:215px !important;
+  }
+  .input_card{
+    width:80% !important;
+  }
+  .div_div{
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+  }
+  .date_picker{
+    flex-direction: column;
+  }
+  .date_card{
+    flex-direction: column;
+    width: 80% !important;
+    height: 200px !important;
+  }
+
+  .date_card img{
+    width:40% !important;
+    margin-left: -8rem;
+  }
+ .add_table{
+  flex-direction: column-reverse;
+ }
+ .add_btn{
+  margin-left: -2rem !important;
+ }
+}
+
+@media screen and (max-width:500px){
+  .pie_charts{
+    width: 330%;
+  }
+  .pie_card{
+    padding-bottom: 2rem;
+  }
+
+  /*NAVBAR*/
+  .navbar h1{
+    font-size: 20px;
+    margin-left: 5.3rem;
+    text-align: start;
+  }
+  .logo{
+    min-width: 33%;
+  }
+  .autocomplete{
+    flex-direction: column;
+    width:215px !important;
+  }
+  .input_card{
+    max-width: 500px !important;
+  }
+  .autocomplete{
+    flex-direction: column;
+    width:215px !important;
+  }
+}
+
+@media screen and (max-width:400px){
+  .date_card img{
+    width:40% !important;
+    margin-left: -20.5rem;
+    margin-top: 7rem;
+  }
+  .date_card{
+    height: 300px !important;
+  }
+
+  .pie_charts{
+    width: 900px !important;
+  }
+.detailed_chart{
+  width:280px !important;
+}
+  /*NAVBAR*/
+  .navbar h1{
+    font-size: 18px !important;
+  }
+  .logo{
+    max-width: 20% !important;
+    margin-left: 2rem;
+  }
+  .autocomplete{
+    flex-direction: column;
+    width:215px !important;
+  }
+  .input_card{
+    max-width: 500px !important;
+  }
+  .autocomplete{
+    flex-direction: column;
+    width:215px !important;
+  }
+  .date_card img{
+    min-width:170px;
+    align-self:center;
+    padding-top: 2rem;
+  }
+  .footer ul{
+    width:250px !important;
+    padding-left: 2rem;
+  }
+  .footer p{
+    width: 390px;
+  }
+  .selected_analyze{
+    width: 30% !important;
+   }
+}

@@ -15,19 +15,19 @@ export default function ProductPageAnalyze (){
     return(
         <div className={"mainAreaP"}>
             <div className={"maAreaP"}>
-                <DateRangeProduct/>
-
             </div>
             <div className={"maAreaP"}>
                 <ControllableStates/>
             </div>
-            <div className={"maAreaP"}>
+            <DateRangeProduct/>
+            <div className={"maAreaP"} style={{display:'flex', justifyContent:'space-between',paddingTop:10}}>
                 <Card className={"Charts"}
                       color="neutral"
                       invertedColors={false}
                       orientation="vertical"
                       size="lg"
                       variant="soft"
+                      sx={{width:'30%'}}
                 >
                     {<DailyProductAnalyze/>}
 
@@ -38,6 +38,7 @@ export default function ProductPageAnalyze (){
                       orientation="vertical"
                       size="lg"
                       variant="soft"
+                      sx={{width:'30%'}}
                 >
                     {<WeeklyProductAnalyze/>}
 
@@ -49,6 +50,7 @@ export default function ProductPageAnalyze (){
                       orientation="vertical"
                       size="lg"
                       variant="soft"
+                      sx={{width:'30%'}}
                 >
                     {<MonthlyProductAnalyze/>}
 
@@ -57,12 +59,13 @@ export default function ProductPageAnalyze (){
             </div>
             <br/>
             <div className={"maAreaP"}  >
-                <Card style={{width:'1600px'}}
+                <Card 
                       color="neutral"
                       invertedColors={false}
                       orientation="horizontal"
                       size="lg"
                       variant="soft"
+                      sx={{width:'100%', alignItems:'center'}}
                 >
                     {<BarAnimationDaily/>}
 

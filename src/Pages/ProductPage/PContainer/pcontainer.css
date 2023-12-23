@@ -11,15 +11,15 @@
     font-size: x-large;
     padding-left: 12rem;
 }
+.pp_input{
+    margin-top: 5rem;
+}
 .p_inputcard{
     transition: 'all 1s ease-out';
     margin-bottom: 3rem;
     margin-left: 24.5rem;
-    padding-top: 7rem;
     width: 60%;
     height: 430px;
-    align-self: center;
-    justify-content: center;
 }
 .save_btn{
     width: 45%;
@@ -31,3 +31,4 @@
 .p_header{
     align-self: flex-start;
 }
+
