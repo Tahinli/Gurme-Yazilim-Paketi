@@ -60,7 +60,7 @@ const outAnimation = keyframes`
 
 function getTodayDate() {
   const today = new Date();
-  today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
+  // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   return today.toLocaleDateString('tr-TR', options);
 }
@@ -197,6 +197,11 @@ export default function DContainer() {
 
   const [rows, setRows] = useState([]);
 
+  const [startDate, setStartDate] = useState(convertDate(getTodayDate()));
+  const [endDate, setEndDate] = useState(convertDate(getTodayDate()));
+
+
+
   async function updateGunlukler() {
     try {
       const newGunlukler = await gunlukApi.getGunlukler();
@@ -212,7 +217,7 @@ export default function DContainer() {
     };
 
     fetchData();
-    }, []);
+    }, [startDate, endDate]);
 
   async function updateUrunler() {
     try {
@@ -278,28 +283,22 @@ export default function DContainer() {
     setOpen(false);
   };
 
+  function updateRows() {
+    setRows(
+      Gunlukler.map((Selection, index) => {
+          if(new Date(convertDate(Selection.tarih))>=startDate && new Date(convertDate(Selection.tarih))<=endDate) {
+              return createData(index, Selection.urun_isim,
+                  Selection.tarih, Selection.hedeflenen, 
+                  Selection.ulasilan, Selection.atilan,
+                  Selection.personel_sayisi, Selection.sevk, Selection.stok);
+          }
+          return undefined;
+      }).filter(item => item !== undefined));} // undefined değerlerini kaldır
+      
   /// ilk rows'u oluşturmak için
-useEffect(() => {
-    setRows(Array.from({ length: Gunlukler.length }, (_, index) => {
-        const Selection = Gunlukler[index];
-        return createData(index, Selection.urun_isim,
-            Selection.tarih, Selection.hedeflenen, 
-            Selection.ulasilan, Selection.atilan,
-            Selection.personel_sayisi, Selection.sevk, Selection.stok);
-    }));
-
-}, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
-
-/// rows'u tarihe göre sıralamak için
   useEffect(() => {
-  const sortedRows = rows.sort((a, b) => {
-    const dateA = new Date(a.tarih.split('.').reverse().join('-'));
-    const dateB = new Date(b.tarih.split('.').reverse().join('-'));
-    return dateB - dateA;
-  });
-  setRows(sortedRows);
-}, [rows]);
-  /////////////////////////////////////////
+    updateRows();
+}, [Gunlukler, startDate, endDate,open]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
 
   const [value, setValue] = useState([
     dayjs( convertDate( getTodayDate() ) ),
@@ -366,7 +365,6 @@ const handleDelete = async (row) => {
 
  ////////////////////////// GUNLUK DÜZENLEME /////////////////////////////
  const handleEdit = async () => {
-  console.log('edit')
   console.log(rowname,rowtarih, (editpersonel_sayisi),(edithedef),(edittamamlanan),(editfire),(editstok),(editsevk),edittarih)
   try {
     await gunlukApi.updateGunluk(`${rowname}`, `${rowtarih}`, {
@@ -377,31 +375,33 @@ const handleDelete = async (row) => {
       yeni_atilan: (editfire),
       yeni_stok : (editstok),
       yeni_sevk : (editsevk),
-      yeni_tarih: rowtarih, 
+      yeni_tarih: edittarih, 
     });
-
+    updateRows();
     // Güncellenmiş row'u oluştur
 
-const updatedRow = {
-    ...rows[rowindex],
-  personel_sayisi: parseInt(editpersonel_sayisi),
-    hedeflenen: parseInt(edithedef),
-    ulasilan: parseInt(edittamamlanan),
-    atilan: parseInt(editfire),
-    stok: parseInt(editstok),
-    sevk: parseInt(editsevk),
-    tarih: rowtarih,
-    };
+// const updatedRow = {
+//     ...rows[rowindex],
+//   personel_sayisi: parseInt(editpersonel_sayisi),
+//     hedeflenen: parseInt(edithedef),
+//     ulasilan: parseInt(edittamamlanan),
+//     atilan: parseInt(editfire),
+//     stok: parseInt(editstok),
+//     sevk: parseInt(editsevk),
+//     tarih: edittarih,
+//     };
 
-    // Yeni bir rows dizisi oluştur ve güncellenmiş row'u içine ekle
-    const updatedRows = [
-    ...rows.slice(0, rowindex),
-    updatedRow,
-    ...rows.slice(rowindex + 1),
-    ];
-console.log(updatedRows);
-    // Update the rows state
-    setRows(updatedRows);
+
+    
+    // // Yeni bir rows dizisi oluştur ve güncellenmiş row'u içine ekle
+    // const updatedRows = [
+    // ...rows.slice(0, rowindex),
+    // updatedRow,
+    // ...rows.slice(rowindex + 1),
+    // ];
+
+    // // Update the rows state
+    // setRows(updatedRows);
 
   } catch (error) {
     console.error("An error occurred while updating:", error);
@@ -410,11 +410,35 @@ console.log(updatedRows);
     handleClickClose();
   }
 };
+
+const handleClear = async () => {
+  setHedef(0)
+  setTamamlanan(0)
+  setFire(0)
+  setSevk(0)
+  setStok(0)
+  setPersonel_sayisi(0)
+  setUrunadi('')
+  setKategoriadi('')
+}
  /////////////////////////////////////////////////////////////////////
 
    const handleClose = () => {
      setMassage(false);
    };
+
+   /// rows'u tarihe göre sıralamak için
+   useEffect(() => {
+    const sortedRows = [...rows].sort((a, b) => {
+      const dateA = new Date(a.tarih.split('.').reverse().join('-'));
+      const dateB = new Date(b.tarih.split('.').reverse().join('-'));
+      return dateB - dateA;
+    });
+    if (JSON.stringify(rows) !== JSON.stringify(sortedRows)) {  //EGER AYNI ISE SIRALAMAZ BOYLECE SONSUZ DONGUDEN KURTARILIR
+      setRows(sortedRows);
+    }
+  }, [rows]);
+    /////////////////////////////////////////
 
    function rowContent(_index, row) {
     return (
@@ -426,7 +450,7 @@ console.log(updatedRows);
                 align={column.numeric || false ? 'right' : 'left'}
                 sx={{backgroundColor:'rgb(209, 209,209)'}}
               >
-                {row[column.dataKey]}
+                {row && row[column.dataKey]} {/* row nesnesinin null veya undefined olup olmadığını kontrol edin */}
               </TableCell>   
               : 
               <TableCell align="right" key={column.dataKey} sx={{backgroundColor:'rgb(209, 209,209)'}}>
@@ -441,9 +465,9 @@ console.log(updatedRows);
                     onClick={() => handleClickOpen(row)}
                     color="success"
                     sx={{fontSize:30}}
-                    />    
-                <div>
+                    />
 
+                <div>
                   <Dialog open={open} onClose={()=>handleClickClose()} maxWidth="xl" className='edit_dialog'>
                     <DialogTitle sx={{backgroundColor:'rgb(72, 194, 102)'}}>DÜZENLE</DialogTitle>
                         <p style={{paddingLeft:20,marginBottom:0 ,color:'red',fontSize:17}}
@@ -480,9 +504,7 @@ console.log(updatedRows);
       </React.Fragment>
     );
   }
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
-
+  
   return (
 <div>
 {/* INPUT TEXT_FİELDS*/}
@@ -502,20 +524,20 @@ console.log(updatedRows);
           
 {/* AUTOCOMPLETE*/}
     <div className="autocomplete">
-          <Autocomplete onChange={(event, value) => {
+          <Autocomplete value={kategoriadi} onChange={(event, value) => {
           setKategoriadi(value);
           setUrunadi(null);
           }}
               className="autocomplete" 
               disablePortal
               options={kategorigir}
-              renderInput={(params) => <TextField onFocus={async () => await updatekategorigir()} className='auto_cmplete' {...params} label="Ürün Kategorisi" />}
+              renderInput={(params) => <TextField value={kategoriadi} onFocus={async () => await updatekategorigir()} className='auto_cmplete' {...params} label="Ürün Kategorisi" />}
           />
-          <Autocomplete onChange={(event, value) => setUrunadi(value)}
+          <Autocomplete value = {urunadi} onChange={(event, value) => setUrunadi(value)}
               className="autocomplete"
               disablePortal
               options={urungir}
-              renderInput={(params) => <TextField onFocus={() => updateurungir()} className='auto_cmplete' {...params} label="Ürünler" />}
+              renderInput={(params) => <TextField value={urunadi} onFocus={() => updateurungir()} className='auto_cmplete' {...params} label="Ürünler" />}
           />
     </div>
   
@@ -523,27 +545,27 @@ console.log(updatedRows);
 
     <TextField type="number" defaultValue = {0} 
      onChange={(e) => setHedef(e.target.value)}
-     sx={{paddingRight:1.5,paddingTop:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
+     value={hedef} sx={{paddingRight:1.5,paddingTop:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
 
     <TextField type="number" defaultValue = {0} 
      onChange={(e) => setTamamlanan(e.target.value)}
-     sx={{paddingRight:1.5,paddingTop:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
+     value={tamamlanan} sx={{paddingRight:1.5,paddingTop:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
 
     <TextField type="number" defaultValue = {0}
      onChange={(e) => setFire(e.target.value)}
-     sx={{paddingRight:1.5,paddingTop:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+     value={fire} sx={{paddingRight:1.5,paddingTop:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
 
     <TextField type="number" defaultValue = {0}
      onChange={(e) => setSevk(e.target.value)}
-     sx={{paddingRight:1.5,paddingTop:1.5}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
+     value={sevk} sx={{paddingRight:1.5,paddingTop:1.5}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
 
     <TextField type="number" defaultValue = {0}
      onChange={(e) => setStok(e.target.value)}
-     sx={{paddingRight:1.5,paddingTop:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+     value={stok} sx={{paddingRight:1.5,paddingTop:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
 
     <TextField type="number" defaultValue = {0}
      onChange={(e) => setPersonel_sayisi(e.target.value)}
-     sx={{paddingRight:1.5,paddingTop:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
+     value={personel_sayisi} sx={{paddingRight:1.5,paddingTop:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
 
 <div className='buttons_input'>
   <Stack  className="field_btn">
@@ -577,7 +599,7 @@ console.log(updatedRows);
       </Snackbar>
 
       <Stack  className="field_btn">
-        <Button color="error" variant='contained' aria-label="add" sx={{marginTop:1}} endIcon={<DeleteForeverIcon/>}>
+        <Button onClick = {() => handleClear()}color="error" variant='contained' aria-label="add" sx={{marginTop:1}} endIcon={<DeleteForeverIcon/>}>
           SIFIRLA
         </Button>
       </Stack>
@@ -605,6 +627,8 @@ console.log(updatedRows);
                           selectsStart
                           startDate={startDate}
                           endDate={endDate}
+                          dateFormat="dd.MM.yyyy"
+                          sx={{zIndex:1000}}
                       />
                       <DatePicker
                           selected={endDate}
@@ -613,11 +637,11 @@ console.log(updatedRows);
                           startDate={startDate}
                           endDate={endDate}
                           minDate={startDate}
+                          dateFormat="dd.MM.yyyy"
+                          sx={{zIndex:1000}}
                       />
                     </div>
-                    <Button className='list_btn' color="error" variant='contained' aria-label="add" sx={{marginTop:1}}>LİSTELE</Button> 
                   </div>   
-                    <img src="src/assets/img/genel.png"/>
                 </Card>
             </div>
 
