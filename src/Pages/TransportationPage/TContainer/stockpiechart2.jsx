@@ -75,11 +75,11 @@ export  function PieAnimation() {
         onChange={handleItemNbChange}
         valueLabelDisplay="auto"
         min={1}
-        max={10}
+        max={10}                             //burası kategori sayısına göre ayarlanıcak
         aria-labelledby="input-item-number"
       />
       <Typography id="input-radius" gutterBottom>
-        Katagori
+        Merkezin Büyüklüğü
       </Typography>
       <Slider
         value={radius}
