@@ -60,7 +60,7 @@ const outAnimation = keyframes`
 
 function getTodayDate() {
   const today = new Date();
-  // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
+  today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   return today.toLocaleDateString('tr-TR', options);
 }
@@ -440,7 +440,7 @@ console.log(updatedRows);
                   >
                     Sil
                   </Button >
-                <div>
+               
                   <Button
                     className='table_btn'
                     onClick={() => handleClickOpen(row)}
@@ -452,7 +452,7 @@ console.log(updatedRows);
                   >
                     Düzenle
                   </Button>
-                  
+                   <div>
                   <Dialog open={open} onClose={()=>handleClickClose()} maxWidth="xl" >
                     <DialogTitle sx={{backgroundColor:'rgb(72, 194, 102)'}}>DÜZENLE</DialogTitle>
                         <p style={{paddingLeft:20,marginBottom:0 ,color:'red',fontSize:17}}

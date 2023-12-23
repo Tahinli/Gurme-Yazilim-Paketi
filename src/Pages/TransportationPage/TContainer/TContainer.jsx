@@ -83,7 +83,7 @@ const columns = [
   },
   {
     width: 20,
-    label: "Stok",
+    label: "Sevk",
     dataKey: "sevk",
   }
 ];
@@ -239,7 +239,7 @@ function updateurungir() {
     setRows(Array.from({ length: Gunlukler.length }, (_, index) => {
         const Selection = Gunlukler[index];
         return createData(index, Selection.urun_isim,
-            Selection.tarih, Selection.stok);
+            Selection.tarih, Selection.sevk);
     }));
   }, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
   
