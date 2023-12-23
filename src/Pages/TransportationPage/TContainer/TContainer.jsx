@@ -273,7 +273,7 @@ function updateurungir() {
           variant="outlined"
         >
           <div className="input_header2">
-            <CancelIcon className="close_btn" onClick={close_input_part} />
+            <CancelIcon className="close_btn2" onClick={close_input_part} />
             <h4 style={{ maxHeight: "70px" }}>SEVK ANALİZİ</h4>
             <br />
             <div className="pie_chart2">

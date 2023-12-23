@@ -24,7 +24,7 @@ import Card from "@mui/joy/Card";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Snackbar from "@mui/joy/Snackbar";
-import { keyframes } from "@mui/system";
+import { fontSize, keyframes } from "@mui/system";
 import PlaylistAddCheckCircleRoundedIcon from "@mui/icons-material/PlaylistAddCheckCircleRounded";
 import { PieAnimation } from "./stockpiechart";
 import { useEffect } from "react";
@@ -278,7 +278,7 @@ useEffect(() => {
           variant="outlined"
         >
           <div className="input_header1">
-            <CancelIcon className="close_btn" onClick={close_input_part} />
+            <CancelIcon className="close_btn1" onClick={close_input_part} />
             <h4 style={{ maxHeight: "70px" }}>STOK ANALİZİ</h4>
             <br />
             <div className="pie_chart1">

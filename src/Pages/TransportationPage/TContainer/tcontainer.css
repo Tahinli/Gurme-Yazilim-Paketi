@@ -14,7 +14,7 @@
     margin-bottom: 3rem;
     margin-left: 5rem;
     padding-top: 7rem;
-    width: 60%;
+    width: 70%;
     height: 650px;
   }
   .autocomplete2 {
@@ -57,10 +57,9 @@
   }
   .close_btn2 {
     margin-top: 1rem;
-  }
-  .close_btn2:hover1 {
     color: red;
   }
+
   
   .input_header2 {
     display: flex;
