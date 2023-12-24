@@ -2,7 +2,7 @@ import {
     DailyProductAnalyze,
     WeeklyProductAnalyze,
     MonthlyProductAnalyze,
-    BarAnimationDaily
+    BarAnimationProduct
 } from "./productAnalyze.jsx";
 import {Card} from "@mui/joy";
 import ControllableStates from "../CategoryAnalyzePage/getInputAutocomplete.jsx";
@@ -67,7 +67,7 @@ export default function ProductPageAnalyze (){
                       variant="soft"
                       sx={{width:'100%', alignItems:'center'}}
                 >
-                    {<BarAnimationDaily/>}
+                    {<BarAnimationProduct/>}
 
                 </Card>
             </div>

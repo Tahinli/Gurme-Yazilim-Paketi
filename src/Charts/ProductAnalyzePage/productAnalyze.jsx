@@ -1,22 +1,35 @@
 import React, {useEffect, useState} from 'react'
 import { PieChart } from '@mui/x-charts/PieChart';
-import { dataJS } from '../dataJS';
 import Box from "@mui/material/Box";
 import {BarChart} from "@mui/x-charts/BarChart";
 import FormControlLabel from "@mui/material/FormControlLabel";
 import Checkbox from "@mui/material/Checkbox";
 import Typography from "@mui/material/Typography";
 import Slider from "@mui/material/Slider";
+import urunApi from "../../api/urun-api.js";
+import gunlukApi from "../../api/gunluk-api.js";
+const logList = await gunlukApi.getGunlukler();
+const proList = (await urunApi.getUrunler()).map((urun) => urun.isim);
 
-let totalCompletedProduct=[],totalGoalProduct=[]
-let tempCompletedProduct=0,tempGoalProduct=0
-var parsedData=dataJS;
+
+let arrProduct = [];
+for (let i = 0; i < 30; i++) {
+    arrProduct[i] = [];
+    for (let j = 0; j <2; j++) {
+        arrProduct[i][j] = 0;
+    }
+}
+let range
 const date=new Date()
 var datePerc=date.getUTCDay()
+//BU KISIMDA DAY FONKSİYONUNU PAZARTESİ GÜNÜNDEN BAŞLAYACAK BİÇİMDE MODİFİYE ETTİM
 if(date.getUTCDay()===0){
     datePerc=7
 }
-let range
+
+const proArr=arrProduct
+
+
 function getCurrentURL ()
 {
 
@@ -24,49 +37,212 @@ function getCurrentURL ()
     return window.location.href
 }
 
+let proVal;
 
-// Example
 const url = getCurrentURL().toString()
-
 
 const productNameVar=url.split("/")
 
-
+//BU KISIMDA TÜRKÇE KARAKTERDEN YABANCI KARAKTERLERE DÖNÜŞTÜREREK KARŞILAŞTIRMAY YAPIP ATAMASINI YAPIYORUM
 
 let productName=productNameVar[4]
-
-
-
-export  function DailyProductAnalyze() {
-
-
-    let anotherPD=0,totalProductDay=0
-
-
-    //GÜNLÜK HESAPLAMA
-    var ham=parsedData.filter(function(product){
-        const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-        return product.Product===productName&&productDate.getUTCMonth()===dateH.getUTCMonth()&&productDate.getUTCDate()===dateH.getUTCDate()&&productDate.getUTCFullYear()===dateH.getUTCFullYear()
-    })
-
-    for(let i=0;i<ham.length;i++){
-        totalProductDay+=ham[i].CompletedCount
-        anotherPD+=ham[i].GoalCount
+for(let i=0;i<proList.length;i++){
+    proVal=proList[i].replaceAll('Ğ','g')
+        .replaceAll('Ü','u')
+        .replaceAll('Ş','s')
+        .replaceAll('I','i')
+        .replaceAll('İ','i')
+        .replaceAll('Ö','o')
+        .replaceAll('Ç','c')
+        .replaceAll('ğ','g')
+        .replaceAll('ü','u')
+        .replaceAll('ş','s')
+        .replaceAll('ı','i')
+        .replaceAll('ö','o')
+        .replaceAll('ç','c');
+    if(proVal===productName){
+        proVal=proList[i]
+        break
     }
-    const data = [
-        { id: 0, value: totalProductDay, label: 'Tamamlanan' },
-        { id: 1, value: anotherPD, label: 'Hedef' },
+}
 
-    ];
+//Alttaki kısımda  datalar ve ataması yapıldı
 
+const DailyData = [
+    { id: 0, value: 0, label: 'Başarılı' },
+    { id: 1, value: 0, label: 'Başarısız' },
+
+];
+await filterByCatDaily()
+
+const monthData = [
+    { id: 0, value: 0, label: 'Başarılı' },
+    { id: 1, value: 0, label: 'Başarısız' },
+
+];
+await filterByCatMonth()
+
+const weekData = [
+    { id: 0, value: 0, label: 'Başarılı' },
+    { id: 1, value: 0, label: 'Başarısız' },
+
+];
+await filterByCatWeek()
+const dynamicSeries = [];
+await monthlyBarChart()
+
+
+function getTodayDate() {
+    const today = new Date();
+    // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return today.toLocaleDateString('tr-TR', options);
+}
+function convertDate(date){
+    return new Date(date.split('.').reverse().join('-'))
+}
+
+async function filterByCatDaily() {
+
+    const todayLog = logList.filter(gunluk => gunluk.tarih === getTodayDate());
+    let totalVal = 0;
+    let count=0
+    //Günlük veriler sonrası karşılaştırma
+    await Promise.all(todayLog.map(async (log) => {
+        const productCategory = await urunApi.getUrunByName(log.urun_isim);
+        if (proVal === productCategory.isim) {
+            count++
+            totalVal += log.ulasilan / log.hedeflenen;
+        }
+    }));
+    totalVal=(totalVal/count)*100;
+    let fail=100-totalVal
+    if(fail<0){
+        fail=0
+    }
+
+    DailyData.find(predicate => predicate.label === "Başarılı").value = totalVal
+    DailyData.find(predicate => predicate.label === "Başarısız").value = fail
+
+
+
+
+}
+async function createData(){
+    const [data,setData]=useState([])
+
+}
+async function filterByCatMonth()
+{
+
+    let todayValues=getTodayDate().split('.')
+    const date1=new Date(`${todayValues[2]}-${todayValues[1]}`)
+    const date2=new Date(date1)
+    date2.setMonth(date2.getMonth()+1)
+    date2.setDate(date2.getDate()-1)
+
+    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
+    let totalVal = 0;
+    let count=0
+    //Aylık log verisi sonrası karşılaştırma
+    await Promise.all(rangeLog.map(async (MonthLog) => {
+        const productCategory = await urunApi.getUrunByName(MonthLog.urun_isim);
+
+        if (proVal === productCategory.isim) {
+            count++
+            totalVal += MonthLog.ulasilan / MonthLog.hedeflenen;
+        }
+    }));
+    totalVal=(totalVal/count)*100;
+    let fail=100-totalVal
+    if(fail<0){
+        fail=0
+    }
+    monthData.find(predicate => predicate.label === "Başarılı").value = totalVal
+    monthData.find(predicate => predicate.label === "Başarısız").value = fail
+
+
+}
+async function monthlyBarChart(){
+
+    let todayValues=getTodayDate().split('.')
+    const date1=new Date(`${todayValues[2]}-${todayValues[1]}-${todayValues[0]}`)
+    const tempDate=new Date()
+    for(let i=0;i<30;i++){
+        date1.setDate(tempDate.getDate()-i)
+        let lastDay=date1.toLocaleString('tr-TR', { year: 'numeric', month: '2-digit', day: '2-digit' })
+        const rangeLog = logList.filter(gunluk =>gunluk.tarih=== lastDay);
+        let tempVal=0
+        let count=0
+        await Promise.all(rangeLog.map(async (barLog) => {
+                    const productCategory = await urunApi.getUrunByName(barLog.urun_isim);
+
+                    if (proVal === productCategory.isim) {
+                        count++
+                        tempVal += barLog.ulasilan / barLog.hedeflenen;
+                    }
+
+                }
+            )
+        );
+        //Mevcut değerler isimle uyuşuyorsa burada döngüden çıkan verileri eşitliyorum
+        tempVal/=count
+        tempVal*=100
+        let tempFail=100-tempVal
+        if(tempVal<0)
+            tempVal=0
+        arrProduct[i][0]=tempVal
+        if(isNaN(arrProduct[i][0]))
+            arrProduct[i][0]=0
+        arrProduct[i][1]=100-tempVal
+
+
+    }
+    return arrProduct
+}
+
+
+async function filterByCatWeek()
+{
+
+    let todayValues=getTodayDate().split('.')
+    const date1=new Date(`${todayValues[2]}-${todayValues[1]}-${todayValues[0]}`)
+    date1.setDate(date1.getDate()-(datePerc-1))
+    const date2=new Date(date1)
+    date2.setDate(date2.getDate()+6)
+    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
+    let totalVal = 0;
+    let count=0
+    //Haftanın içindeki verilere göre karşılaştırma yapılıyor
+    await Promise.all(rangeLog.map(async (WeekLog) => {
+        const productCategory = await urunApi.getUrunByName(WeekLog.urun_isim);
+        if (proVal === productCategory.isim) {
+            count++
+            totalVal += WeekLog.ulasilan / WeekLog.hedeflenen;
+        }
+    }));
+    totalVal=(totalVal/count)*100;
+    let fail=100-totalVal
+    if(fail<0){
+        fail=0
+    }
+    console.log("TOTAL VAL :"+totalVal)
+    //Burada veriler labela göre sırayla yazdırılıyor
+    weekData.find(predicate => predicate.label === "Başarılı").value = totalVal
+    weekData.find(predicate => predicate.label === "Başarısız").value = fail
+
+
+}
+
+export  function  DailyProductAnalyze() {
+    const data=DailyData
     return (
         <>
-            <div style={{width: '480px', height: '400px'}} className={"App"}>
-                <div className={"PieChart"}>
+            <div style={{width: '100%', height: '100%'}} >
+                <div >
 
                     <h1 className={"Font"} style={{paddingRight: '100px'}}>Günlük Verimlilik</h1>
-                    <div style={{width: '101%', height: '100%'}}>
+                    <div style={{width: '100%', height: '100%'}}>
                         <PieChart
                             series={[
                                 {
@@ -84,32 +260,18 @@ export  function DailyProductAnalyze() {
     )
 }
 export function WeeklyProductAnalyze() {
-let anotherPW=0
-    let totalProductW=0
-//HAFTALIK HESAPLAMA
-    var hamW=parsedData.filter(function(product){
-        const weekStart=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()-(datePerc-1))
-        const weekFinal=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate()+(7-datePerc),23,59,59)
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-        return  product.Product===productName&&(productDate<=weekFinal&&productDate>=weekStart)
-    })
-    for(let i=0;i<hamW.length;i++){
-        totalProductW+=hamW[i].CompletedCount
-        anotherPW+=hamW[i].GoalCount
-    }
-    const data = [
-        { id: 0, value: totalProductW, label: 'Tamamlanan' },
-        { id: 1, value: anotherPW, label: 'Hedef' },
 
-    ];
+
+//HAFTALIK HESAPLAMA
+    const data=weekData
 
     return (
         <>
-            <div style={{width: '480px', height: '400px'}} className={"App"}>
-                <div className={"PieChart"}>
+            <div style={{width: '100%', height: '100%'}}>
+                <div >
 
                     <h1 className={"Font"} style={{paddingRight: '100px'}}>Haftalık Verimlilik</h1>
-                    <div style={{width: '101%', height: '100%'}}>
+                    <div style={{width: '100%', height: '100%'}}>
                         <PieChart
                             series={[
                                 {
@@ -126,39 +288,18 @@ let anotherPW=0
         </>
     )
 }
-export function MonthlyProductAnalyze() {
-let anotherPM=0  , totalProductM=0
 //AYLIK HESAPLAMA
-    var hamM=parsedData.filter(function(product){
-        const dateH=new Date(date.getUTCFullYear(),date.getUTCMonth(),date.getUTCDate())
-        const productDate = new Date(product.Year,product.Month-1,product.Day);
-        return product.Product===productName&&productDate.getUTCMonth()===dateH.getUTCMonth()&&productDate.getUTCFullYear()===dateH.getUTCFullYear()
-    })
-    for(let i=0;i<hamM.length;i++){
-        totalProductM+=hamM[i].CompletedCount
-        anotherPM+=hamM[i].GoalCount
-    }
+export function MonthlyProductAnalyze() {
 
 
-
-
-
-
-
-
-    const data = [
-        { id: 0, value: totalProductM, label: 'Tamamlanan' },
-        { id: 1, value: anotherPM, label: 'Hedef' },
-
-    ];
-
+    const data=monthData
     return (
         <>
-            <div style={{width: '480px', height: '400px'}} className={"App"}>
-                <div className={"PieChart"}>
+            <div style={{width: '100%', height: '100%'}} >
+                <div>
 
                     <h1 className={"Font"} style={{paddingRight: '100px'}}>Aylık Verimlilik</h1>
-                    <div style={{width: '101%', height: '101%'} }>
+                    <div style={{width: '100%', height: '100%'} }>
                         <PieChart
                             series={[
                                 {
@@ -175,11 +316,15 @@ let anotherPM=0  , totalProductM=0
         </>
     )
 }
-export function BarAnimationDaily() {
 
-
-    const [itemNb, setItemNb] = useState(5);
+//SON 30 GÜN İÇİN AYARLANABİLİR BAR CHART
+export function BarAnimationProduct() {
+//Aralıkların belirlendiği kısım
+    const [seriesNb, setSeriesNb] =useState(1);
+    const [itemNb, setItemNb] = useState(30);
     const [skipAnimation, setSkipAnimation] = useState(false);
+    range=itemNb
+
 
     const handleItemNbChange = (event, newValue) => {
         if (typeof newValue !== 'number') {
@@ -187,34 +332,31 @@ export function BarAnimationDaily() {
         }
         setItemNb(newValue);
     };
-     range=itemNb
-    for(let j=range;j>0;j--){
-
-        const dateH=new Date()
-        dateH.setDate(dateH.getDate()-j)
-        tempCompletedProduct=0
-        tempGoalProduct=0
-        const filterProduct = parsedData.filter(function (product) {
-            const productDate = new Date(product.Year, product.Month - 1, product.Day);
-            return productDate.getUTCMonth() === dateH.getUTCMonth() && productDate.getUTCDate() === dateH.getUTCDate() && productDate.getUTCFullYear() === dateH.getUTCFullYear() && product.Product === productName
-        });
-        for(let i=0;i<filterProduct.length;i++){
-
-            tempCompletedProduct=filterProduct[i].CompletedCount
-            tempGoalProduct=filterProduct[i].GoalCount
+    const handleSeriesNbChange = (event, newValue) => {
+        if (typeof newValue !== 'number') {
+            return;
         }
+        setSeriesNb(newValue);
+    };
 
-        tempGoalProduct/=filterProduct.length
-        tempCompletedProduct/=filterProduct.length
-        if(filterProduct.length!==0){
-            totalCompletedProduct[j]=tempCompletedProduct
-            totalGoalProduct[j]=tempGoalProduct
-        }
-        else{
-            totalCompletedProduct[j]=Number(0)
-            totalGoalProduct[j]=Number(0)
-        }
+
+//Yukarıdan alınan veriler burada atanıyor
+    const label = "Başarılı"
+    const data = [];
+    for (let dataIndex = range; dataIndex >0; dataIndex--) {
+
+        data.push( Number(proArr[dataIndex-1][0]));
+
     }
+    dynamicSeries.push({ label, data });
+    const label2="Başarısız"
+    for (let dataIndex = range; dataIndex >0; dataIndex--) {
+
+        data.push( Number(proArr[dataIndex-1][1]));
+
+    }
+    dynamicSeries.push({ label2, data });
+
 
 
     const highlightScope = {
@@ -223,55 +365,41 @@ export function BarAnimationDaily() {
     };
 
 
-    const series = [
-        {
-            label: 'Tamamlanan Ürün Miktarı',
-            data: [
-                totalCompletedProduct[range], totalCompletedProduct[range-1], totalCompletedProduct[range-2], totalCompletedProduct[range-3], totalCompletedProduct[range-4], totalCompletedProduct[range-5], totalCompletedProduct[range-6], totalCompletedProduct[range-7], totalCompletedProduct[range-8], totalCompletedProduct[range-9], totalCompletedProduct[range-10], totalCompletedProduct[range-11], totalCompletedProduct[range-12],
-                totalCompletedProduct[range-13], totalCompletedProduct[range-14], totalCompletedProduct[range-15],totalCompletedProduct[range-16],totalCompletedProduct[range-17],totalCompletedProduct[range-18],totalCompletedProduct[range-19],totalCompletedProduct[range-20],totalCompletedProduct[range-21],totalCompletedProduct[range-22],totalCompletedProduct[range-23],totalCompletedProduct[range-24],totalCompletedProduct[range-25],totalCompletedProduct[range-26],totalCompletedProduct[range-27],totalCompletedProduct[range-28],totalCompletedProduct[range-29],
-            ],
-        },
-        {
-            label: 'Hedeflenen Ürün Miktarı',
-            data: [
-                totalGoalProduct[range], totalGoalProduct[range-1], totalGoalProduct[range-2], totalGoalProduct[range-3], totalGoalProduct[range-4], totalGoalProduct[range-5], totalGoalProduct[range-6], totalGoalProduct[range-7], totalGoalProduct[range-8], totalGoalProduct[range-9], totalGoalProduct[range-10], totalGoalProduct[range-11], totalGoalProduct[range-12],
-                totalGoalProduct[range-13], totalGoalProduct[range-14], totalGoalProduct[range-15],totalGoalProduct[range-16],totalGoalProduct[range-17],totalGoalProduct[range-18],totalGoalProduct[range-19],totalGoalProduct[range-20],totalGoalProduct[range-21],totalGoalProduct[range-22],totalGoalProduct[range-23],totalGoalProduct[range-24],totalGoalProduct[range-25],totalGoalProduct[range-26],totalGoalProduct[range-27],totalGoalProduct[range-28],totalGoalProduct[range-29],
-            ],
-        },
-
-    ].map((s) => ({ ...s, highlightScope }));
-
+    const series = dynamicSeries.map((s) => ({ ...s, highlightScope }));
 
     return (
-        <Box sx={{ width: '100%' }}>
+        <Box sx={{ width: '98%'}}>
             <BarChart
                 height={300}
                 series={series
-                    .slice(0, 2)
+                    .slice(0, seriesNb)
                     .map((s) => ({ ...s, data: s.data.slice(0, itemNb) }))}
                 skipAnimation={skipAnimation}
             />
             <FormControlLabel
                 checked={skipAnimation}
                 control={
-                    <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />
+                    <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} color='error'/>
                 }
                 label="Animasyonları Kapat"
                 labelPlacement="end"
             />
-            <Typography id="input-item-number" gutterBottom>
-                Günlerin Aralık Sayısı
-            </Typography>
-            <Slider
-                value={itemNb}
-                onChange={handleItemNbChange}
-                valueLabelDisplay="auto"
-                min={1}
-                max={30}
-                aria-labelledby="input-item-number"
-            />
+            <div className='sliders'>
+                <Typography id="input-item-number" sx={{fontSize:16, backgroundColor:'rgb(235, 230, 230)'}} gutterBottom>
+                    Günlerin Aralık Sayısı
+                </Typography>
+                <Slider
+                    value={itemNb}
+                    onChange={handleItemNbChange}
+                    valueLabelDisplay="auto"
+                    min={1}
+                    max={30}
+                    sx={{width:'50%'}}
+                    aria-labelledby="input-item-number"
+                    color='error'
+                />
+            </div>
 
         </Box>
     );
 }
-

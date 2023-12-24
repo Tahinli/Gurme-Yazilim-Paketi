@@ -1,8 +1,6 @@
 import React, {useEffect, useState} from 'react'
 import { PieChart } from '@mui/x-charts/PieChart';
-import { dataJS } from '../dataJS';
 import { BarChart } from '@mui/x-charts/BarChart';
-import {Card} from "@mui/joy";
 import Box from '@mui/material/Box';
 import Typography from '@mui/material/Typography';
 import Slider from '@mui/material/Slider';
@@ -11,15 +9,15 @@ import Checkbox from '@mui/material/Checkbox';
 import urunApi from "../../api/urun-api.js";
 import gunlukApi from "../../api/gunluk-api.js";
 import kategoriApi from "../../api/kategori-api.js";
-import {ca, da, de} from "date-fns/locale";
+
 import Gunluk from "../../api/gunluk-api.js";
-import { useNavigate } from 'react-router'
+
 import {useLocation} from "react-router-dom";
 
-
+//APIDEN GELEN DEĞERLER ÇEKİLİYOR
 const productList = await urunApi.getUrunler();
 const logList = await gunlukApi.getGunlukler();
-// const urungir = (await urunApi.getUrunler()).map((urun) => urun.isim);
+const urungir = (await urunApi.getUrunler()).map((urun) => urun.isim);
 const catList = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
 
 let arrProduct = [];
@@ -37,6 +35,7 @@ let range
 const date=new Date()
 
 var datePerc=date.getUTCDay()
+//GÜN KISMININ TÜRKİYE LOCALİNE GÖRE MODİFİYE EDİLMESİ
 if(date.getUTCDay()===0){
     datePerc=7
 }
@@ -213,8 +212,6 @@ function refresh(){
 
 //GÜNLÜK HESAPLAMA
 export  function  CategoryDailyAnalyzeComp() {
-
-
     const data=DailyData
     return (
         <>
