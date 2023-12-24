@@ -33,6 +33,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
 import { useEffect } from 'react';
 import DatePicker from "react-datepicker";
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 
 const inAnimation = keyframes`
@@ -65,16 +67,16 @@ function getTodayDate() {
   return today.toLocaleDateString('tr-TR', options);
 }
 
-function convertDate(date){
+function convertDate(date) {
   return new Date(date.split('.').reverse().join('-'))
 }
 
-function createData(id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi, sevk, stok) {
-  return {id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi, sevk, stok };
+function createData(id, urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi, sevk, stok) {
+  return { id, urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi, sevk, stok };
 }
 
 const columns = [
-  
+
   {
     width: 160,
     label: 'Ürünler',
@@ -147,7 +149,7 @@ const VirtuosoTableComponents = {
 function fixedHeaderContent() {
   return (
     <TableRow>
-     
+
       {columns.map((column) => (
         <TableCell
           key={column.dataKey}
@@ -155,11 +157,11 @@ function fixedHeaderContent() {
           align={column.numeric || false ? 'right' : 'left'}
           style={{ width: column.width }}
           sx={{
-            border:'0.1px solid black',
+            border: '0.1px solid black',
             backgroundColor: '#28342b',
-            color:'white',
+            color: 'white',
             fontSize: 17,
-            paddingLeft:1,
+            paddingLeft: 1,
           }}
         >
           {column.label}
@@ -174,26 +176,26 @@ function fixedHeaderContent() {
 export default function DContainer() {
 
   const [Gunlukler, setGunlukler] = useState([]);
-  const [ urunadi, setUrunadi ] = useState('');
-  const [ kategoriadi, setKategoriadi ] = useState(''); 
-  const [ hedef, setHedef ] = useState(0); //hedeflenen
-  const [ tamamlanan, setTamamlanan] = useState(0); //ulasilan
-  const [ fire, setFire] = useState(0); //atilan
-  const [ sevk, setSevk] = useState(0); 
-  const [ stok, setStok] = useState(0); 
-  const [ personel_sayisi, setPersonel_sayisi] = useState(0);
-  const [ tarih, setTarih] = useState(''); //tarih
+  const [urunadi, setUrunadi] = useState('');
+  const [kategoriadi, setKategoriadi] = useState('');
+  const [hedef, setHedef] = useState(0); //hedeflenen
+  const [tamamlanan, setTamamlanan] = useState(0); //ulasilan
+  const [fire, setFire] = useState(0); //atilan
+  const [sevk, setSevk] = useState(0);
+  const [stok, setStok] = useState(0);
+  const [personel_sayisi, setPersonel_sayisi] = useState(0);
+  const [tarih, setTarih] = useState(''); //tarih
   const [kategorigir, setKategorigir] = useState([]);
   const [urungir, setUrungir] = useState([]);
   const [Urunler, setUrunler] = useState([]);
 
-  const [ edithedef, editsetHedef ] = useState(0); //hedeflenen
-  const [ edittamamlanan, editsetTamamlanan] = useState(0); //ulasilan
-  const [ editfire, editsetFire] = useState(0); //atilan
-  const [ editsevk, editsetSevk] = useState(0); 
-  const [ editstok, editsetStok] = useState(0); 
-  const [ editpersonel_sayisi, editsetPersonel_sayisi] = useState(0);
-  const [ edittarih, editsetTarih] = useState(''); //tarih
+  const [edithedef, editsetHedef] = useState(0); //hedeflenen
+  const [edittamamlanan, editsetTamamlanan] = useState(0); //ulasilan
+  const [editfire, editsetFire] = useState(0); //atilan
+  const [editsevk, editsetSevk] = useState(0);
+  const [editstok, editsetStok] = useState(0);
+  const [editpersonel_sayisi, editsetPersonel_sayisi] = useState(0);
+  const [edittarih, editsetTarih] = useState(''); //tarih
 
   const [rows, setRows] = useState([]);
 
@@ -213,21 +215,21 @@ export default function DContainer() {
 
   useEffect(() => {
     const fetchData = async () => {
-        await updateGunlukler();
+      await updateGunlukler();
     };
 
     fetchData();
-    }, [startDate, endDate]);
+  }, [startDate, endDate]);
 
   async function updateUrunler() {
     try {
-      const newUrunler = await urunApi.getUrunler(); 
+      const newUrunler = await urunApi.getUrunler();
       setUrunler(newUrunler);
     } catch (error) {
       console.error("An error occurred:", error);
     }
   }
-  
+
   useEffect(() => {
     updateUrunler();
   }, [kategoriadi]);
@@ -246,12 +248,12 @@ export default function DContainer() {
     console.log('updateurungir')
     const newUrungir = [];
     for (let urun of Urunler) {
-      if(urun.kategori_isim === kategoriadi)
+      if (urun.kategori_isim === kategoriadi)
         newUrungir.push(urun.isim);
     }
     setUrungir(newUrungir);
   }
-    
+
 
 
   const [open, setOpen] = useState(false);
@@ -275,7 +277,7 @@ export default function DContainer() {
     editsetStok(row.stok);
     editsetSevk(row.sevk);
     editsetTarih(row.tarih);
-    
+
     setOpen(true);
   };
 
@@ -286,149 +288,149 @@ export default function DContainer() {
   function updateRows() {
     setRows(
       Gunlukler.map((Selection, index) => {
-          if(new Date(convertDate(Selection.tarih))>=startDate && new Date(convertDate(Selection.tarih))<=endDate) {
-              return createData(index, Selection.urun_isim,
-                  Selection.tarih, Selection.hedeflenen, 
-                  Selection.ulasilan, Selection.atilan,
-                  Selection.personel_sayisi, Selection.sevk, Selection.stok);
-          }
-          return undefined;
-      }).filter(item => item !== undefined));} // undefined değerlerini kaldır
-      
+        if (new Date(convertDate(Selection.tarih)) >= startDate && new Date(convertDate(Selection.tarih)) <= endDate) {
+          return createData(index, Selection.urun_isim,
+            Selection.tarih, Selection.hedeflenen,
+            Selection.ulasilan, Selection.atilan,
+            Selection.personel_sayisi, Selection.sevk, Selection.stok);
+        }
+        return undefined;
+      }).filter(item => item !== undefined));
+  } // undefined değerlerini kaldır
+
   /// ilk rows'u oluşturmak için
   useEffect(() => {
     updateRows();
-}, [Gunlukler, startDate, endDate,open]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
+  }, [Gunlukler, startDate, endDate, open]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
 
   const [value, setValue] = useState([
-    dayjs( convertDate( getTodayDate() ) ),
-    dayjs( convertDate( getTodayDate() ) ),
+    dayjs(convertDate(getTodayDate())),
+    dayjs(convertDate(getTodayDate())),
   ]);
 
-   const [showInputPart,setShow]= useState(false);
+  const [showInputPart, setShow] = useState(false);
 
-   const show_input_part = () => {
+  const show_input_part = () => {
     setShow(true);
-   }
-   const close_input_part = () => {
+  }
+  const close_input_part = () => {
     setShow(false);
-   }
+  }
 
-   const animationDuration = 600;
-   const [massage, setMassage] = useState(false);
+  const animationDuration = 600;
+  const [massage, setMassage] = useState(false);
 
 
-   const handleClick = async () => {
+  const handleClick = async () => {
     //vvvvvvvvvvvvvvvv   GUNLUK EKLEME   vvvvvvvvvvvvvvvvvvvvvvvvvvv
     //if ile bos olup olmadigini kontrol et
-    if(!(urunadi === null || urunadi === undefined || urunadi === ''
-        &&
-        kategoriadi === null || kategoriadi === undefined || kategoriadi === '')
-      )
-    {
+    if (!(urunadi === null || urunadi === undefined || urunadi === ''
+      &&
+      kategoriadi === null || kategoriadi === undefined || kategoriadi === '')
+    ) {
       try {
-        await gunlukApi.addGunluk (`${urunadi}`,
-        {
-          personel_sayisi: personel_sayisi,
-          hedeflenen: hedef,
-          ulasilan: tamamlanan,
-          atilan: fire,
-          stok : stok,
-          sevk : sevk,
-      
-          tarih: getTodayDate(),
-        });
-      //////////////////////////////////////////////////////////////////////
-      // vvvvvvvvvvvv ROWSU DEGISTIREREK TABLOYU GUNCELLER vvvvvvvvvvvvvvvvvvv
-          setRows([
-            createData(rows.length, urunadi, getTodayDate() , hedef, tamamlanan, fire, personel_sayisi, sevk, stok),
-            ...rows,
-          ]);//id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi, sevk, stok
-      //////////////////////////////////////////////////////////////////////
-          setMassage(true);
-        } catch (error) {
-          console.error("An error occurred:", error);
-        }
-   };
-}
+        await gunlukApi.addGunluk(`${urunadi}`,
+          {
+            personel_sayisi: personel_sayisi,
+            hedeflenen: hedef,
+            ulasilan: tamamlanan,
+            atilan: fire,
+            stok: stok,
+            sevk: sevk,
 
-////////////////////////// GUNLUK SILME /////////////////////////////
-const handleDelete = async (row) => {
-  try {
-    await gunlukApi.deleteGunluk(`${row.urun_isim}`, `${row.tarih}`);
-    setRows(prevRows => prevRows.filter(r => r.id !== row.id));
-  } catch (error) {
-    console.error("An error occurred while deleting:", error);
+            tarih: getTodayDate(),
+          });
+        //////////////////////////////////////////////////////////////////////
+        // vvvvvvvvvvvv ROWSU DEGISTIREREK TABLOYU GUNCELLER vvvvvvvvvvvvvvvvvvv
+        setRows([
+          createData(rows.length, urunadi, getTodayDate(), hedef, tamamlanan, fire, personel_sayisi, sevk, stok),
+          ...rows,
+        ]);//id , urun_isim, tarih, hedeflenen, ulasilan, atilan, personel_sayisi, sevk, stok
+        //////////////////////////////////////////////////////////////////////
+        setMassage(true);
+      } catch (error) {
+        console.error("An error occurred:", error);
+      }
+    };
   }
-};
- /////////////////////////////////////////////////////////////////////
 
- ////////////////////////// GUNLUK DÜZENLEME /////////////////////////////
- const handleEdit = async () => {
-  console.log(rowname,rowtarih, (editpersonel_sayisi),(edithedef),(edittamamlanan),(editfire),(editstok),(editsevk),edittarih)
-  try {
-    await gunlukApi.updateGunluk(`${rowname}`, `${rowtarih}`, {
-      yeni_urun : rowname,
-      yeni_personel_sayisi: (editpersonel_sayisi),
-      yeni_hedeflenen: (edithedef),
-      yeni_ulasilan: (edittamamlanan),
-      yeni_atilan: (editfire),
-      yeni_stok : (editstok),
-      yeni_sevk : (editsevk),
-      yeni_tarih: edittarih, 
-    });
-    updateRows();
-    // Güncellenmiş row'u oluştur
+  ////////////////////////// GUNLUK SILME /////////////////////////////
+  const handleDelete = async (row) => {
+    try {
+      await gunlukApi.deleteGunluk(`${row.urun_isim}`, `${row.tarih}`);
+      setRows(prevRows => prevRows.filter(r => r.id !== row.id));
+    } catch (error) {
+      console.error("An error occurred while deleting:", error);
+    }
+  };
+  /////////////////////////////////////////////////////////////////////
 
-// const updatedRow = {
-//     ...rows[rowindex],
-//   personel_sayisi: parseInt(editpersonel_sayisi),
-//     hedeflenen: parseInt(edithedef),
-//     ulasilan: parseInt(edittamamlanan),
-//     atilan: parseInt(editfire),
-//     stok: parseInt(editstok),
-//     sevk: parseInt(editsevk),
-//     tarih: edittarih,
-//     };
+  ////////////////////////// GUNLUK DÜZENLEME /////////////////////////////
+  const handleEdit = async () => {
+    console.log(rowname, rowtarih, (editpersonel_sayisi), (edithedef), (edittamamlanan), (editfire), (editstok), (editsevk), edittarih)
+    try {
+      await gunlukApi.updateGunluk(`${rowname}`, `${rowtarih}`, {
+        yeni_urun: rowname,
+        yeni_personel_sayisi: (editpersonel_sayisi),
+        yeni_hedeflenen: (edithedef),
+        yeni_ulasilan: (edittamamlanan),
+        yeni_atilan: (editfire),
+        yeni_stok: (editstok),
+        yeni_sevk: (editsevk),
+        yeni_tarih: edittarih,
+      });
+      updateRows();
+      // Güncellenmiş row'u oluştur
+
+      // const updatedRow = {
+      //     ...rows[rowindex],
+      //   personel_sayisi: parseInt(editpersonel_sayisi),
+      //     hedeflenen: parseInt(edithedef),
+      //     ulasilan: parseInt(edittamamlanan),
+      //     atilan: parseInt(editfire),
+      //     stok: parseInt(editstok),
+      //     sevk: parseInt(editsevk),
+      //     tarih: edittarih,
+      //     };
 
 
-    
-    // // Yeni bir rows dizisi oluştur ve güncellenmiş row'u içine ekle
-    // const updatedRows = [
-    // ...rows.slice(0, rowindex),
-    // updatedRow,
-    // ...rows.slice(rowindex + 1),
-    // ];
 
-    // // Update the rows state
-    // setRows(updatedRows);
+      // // Yeni bir rows dizisi oluştur ve güncellenmiş row'u içine ekle
+      // const updatedRows = [
+      // ...rows.slice(0, rowindex),
+      // updatedRow,
+      // ...rows.slice(rowindex + 1),
+      // ];
 
-  } catch (error) {
-    console.error("An error occurred while updating:", error);
+      // // Update the rows state
+      // setRows(updatedRows);
+
+    } catch (error) {
+      console.error("An error occurred while updating:", error);
+    }
+    finally {
+      handleClickClose();
+    }
+  };
+
+  const handleClear = async () => {
+    setHedef(0)
+    setTamamlanan(0)
+    setFire(0)
+    setSevk(0)
+    setStok(0)
+    setPersonel_sayisi(0)
+    setUrunadi('')
+    setKategoriadi('')
   }
-  finally{
-    handleClickClose();
-  }
-};
+  /////////////////////////////////////////////////////////////////////
 
-const handleClear = async () => {
-  setHedef(0)
-  setTamamlanan(0)
-  setFire(0)
-  setSevk(0)
-  setStok(0)
-  setPersonel_sayisi(0)
-  setUrunadi('')
-  setKategoriadi('')
-}
- /////////////////////////////////////////////////////////////////////
+  const handleClose = () => {
+    setMassage(false);
+  };
 
-   const handleClose = () => {
-     setMassage(false);
-   };
-
-   /// rows'u tarihe göre sıralamak için
-   useEffect(() => {
+  /// rows'u tarihe göre sıralamak için
+  useEffect(() => {
     const sortedRows = [...rows].sort((a, b) => {
       const dateA = new Date(a.tarih.split('.').reverse().join('-'));
       const dateB = new Date(b.tarih.split('.').reverse().join('-'));
@@ -438,234 +440,296 @@ const handleClear = async () => {
       setRows(sortedRows);
     }
   }, [rows]);
-    /////////////////////////////////////////
+  /////////////////////////////////////////
 
-   function rowContent(_index, row) {
+  //PDF EXPORT
+  const doc = new jsPDF()
+
+  // const fontBlob = await fetch('../../assets/fonts/arbutusslab-regular.ttf').then(response => response.blob());
+  // const fontBase64 = await blobToDataURL(fontBlob);
+
+  // doc.addFileToVFS("arbutusslab-regular.ttf", fontBase64.split(",")[1]);
+  // doc.addFont("arbutusslab-regular.ttf", "MyFont", "normal");
+  // doc.setFont("MyFont");
+
+  const exportTableToPDF = () => {
+
+    const data = rows.map((row) => {
+      return {
+        urun_isim: row.urun_isim,
+        tarih: row.tarih,
+        hedeflenen: row.hedeflenen,
+        ulasilan: row.ulasilan,
+        atilan: row.atilan,
+        personel_sayisi: row.personel_sayisi,
+        sevk: row.sevk,
+        stok: row.stok,
+      }
+    })
+    const columns = [
+      { header: 'Urun Adı', dataKey: 'urun_isim' },
+      { header: 'Tarih', dataKey: 'tarih' },
+      { header: 'Hedeflenen', dataKey: 'hedeflenen' },
+      { header: 'Ulaşılan', dataKey: 'ulasilan' },
+      { header: 'Fire', dataKey: 'atilan' },
+      { header: 'Personel Sayısı', dataKey: 'personel_sayisi' },
+      { header: 'Sevk', dataKey: 'sevk' },
+      { header: 'Stok', dataKey: 'stok' },
+    ]
+
+    autoTable(doc, {
+      columns,
+      body: data,
+      styles: { cellWidth: 'wrap' },
+      margin: { top: 15, right: 10, bottom: 10, left: 10 },
+      didDrawPage: (data) => {
+        doc.setFontSize(10)
+        doc.text(`${data.pageNumber}`, data.settings.margin.left, doc.internal.pageSize.height - 10)
+
+        let text = `${new Date().toLocaleString()}`
+        let textWidth = doc.getStringUnitWidth(text) * doc.internal.getFontSize() / doc.internal.scaleFactor
+        let textOffset = doc.internal.pageSize.width - textWidth - data.settings.margin.right
+
+        doc.text(text, textOffset, 10)
+      }
+    })
+
+    doc.save("Data-Report.pdf")
+  };
+
+  function rowContent(_index, row) {
     return (
-      <React.Fragment>  
+      <React.Fragment>
         {columns.map((column) => (
           column.dataKey !== 'islem' ?
             <TableCell
-                key={column.dataKey}
-                align={column.numeric || false ? 'right' : 'left'}
-                sx={{backgroundColor:'rgb(209, 209,209)'}}
-              >
-                {row && row[column.dataKey]} {/* row nesnesinin null veya undefined olup olmadığını kontrol edin */}
-              </TableCell>   
-              : 
-              <TableCell align="right" key={column.dataKey} sx={{backgroundColor:'rgb(209, 209,209)'}}>
-                <div className=' table_btns' style={{ display: 'flex'}}>   
-                    <DeleteForeverIcon 
-                    onClick={() => handleDelete(row)} 
-                    color="error"
-                    sx={{fontSize:30,marginRight:2.5}}
-                     />
-                 
-                    <BorderColorIcon
-                    onClick={() => handleClickOpen(row)}
-                    color="success"
-                    sx={{fontSize:30}}
-                    />
+              key={column.dataKey}
+              align={column.numeric || false ? 'right' : 'left'}
+              sx={{ backgroundColor: 'rgb(209, 209,209)' }}
+            >
+              {row && row[column.dataKey]} {/* row nesnesinin null veya undefined olup olmadığını kontrol edin */}
+            </TableCell>
+            :
+            <TableCell align="right" key={column.dataKey} sx={{ backgroundColor: 'rgb(209, 209,209)' }}>
+              <div className=' table_btns' style={{ display: 'flex' }}>
+                <DeleteForeverIcon
+                  onClick={() => handleDelete(row)}
+                  color="error"
+                  sx={{ fontSize: 30, marginRight: 2.5 }}
+                />
+
+                <BorderColorIcon
+                  onClick={() => handleClickOpen(row)}
+                  color="success"
+                  sx={{ fontSize: 30 }}
+                />
 
                 <div>
-                  <Dialog open={open} onClose={()=>handleClickClose()} maxWidth="xl" className='edit_dialog'>
-                    <DialogTitle sx={{backgroundColor:'rgb(72, 194, 102)'}}>DÜZENLE</DialogTitle>
-                        <p style={{paddingLeft:20,marginBottom:0 ,color:'red',fontSize:17}}
-                        >
-                          (Tarihi 'gg.aa.yyyy' Şeklinde Giriniz.)
-                        </p>
-                    
-                    <Card  
-                     className='edit_card'
-                     color='neutral'
-                     orientation="horizontal"
-                     size="lg"
-                     variant='soft'
-                     sx={{width:'100%'}}
-                     > 
-                        <TextField onChange={(e) => editsetPersonel_sayisi(e.target.value)} type="number" autoFocus margin="dense" label="Personel Sayısı" fullWidth defaultValue={editpersonel_sayisi} inputProps={{ min: 0 }}/>
-                        <TextField onChange={(e) => editsetTarih(e.target.value)} margin="dense" label="Tarih" fullWidth defaultValue={edittarih}/>
-                        <TextField onChange={(e) => editsetHedef(e.target.value)} type="number" autoFocus margin="dense" label="Hedef" fullWidth defaultValue={edithedef} inputProps={{ min: 0 }}/>
-                        <TextField onChange={(e) => editsetTamamlanan(e.target.value)} type="number" margin="dense" label="Tamamlanan" fullWidth defaultValue={edittamamlanan} inputProps={{ min: 0 }}/>
-                        <TextField onChange={(e) => editsetFire(e.target.value)} type="number" autoFocus margin="dense" label="Fire" fullWidth defaultValue={editfire} inputProps={{ min: 0 }}/>
-                        <TextField onChange={(e) => editsetSevk(e.target.value)} type="number" margin="dense" label="Sevk" fullWidth defaultValue={editsevk} inputProps={{ min: 0 }}/>
-                        <TextField onChange={(e) => editsetStok(e.target.value)} type="number" autoFocus margin="dense" label="Stok" fullWidth defaultValue={editstok} inputProps={{ min: 0 }}/>
+                  <Dialog open={open} onClose={() => handleClickClose()} maxWidth="xl" className='edit_dialog'>
+                    <DialogTitle sx={{ backgroundColor: 'rgb(72, 194, 102)' }}>DÜZENLE</DialogTitle>
+                    <p style={{ paddingLeft: 20, marginBottom: 0, color: 'red', fontSize: 17 }}
+                    >
+                      (Tarihi 'gg.aa.yyyy' Şeklinde Giriniz.)
+                    </p>
+
+                    <Card
+                      className='edit_card'
+                      color='neutral'
+                      orientation="horizontal"
+                      size="lg"
+                      variant='soft'
+                      sx={{ width: '100%' }}
+                    >
+                      <TextField onChange={(e) => editsetPersonel_sayisi(e.target.value)} type="number" autoFocus margin="dense" label="Personel Sayısı" fullWidth defaultValue={editpersonel_sayisi} inputProps={{ min: 0 }} />
+                      <TextField onChange={(e) => editsetTarih(e.target.value)} margin="dense" label="Tarih" fullWidth defaultValue={edittarih} />
+                      <TextField onChange={(e) => editsetHedef(e.target.value)} type="number" autoFocus margin="dense" label="Hedef" fullWidth defaultValue={edithedef} inputProps={{ min: 0 }} />
+                      <TextField onChange={(e) => editsetTamamlanan(e.target.value)} type="number" margin="dense" label="Tamamlanan" fullWidth defaultValue={edittamamlanan} inputProps={{ min: 0 }} />
+                      <TextField onChange={(e) => editsetFire(e.target.value)} type="number" autoFocus margin="dense" label="Fire" fullWidth defaultValue={editfire} inputProps={{ min: 0 }} />
+                      <TextField onChange={(e) => editsetSevk(e.target.value)} type="number" margin="dense" label="Sevk" fullWidth defaultValue={editsevk} inputProps={{ min: 0 }} />
+                      <TextField onChange={(e) => editsetStok(e.target.value)} type="number" autoFocus margin="dense" label="Stok" fullWidth defaultValue={editstok} inputProps={{ min: 0 }} />
                     </Card>
 
-                        <DialogActions sx={{alignItems:'left'}}>
-                        <Button variant="contained" color="error" onClick={() => handleClickClose()}>İptal</Button>
-                        <Button variant="contained" color="success" onClick={()=> handleEdit()}>Güncelle</Button>
-                        </DialogActions>               
+                    <DialogActions sx={{ alignItems: 'left' }}>
+                      <Button variant="contained" color="error" onClick={() => handleClickClose()}>İptal</Button>
+                      <Button variant="contained" color="success" onClick={() => handleEdit()}>Güncelle</Button>
+                    </DialogActions>
                   </Dialog>
-               </div>
+                </div>
               </div>
-              </TableCell>    
-        ))}       
+            </TableCell>
+        ))}
       </React.Fragment>
     );
   }
-  
   return (
-<div>
-{/* INPUT TEXT_FİELDS*/}
-  {showInputPart && <Card 
-  className='input_card'
-  color='success'
-  orientation="horizontal"
-  size="lg"
-  variant='outlined'
-  >
-<div className='input_part'>
-<div className='auto_text_btn' >
-      <div className='input_header'>             
-          <CancelIcon  className="close_btn" onClick={()=> close_input_part()} />    
-          <h4>VERİ GİRİŞİ</h4>
-      </div>
-          
-{/* AUTOCOMPLETE*/}
-    <div className="autocomplete">
-          <Autocomplete value={kategoriadi} onChange={(event, value) => {
-          setKategoriadi(value);
-          setUrunadi(null);
-          }}
-              className="autocomplete" 
-              disablePortal
-              options={kategorigir}
-              renderInput={(params) => <TextField value={kategoriadi} onFocus={async () => await updatekategorigir()} className='auto_cmplete' {...params} label="Ürün Kategorisi" />}
-          />
-          <Autocomplete value = {urunadi} onChange={(event, value) => setUrunadi(value)}
-              className="autocomplete"
-              disablePortal
-              options={urungir}
-              renderInput={(params) => <TextField value={urunadi} onFocus={() => updateurungir()} className='auto_cmplete' {...params} label="Ürünler" />}
-          />
-    </div>
-  
-    <div> 
-
-    <TextField type="number" defaultValue = {0} 
-     onChange={(e) => setHedef(e.target.value)}
-     value={hedef} sx={{paddingRight:1.5,paddingTop:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
-
-    <TextField type="number" defaultValue = {0} 
-     onChange={(e) => setTamamlanan(e.target.value)}
-     value={tamamlanan} sx={{paddingRight:1.5,paddingTop:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
-
-    <TextField type="number" defaultValue = {0}
-     onChange={(e) => setFire(e.target.value)}
-     value={fire} sx={{paddingRight:1.5,paddingTop:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
-
-    <TextField type="number" defaultValue = {0}
-     onChange={(e) => setSevk(e.target.value)}
-     value={sevk} sx={{paddingRight:1.5,paddingTop:1.5}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
-
-    <TextField type="number" defaultValue = {0}
-     onChange={(e) => setStok(e.target.value)}
-     value={stok} sx={{paddingRight:1.5,paddingTop:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
-
-    <TextField type="number" defaultValue = {0}
-     onChange={(e) => setPersonel_sayisi(e.target.value)}
-     value={personel_sayisi} sx={{paddingRight:1.5,paddingTop:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
-
-<div className='buttons_input'>
-  <Stack  className="field_btn">
-        <Button  color="success" variant='contained' aria-label="add" 
-        sx={{marginTop:1}} onClick={() => handleClick()} endIcon={<LoupeIcon />}
-        >
-          KAYDET
-        </Button>
-    </Stack>
-
-{/* ANİMATİON-MASSAGE */} 
-      <Snackbar
-        variant="soft"
-        color="success"
-        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-        open={massage}
-        onClose={handleClose}
-        autoHideDuration={1000}
-        animationDuration={animationDuration}
-        startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
-        sx={{
-          ...(open && {
-            animation: `${inAnimation} ${animationDuration}ms forwards`,
-          }),
-          ...(!open && {
-            animation: `${outAnimation} ${animationDuration}ms forwards`,
-          }),
-        }}
+    <div>
+      {/* INPUT TEXT_FİELDS*/}
+      {showInputPart && <Card
+        className='input_card'
+        color='success'
+        orientation="horizontal"
+        size="lg"
+        variant='outlined'
       >
-        Verileriniz Başarıyla Kaydedildi
-      </Snackbar>
-
-      <Stack  className="field_btn">
-        <Button onClick = {() => handleClear()}color="error" variant='contained' aria-label="add" sx={{marginTop:1}} endIcon={<DeleteForeverIcon/>}>
-          SIFIRLA
-        </Button>
-      </Stack>
-</div>
-    
-      </div>   
-    </div>
-  </div>
-</Card> 
-}
-
-{/* DATE TİME PİCKER*/}
-          <div>
-             <Card className="date_card"
-                      color='danger'
-                      orientation="horizontal"
-                      size="lg"
-                      variant='outlined'
-             >
-                <div className='div_div'>Filtrele:
-                  <div className="date_picker">
-                      <DatePicker
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                          selectsStart
-                          startDate={startDate}
-                          endDate={endDate}
-                          dateFormat="dd.MM.yyyy"
-                          sx={{zIndex:1000}}
-                      />
-                      <DatePicker
-                          selected={endDate}
-                          onChange={(date) => setEndDate(date)}
-                          selectsEnd
-                          startDate={startDate}
-                          endDate={endDate}
-                          minDate={startDate}
-                          dateFormat="dd.MM.yyyy"
-                          sx={{zIndex:1000}}
-                      />
-                    </div>
-                  </div>   
-                </Card>
+        <div className='input_part'>
+          <div className='auto_text_btn' >
+            <div className='input_header'>
+              <CancelIcon className="close_btn" onClick={() => close_input_part()} />
+              <h4>VERİ GİRİŞİ</h4>
             </div>
 
-      <div  className='add_table' >
-      <Stack className="add" sx={{backgroundColor:'#28342b'}}></Stack>
+            {/* AUTOCOMPLETE*/}
+            <div className="autocomplete">
+              <Autocomplete value={kategoriadi} onChange={(event, value) => {
+                setKategoriadi(value);
+                setUrunadi(null);
+              }}
+                className="autocomplete"
+                disablePortal
+                options={kategorigir}
+                renderInput={(params) => <TextField value={kategoriadi} onFocus={async () => await updatekategorigir()} className='auto_cmplete' {...params} label="Ürün Kategorisi" />}
+              />
+              <Autocomplete value={urunadi} onChange={(event, value) => setUrunadi(value)}
+                className="autocomplete"
+                disablePortal
+                options={urungir}
+                renderInput={(params) => <TextField value={urunadi} onFocus={() => updateurungir()} className='auto_cmplete' {...params} label="Ürünler" />}
+              />
+            </div>
 
-    <Paper className="table">
-      <TableVirtuoso
-      // {...rows.sort((a, b) => b.id - a.id)}  // <--- SIRALAMA
-        data={rows}
-        components={VirtuosoTableComponents}
-        fixedHeaderContent={fixedHeaderContent}
-        itemContent={rowContent}
-        sx={{zIndex:0}}
-      />
-    </Paper>
-{/* ADD-BUTTON*/}
-    <Stack className='add_btn'>EKLE
-    <Fab color="error" onClick={() => show_input_part()} sx={{ width :35 , height:0}}>
-        <AddIcon />
-    </Fab>
-    </Stack>
-  </div>
-  
-</div>
+            <div>
+
+              <TextField type="number" defaultValue={0}
+                onChange={(e) => setHedef(e.target.value)}
+                value={hedef} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }} />
+
+              <TextField type="number" defaultValue={0}
+                onChange={(e) => setTamamlanan(e.target.value)}
+                value={tamamlanan} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }} />
+
+              <TextField type="number" defaultValue={0}
+                onChange={(e) => setFire(e.target.value)}
+                value={fire} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }} />
+
+              <TextField type="number" defaultValue={0}
+                onChange={(e) => setSevk(e.target.value)}
+                value={sevk} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }} />
+
+              <TextField type="number" defaultValue={0}
+                onChange={(e) => setStok(e.target.value)}
+                value={stok} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }} />
+
+              <TextField type="number" defaultValue={0}
+                onChange={(e) => setPersonel_sayisi(e.target.value)}
+                value={personel_sayisi} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }} />
+
+              <div className='buttons_input'>
+                <Stack className="field_btn">
+                  <Button color="success" variant='contained' aria-label="add"
+                    sx={{ marginTop: 1 }} onClick={() => handleClick()} endIcon={<LoupeIcon />}
+                  >
+                    KAYDET
+                  </Button>
+                </Stack>
+
+                {/* ANİMATİON-MASSAGE */}
+                <Snackbar
+                  variant="soft"
+                  color="success"
+                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+                  open={massage}
+                  onClose={handleClose}
+                  autoHideDuration={1000}
+                  animationDuration={animationDuration}
+                  startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
+                  sx={{
+                    ...(open && {
+                      animation: `${inAnimation} ${animationDuration}ms forwards`,
+                    }),
+                    ...(!open && {
+                      animation: `${outAnimation} ${animationDuration}ms forwards`,
+                    }),
+                  }}
+                >
+                  Verileriniz Başarıyla Kaydedildi
+                </Snackbar>
+
+                <Stack className="field_btn">
+                  <Button onClick={() => handleClear()} color="error" variant='contained' aria-label="add" sx={{ marginTop: 1 }} endIcon={<DeleteForeverIcon />}>
+                    SIFIRLA
+                  </Button>
+                </Stack>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </Card>
+      }
+
+      {/* DATE TİME PİCKER*/}
+      <div>
+        <Card className="date_card"
+          color='danger'
+          orientation="horizontal"
+          size="lg"
+          variant='outlined'
+        >
+          <div className='div_div'>Filtrele:
+            <div className="date_picker">
+              <DatePicker
+                selected={startDate}
+                onChange={(date) => setStartDate(date)}
+                selectsStart
+                startDate={startDate}
+                endDate={endDate}
+                dateFormat="dd.MM.yyyy"
+                sx={{ zIndex: 1000 }}
+              />
+              <DatePicker
+                selected={endDate}
+                onChange={(date) => setEndDate(date)}
+                selectsEnd
+                startDate={startDate}
+                endDate={endDate}
+                minDate={startDate}
+                dateFormat="dd.MM.yyyy"
+                sx={{ zIndex: 1000 }}
+              />
+            </div>
+          </div>
+        </Card>
+      </div>
+
+      <div className='add_table' >
+        <Stack className="add" sx={{ backgroundColor: '#28342b' }}></Stack>
+
+        <Paper className="table">
+          <TableVirtuoso
+            // {...rows.sort((a, b) => b.id - a.id)}  // <--- SIRALAMA
+            data={rows}
+            components={VirtuosoTableComponents}
+            fixedHeaderContent={fixedHeaderContent}
+            itemContent={rowContent}
+            sx={{ zIndex: 0 }}
+          />
+        </Paper>
+        {/* ADD-BUTTON*/}
+        <Stack direction="column" spacing={2}>
+          <Stack className='add_btn'>
+            EKLE
+            <Fab color="error" onClick={show_input_part} sx={{ width: 35, height: 0 }}>
+              <AddIcon />
+            </Fab>
+          </Stack>
+          <Stack>
+            PDF İNDİR
+            <Fab color='purple' onClick={exportTableToPDF} sx={{ width: 35, height: 0 }}>
+              <AddIcon />
+            </Fab>
+          </Stack>
+        </Stack>
+      </div>
+    </div>
   );
 }
