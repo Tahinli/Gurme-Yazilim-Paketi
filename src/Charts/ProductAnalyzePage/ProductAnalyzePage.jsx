@@ -20,8 +20,8 @@ export default function ProductPageAnalyze (){
                 <ControllableStates/>
             </div>
             <DateRangeProduct/>
-            <div className={"maAreaP"} style={{display:'flex', justifyContent:'space-between',paddingTop:10}}>
-                <Card className={"Charts"}
+            <div className='pie_charts'>
+                <Card className={"pie_card"}
                       color="neutral"
                       invertedColors={false}
                       orientation="vertical"
@@ -32,7 +32,7 @@ export default function ProductPageAnalyze (){
                     {<DailyProductAnalyze/>}
 
                 </Card>
-                <Card className={"Charts"}
+                <Card className={"pie_card"}
                       color="neutral"
                       invertedColors={false}
                       orientation="vertical"
@@ -44,7 +44,7 @@ export default function ProductPageAnalyze (){
 
 
                 </Card>
-                <Card className={"Charts"}
+                <Card className={"pie_card"}
                       color="neutral"
                       invertedColors={false}
                       orientation="vertical"

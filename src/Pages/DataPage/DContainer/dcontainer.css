@@ -1,6 +1,10 @@
 *{
     font-size: 15px;
 }
+.Data_containerbody{
+    min-height: 100vh;
+    position: relative;
+}
 .input_card{
     transition: 'all 1s ease-out';
     margin-bottom: 3rem;
@@ -15,7 +19,7 @@
     margin-right: 1rem;  
 }
 .table{
-    height: 490px;
+    height: 600px;;
     width: 95%;
 }
 
@@ -74,8 +78,8 @@
     margin-bottom: 3rem;
     margin-left: 5rem;
     margin-top: 2rem;
-    width: 650px;
-    height: 200px;
+    width: 430px;
+    height: 100px;
     position: relative;
     animation-name: test;
     animation-duration: 1s;
@@ -85,8 +89,4 @@
 @keyframes test{
     from{top: -60px}
     to{top:0px}
-}
-.date_card img{
-    width: 32%;
-    max-width: 200px;
 }

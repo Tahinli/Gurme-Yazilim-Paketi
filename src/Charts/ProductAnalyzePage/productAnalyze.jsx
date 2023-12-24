@@ -238,8 +238,8 @@ export  function  DailyProductAnalyze() {
     const data=DailyData
     return (
         <>
-            <div style={{width: '100%', height: '100%'}} >
-                <div >
+            <div style={{width: '100%', height: '100%'}}>
+                <div>
 
                     <h1 className={"Font"} style={{paddingRight: '100px'}}>Günlük Verimlilik</h1>
                     <div style={{width: '100%', height: '100%'}}>
@@ -268,7 +268,7 @@ export function WeeklyProductAnalyze() {
     return (
         <>
             <div style={{width: '100%', height: '100%'}}>
-                <div >
+                <div className={"PieChart"}>
 
                     <h1 className={"Font"} style={{paddingRight: '100px'}}>Haftalık Verimlilik</h1>
                     <div style={{width: '100%', height: '100%'}}>
@@ -295,11 +295,11 @@ export function MonthlyProductAnalyze() {
     const data=monthData
     return (
         <>
-            <div style={{width: '100%', height: '100%'}} >
-                <div>
+            <div style={{width: '100%', height: '100%'}} className={"App"}>
+                <div className={"PieChart"}>
 
                     <h1 className={"Font"} style={{paddingRight: '100px'}}>Aylık Verimlilik</h1>
-                    <div style={{width: '100%', height: '100%'} }>
+                    <div style={{width: '100%', height: '101%'} }>
                         <PieChart
                             series={[
                                 {

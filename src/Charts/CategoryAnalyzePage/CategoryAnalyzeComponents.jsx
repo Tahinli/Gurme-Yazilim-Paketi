@@ -15,6 +15,7 @@ import Gunluk from "../../api/gunluk-api.js";
 import {useLocation} from "react-router-dom";
 
 //APIDEN GELEN DEĞERLER ÇEKİLİYOR
+const palette = ['red','blue','yellow','orange','brown','green','grey','tomato','tan','steelblue','slateblue','powderblue','orchid','olive','magenta'];
 const productList = await urunApi.getUrunler();
 const logList = await gunlukApi.getGunlukler();
 const urungir = (await urunApi.getUrunler()).map((urun) => urun.isim);
@@ -221,6 +222,7 @@ export  function  CategoryDailyAnalyzeComp() {
                     <h1 className={"Font"} style={{paddingRight: '100px'}}>Günlük Verimlilik</h1>
                     <div style={{width: '100%', height: '100%'}}>
                         <PieChart
+                            colors={palette}
                             series={[
                                 {
                                     data,
@@ -250,6 +252,7 @@ export function CategoryWeeklyAnalyzeComp() {
                     <h1 className={"Font"} style={{paddingRight: '100px'}}>Haftalık Verimlilik</h1>
                     <div style={{width: '100%', height: '100%'}}>
                         <PieChart
+                            colors={palette}
                             series={[
                                 {
                                     data,
@@ -278,6 +281,7 @@ export function CategoryMonthlyAnalyzeComp() {
                     <h1 className={"Font"} style={{paddingRight: '100px'}}>Aylık Verimlilik</h1>
                     <div style={{width: '100%', height: '100%'} }>
                         <PieChart
+                            colors={palette}
                             series={[
                                 {
                                     data,
@@ -340,6 +344,7 @@ export function BarAnimation() {
     return (
         <Box sx={{ width: '98%'}}>
             <BarChart
+                colors={palette}
                 height={300}
                 series={series
                     .slice(0, seriesNb)

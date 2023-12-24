@@ -267,7 +267,7 @@ useEffect(() => {
 }, [toplamstok]);
 
   return (
-    <div>
+    <div className="Stok_containerbody">
       {/* INPUT TEXT_FİELDS1*/}
       {showInputPart && (
         <Card

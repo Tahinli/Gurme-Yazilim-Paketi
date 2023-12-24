@@ -55,3 +55,7 @@ a:hover {
 .login_button{
 height: 40px;
 }
+element.style{
+padding-right: 0rem !important;
+overflow: visible;
+}

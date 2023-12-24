@@ -1,6 +1,10 @@
 * {
   font-size: 15px;
 }
+.Stok_containerbody{
+  min-height: 100vh;
+  position: relative;
+}
 .input_card1 {
   transition: "all 1s ease-out";
   margin-bottom: 3rem;

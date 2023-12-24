@@ -186,7 +186,7 @@ export default function SideNavbar() {
           </List>
         </Drawer>
 
-        <Main open={open}>
+        <Main open={open} className="ProductAnalyze_containerbody">
           <ProductPageAnalyze />
         </Main>
       </Box>

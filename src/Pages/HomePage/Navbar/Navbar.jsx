@@ -81,6 +81,7 @@ const Navbar = () => {
                 src="/src/assets/img/cemens_logo.jpg"
                 alt="Çemen's Gurme"
                 ></img>
+                
               {verify && (
                 <React.Fragment>
                   <Box
@@ -130,10 +131,7 @@ const Navbar = () => {
                         },
                         "&:before": {
                           content: '""',
-                          display: "block",
-                          position: "absolute",
-                          top: 0,
-                          right: 14,
+                          display: "flex",
                           width: 10,
                           height: 10,
                           bgcolor: "background.paper",

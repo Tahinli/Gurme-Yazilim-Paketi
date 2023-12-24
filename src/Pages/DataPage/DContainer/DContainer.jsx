@@ -35,7 +35,7 @@ import { useEffect } from 'react';
 import DatePicker from "react-datepicker";
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
-
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 
 const inAnimation = keyframes`
   0% {
@@ -562,144 +562,147 @@ export default function DContainer() {
     );
   }
   return (
-    <div>
-      {/* INPUT TEXT_FİELDS*/}
-      {showInputPart && <Card
-        className='input_card'
-        color='success'
-        orientation="horizontal"
-        size="lg"
-        variant='outlined'
-      >
-        <div className='input_part'>
-          <div className='auto_text_btn' >
-            <div className='input_header'>
-              <CancelIcon className="close_btn" onClick={() => close_input_part()} />
-              <h4>VERİ GİRİŞİ</h4>
-            </div>
-
-            {/* AUTOCOMPLETE*/}
-            <div className="autocomplete">
-              <Autocomplete value={kategoriadi} onChange={(event, value) => {
-                setKategoriadi(value);
-                setUrunadi(null);
-              }}
-                className="autocomplete"
-                disablePortal
-                options={kategorigir}
-                renderInput={(params) => <TextField value={kategoriadi} onFocus={async () => await updatekategorigir()} className='auto_cmplete' {...params} label="Ürün Kategorisi" />}
-              />
-              <Autocomplete value={urunadi} onChange={(event, value) => setUrunadi(value)}
-                className="autocomplete"
-                disablePortal
-                options={urungir}
-                renderInput={(params) => <TextField value={urunadi} onFocus={() => updateurungir()} className='auto_cmplete' {...params} label="Ürünler" />}
-              />
-            </div>
-
-            <div>
-
-              <TextField type="number" defaultValue={0}
-                onChange={(e) => setHedef(e.target.value)}
-                value={hedef} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }} />
-
-              <TextField type="number" defaultValue={0}
-                onChange={(e) => setTamamlanan(e.target.value)}
-                value={tamamlanan} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }} />
-
-              <TextField type="number" defaultValue={0}
-                onChange={(e) => setFire(e.target.value)}
-                value={fire} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }} />
-
-              <TextField type="number" defaultValue={0}
-                onChange={(e) => setSevk(e.target.value)}
-                value={sevk} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }} />
-
-              <TextField type="number" defaultValue={0}
-                onChange={(e) => setStok(e.target.value)}
-                value={stok} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }} />
-
-              <TextField type="number" defaultValue={0}
-                onChange={(e) => setPersonel_sayisi(e.target.value)}
-                value={personel_sayisi} sx={{ paddingRight: 1.5, paddingTop: 1.5 }} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }} />
-
-              <div className='buttons_input'>
-                <Stack className="field_btn">
-                  <Button color="success" variant='contained' aria-label="add"
-                    sx={{ marginTop: 1 }} onClick={() => handleClick()} endIcon={<LoupeIcon />}
-                  >
-                    KAYDET
-                  </Button>
-                </Stack>
-
-                {/* ANİMATİON-MASSAGE */}
-                <Snackbar
-                  variant="soft"
-                  color="success"
-                  anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
-                  open={massage}
-                  onClose={handleClose}
-                  autoHideDuration={1000}
-                  animationDuration={animationDuration}
-                  startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
-                  sx={{
-                    ...(open && {
-                      animation: `${inAnimation} ${animationDuration}ms forwards`,
-                    }),
-                    ...(!open && {
-                      animation: `${outAnimation} ${animationDuration}ms forwards`,
-                    }),
-                  }}
-                >
-                  Verileriniz Başarıyla Kaydedildi
-                </Snackbar>
-
-                <Stack className="field_btn">
-                  <Button onClick={() => handleClear()} color="error" variant='contained' aria-label="add" sx={{ marginTop: 1 }} endIcon={<DeleteForeverIcon />}>
-                    SIFIRLA
-                  </Button>
-                </Stack>
-              </div>
-
-            </div>
-          </div>
-        </div>
-      </Card>
-      }
-
-      {/* DATE TİME PİCKER*/}
-      <div>
-        <Card className="date_card"
-          color='danger'
-          orientation="horizontal"
-          size="lg"
-          variant='outlined'
-        >
-          <div className='div_div'>Filtrele:
-            <div className="date_picker">
-              <DatePicker
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                selectsStart
-                startDate={startDate}
-                endDate={endDate}
-                dateFormat="dd.MM.yyyy"
-                sx={{ zIndex: 1000 }}
-              />
-              <DatePicker
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                selectsEnd
-                startDate={startDate}
-                endDate={endDate}
-                minDate={startDate}
-                dateFormat="dd.MM.yyyy"
-                sx={{ zIndex: 1000 }}
-              />
-            </div>
-          </div>
-        </Card>
+<div className='Data_containerbody'>
+{/* INPUT TEXT_FİELDS*/}
+  {showInputPart && <Card 
+  className='input_card'
+  color='success'
+  orientation="horizontal"
+  size="lg"
+  variant='outlined'
+  >
+<div className='input_part'>
+<div className='auto_text_btn' >
+      <div className='input_header'>             
+          <CancelIcon  className="close_btn" onClick={()=> close_input_part()} />    
+          <h4>VERİ GİRİŞİ</h4>
       </div>
+          
+{/* AUTOCOMPLETE*/}
+    <div className="autocomplete">
+          <Autocomplete value={kategoriadi} onChange={(event, value) => {
+          setKategoriadi(value);
+          setUrunadi(null);
+          }}
+              className="autocomplete" 
+              disablePortal
+              options={kategorigir}
+              renderInput={(params) => <TextField value={kategoriadi} onFocus={async () => await updatekategorigir()} className='auto_cmplete' {...params} label="Ürün Kategorisi" />}
+          />
+          <Autocomplete value = {urunadi} onChange={(event, value) => setUrunadi(value)}
+              className="autocomplete"
+              disablePortal
+              options={urungir}
+              renderInput={(params) => <TextField value={urunadi} onFocus={() => updateurungir()} className='auto_cmplete' {...params} label="Ürünler" />}
+          />
+    </div>
+  
+    <div> 
+
+    <TextField type="number" defaultValue = {0} 
+     onChange={(e) => setHedef(e.target.value)}
+     value={hedef} sx={{paddingRight:1.5,paddingTop:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0} 
+     onChange={(e) => setTamamlanan(e.target.value)}
+     value={tamamlanan} sx={{paddingRight:1.5,paddingTop:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setFire(e.target.value)}
+     value={fire} sx={{paddingRight:1.5,paddingTop:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setSevk(e.target.value)}
+     value={sevk} sx={{paddingRight:1.5,paddingTop:1.5}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setStok(e.target.value)}
+     value={stok} sx={{paddingRight:1.5,paddingTop:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
+
+    <TextField type="number" defaultValue = {0}
+     onChange={(e) => setPersonel_sayisi(e.target.value)}
+     value={personel_sayisi} sx={{paddingRight:1.5,paddingTop:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
+
+<div className='buttons_input'>
+  <Stack  className="field_btn">
+        <Button  color="success" variant='contained' aria-label="add" 
+        sx={{marginTop:1}} onClick={() => handleClick()} endIcon={<LoupeIcon />}
+        >
+          KAYDET
+        </Button>
+    </Stack>
+
+{/* ANİMATİON-MASSAGE */} 
+      <Snackbar
+        variant="soft"
+        color="success"
+        anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+        open={massage}
+        onClose={handleClose}
+        autoHideDuration={1000}
+        animationDuration={animationDuration}
+        startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
+        sx={{
+          ...(open && {
+            animation: `${inAnimation} ${animationDuration}ms forwards`,
+          }),
+          ...(!open && {
+            animation: `${outAnimation} ${animationDuration}ms forwards`,
+          }),
+        }}
+      >
+        Verileriniz Başarıyla Kaydedildi
+      </Snackbar>
+
+      <Stack  className="field_btn">
+        <Button onClick = {() => handleClear()}color="error" variant='contained' aria-label="add" sx={{marginTop:1}} endIcon={<DeleteForeverIcon/>}>
+          SIFIRLA
+        </Button>
+      </Stack>
+</div>
+    
+      </div>   
+    </div>
+  </div>
+</Card> 
+}
+
+{/* DATE TİME PİCKER*/}
+          <div>
+             <Card className="date_card"
+                      color='danger'
+                      orientation="horizontal"
+                      size="lg"
+                      variant='outlined'
+             >
+                <div className='div_div'>
+                  <EditCalendarIcon size='small'/>
+                  Filtrele:
+                  <div className="date_picker">
+                    
+                      <DatePicker
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          dateFormat="dd.MM.yyyy"
+                          sx={{zIndex:1000}}
+                      />
+                      <DatePicker
+                          selected={endDate}
+                          onChange={(date) => setEndDate(date)}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          minDate={startDate}
+                          dateFormat="dd.MM.yyyy"
+                          sx={{zIndex:1000}}
+                      />
+                    </div>
+                  </div>   
+                </Card>
+            </div>
 
       <div className='add_table' >
         <Stack className="add" sx={{ backgroundColor: '#28342b' }}></Stack>
@@ -715,14 +718,15 @@ export default function DContainer() {
           />
         </Paper>
         {/* ADD-BUTTON*/}
-        <Stack direction="column" spacing={2}>
+        <Stack direction="column" spacing={1}>
           <Stack className='add_btn'>
             EKLE
             <Fab color="error" onClick={show_input_part} sx={{ width: 35, height: 0 }}>
               <AddIcon />
             </Fab>
           </Stack>
-          <Stack>
+          
+          <Stack  className='add_btn'>
             PDF İNDİR
             <Fab color='purple' onClick={exportTableToPDF} sx={{ width: 35, height: 0 }}>
               <AddIcon />

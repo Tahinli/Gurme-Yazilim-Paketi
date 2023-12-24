@@ -122,15 +122,17 @@ export  function DateRangeProduct() {
     }, [logList]);
 
     return (
-        <div className={"ChartsDate"}>
             <div>
-                <Card style={{width: '30%', height: '150px'}}
-                      sx={{alignItems:'center'}}
-                      color="neutral"
-                      invertedColors={false}
-                      orientation="vertical"
-                      size="lg"
-                      variant="soft"
+            <div>
+                <Card 
+                   style={{width: '450px',height: '100%'}}
+                    sx={{alignItems:'center'}}
+                    color="neutral"
+                    invertedColors={false}
+                    orientation="vertical"
+                    size="lg"
+                    variant="soft"
+                    className={"Date_part"}
                 >
                     Filtrele:
                     <div className={"dateArea"} style={{display:'flex'}}>
@@ -153,10 +155,10 @@ export  function DateRangeProduct() {
                         />
                     </div>
                     <Button onClick={() =>{ setValAnalyze(true)
-                        async () => await filterByCatRange()}} variant="contained" color="warning">ANALİZ</Button>
-
+                        async () => await filterByCatRange()}} variant="contained" color="warning"
+                    >ANALİZ
+                    </Button>
                 </Card>
-
             </div>
             <div>
                 {analyze && <Card className={"Charts"} style={{width: '65%', height: '400px', marginTop:15}}
@@ -165,9 +167,8 @@ export  function DateRangeProduct() {
                                   orientation="vertical"
                                   size="lg"
                                   variant="soft"
-                >
+                            >
                     <CancelIcon onClick={close_datepicker} variant="contained" color="warning"/>
-
                     <h4 style={{paddingRight: '100px'}}>Seçilen Aralıktaki Verimlilik</h4>
                     <PieChart
                         series={[
@@ -180,13 +181,9 @@ export  function DateRangeProduct() {
                         height={300}
                     />
                 </Card>}
-
             </div>
         </div>
-
-
-    )
-        ;
+    );
 }
 
 

@@ -14,7 +14,7 @@ const ProductPage = () => {
     return (
     <div>
         <Navbar />
-        <PSide_Navbar />
+        <PSide_Navbar/>
         <Footr />
       </div> 
       );

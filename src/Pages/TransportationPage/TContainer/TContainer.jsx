@@ -262,7 +262,7 @@ function updateurungir() {
   // },[kategoriadi]);
 
   return (
-    <div>
+    <div className='Transportation_containerbody'>
       {/* INPUT TEXT_FİELDS1*/}
       {showInputPart && (
         <Card

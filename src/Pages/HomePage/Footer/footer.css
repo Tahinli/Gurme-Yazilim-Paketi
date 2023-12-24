@@ -31,3 +31,7 @@
 .footer_img {
   border-radius: 100%;
 }
+.ProductAnalyze_containerbody{
+  min-height: 100vh;
+  position: relative;
+}

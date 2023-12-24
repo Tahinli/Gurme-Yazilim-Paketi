@@ -87,11 +87,13 @@
   }
   .tabletz {
     display: none;
+
   }
 }
 body {
-  margin: 0px;
-  padding: 0px;
+  margin: 0px !important;
+  padding: 0px !important;
+  overflow: visible !important;
 }
 
 
@@ -103,6 +105,17 @@ body {
 }
 .table_btns{
   flex-direction: column;
+}
+.p_inputcard{
+  margin-left: 10rem !important;
+  max-width: 100% !important;
+  min-width: 500px !important;
+}
+.p_box{
+  margin-left: 10rem !important;
+}
+.p_h1{
+  padding-left: 10rem !important;
 }
 }
 
@@ -120,7 +133,15 @@ body {
   flex-direction: column;
   width: 100%;
 }
-
+.p_inputcard{
+  margin-left: 8rem !important;
+}
+.p_box{
+  margin-left: 8rem !important;
+}
+.p_h1{
+  padding-left: 8rem !important;
+}
 }
 
 @media screen and (max-width:1200px){
@@ -160,6 +181,22 @@ body {
     font-size: 18px !important;
     width: 350px;
   }
+  .edit_dialog{
+    padding: 0rem !important;
+  }
+  .p_inputcard{
+    margin-left: 6rem !important;
+    width: 80% !important;
+  }
+  .p_box{
+    margin-left: 6rem !important;
+  }
+  .p_h1{
+    padding-left: 6rem !important;
+  }
+  .pp_input{
+  flex-direction: column;
+}
 }
 
 @media screen and (max-width:768px){
@@ -167,6 +204,7 @@ body {
     flex-direction: column;
     width:215px !important;
   }
+ 
   .input_card{
     width:80% !important;
   }
@@ -180,13 +218,9 @@ body {
   }
   .date_card{
     flex-direction: column;
-    width: 80% !important;
-    height: 200px !important;
-  }
-
-  .date_card img{
-    width:40% !important;
-    margin-left: -8rem;
+    width: 37% !important;
+    min-width: 240px;
+    height: 130px !important;
   }
  .add_table{
   flex-direction: column-reverse;
@@ -194,6 +228,15 @@ body {
  .add_btn{
   margin-left: -2rem !important;
  }
+ .p_inputcard{
+  min-width: 360px !important;
+}
+.pie_charts{
+  width: 290% !important;
+} 
+.Date_part{
+    width: 275px !important;
+}
 }
 
 @media screen and (max-width:500px){
@@ -224,24 +267,24 @@ body {
     flex-direction: column;
     width:215px !important;
   }
+  .p_inputcard{
+    margin-left: 5rem !important;
+  }
+  .p_box{
+    margin-left:5rem !important;
+  }
+  .p_h1{
+    padding-left:5rem !important;
+  }
 }
 
 @media screen and (max-width:400px){
-  .date_card img{
-    width:40% !important;
-    margin-left: -20.5rem;
-    margin-top: 7rem;
-  }
-  .date_card{
-    height: 300px !important;
-  }
-
   .pie_charts{
     width: 900px !important;
   }
-.detailed_chart{
+  .detailed_chart{
   width:280px !important;
-}
+  }
   /*NAVBAR*/
   .navbar h1{
     font-size: 18px !important;

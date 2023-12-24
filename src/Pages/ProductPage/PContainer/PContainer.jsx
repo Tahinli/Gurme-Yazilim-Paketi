@@ -33,6 +33,7 @@ import PlaylistAddCheckCircleRoundedIcon from "@mui/icons-material/PlaylistAddCh
 import urunApi from "../../../api/urun-api";
 import kategoriApi from "../../../api/kategori-api";
 import Autocomplete from '@mui/material/Autocomplete';
+import CategoryIcon from '@mui/icons-material/Category';
 
 const urunler = await urunApi.getUrunler();
 // const urunler = (await urunApi.getUrunler()).map((urun) => urun.isim);
@@ -160,8 +161,6 @@ function EnhancedTableHead(props) {
               backgroundColor: "rgb(126, 126, 126)",
               color: "white",
               fontSize: 30,
-              paddingLeft: 2,
-              paddingRight: 30,
             }}
           >
             <TableSortLabel
@@ -232,7 +231,7 @@ function EnhancedTableToolbar(props) {
       {numSelected > 0 ? (
         <Tooltip title="Delete">
           <IconButton>
-            <DeleteIcon />
+            <DeleteIcon onClick={handleDelete} />
           </IconButton>
         </Tooltip>
       ) : (
@@ -357,6 +356,18 @@ export default function PContainer() {
   const handleClose2 = () => {
     setMassage(false);
   };
+  const [ urunadi1, setUrunadi1 ] = useState('');
+  const [ kategoriadi, setKategoriadi ] = useState(''); 
+  const [kategorigir, setKategorigir] = useState([]);
+  async function updatekategorigir() {
+    console.log('updatekategorigir')
+    try {
+      const newKategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
+      setKategorigir(newKategorigir);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
   return (
     <div className="product_body">
       <div className="pp_input">
@@ -392,21 +403,13 @@ export default function PContainer() {
 
           <CardContent sx={{ maxWidth: "40ch" }} className="p_cardcontent">
             <h4 className="p_header">Ürün Ekle</h4>
-            {/* <Autocomplete
-              disablePortal
-              id="combo-box-demo"
-              options={''}
-              sx={{ width: 300 }}
-              renderInput={(params) => <TextField {...params} label="Ürün Kategorisi" />}
-            /> */}
-            <TextField
-              id = "urunkategorisi"
-              type="text"
-              onChange={(e) => setUrunkategorisi(e.target.value)}
-              sx={{ paddingTop: 1.5 }}
-              label="Kategori Adı"
-              variant="filled"
-            />
+            <Autocomplete value={kategoriadi} onChange={(event, value) => {
+              setKategoriadi(value);
+              setUrunadi(null);
+              }}
+              options={kategorigir}
+              renderInput={(params) => <TextField value={kategoriadi} onFocus={async () => await updatekategorigir()} {...params} label="Ürün Kategorisi" />}
+          />
             <TextField
               id = "urunadi"
               type="text"
@@ -447,17 +450,97 @@ export default function PContainer() {
               }),
             }}
           >
-            Verileriniz Başarıyla Kaydedildi
+            Ürün Başarıyla Kaydedildi
+          </Snackbar>
+        </Card>
+
+
+{/*KATEGORİ CARD*/}
+        <Card
+          className="p_inputcard"
+          sx={{
+            textAlign: "center",
+            alignItems: "center",
+            overflow: "auto",
+            "--icon-size": "100px",
+          }}
+        >
+          <CardOverflow variant="solid" color="neutral">
+            <AspectRatio
+              variant="outlined"
+              color="warning"
+              ratio="1"
+              sx={{
+                m: "auto",
+                transform: "translateY(50%)",
+                borderRadius: "50%",
+                width: "var(--icon-size)",
+                boxShadow: "sm",
+                bgcolor: "background.surface",
+                position: "relative",
+              }}
+            >
+              <div>
+                <CategoryIcon color="warning" sx={{ fontSize: "4rem" }} />
+              </div>
+            </AspectRatio>
+          </CardOverflow>
+
+          <CardContent sx={{ maxWidth: "40ch" }} className="p_cardcontent">
+            <h4 className="p_header">Kategori Ekle</h4>
+          
+            <TextField
+              id = "urunkategorisi"
+              type="text"
+              onChange={(e) => setUrunkategorisi(e.target.value)}
+              sx={{ paddingTop: 1.5 }}
+              label="Kategori Adı"
+              variant="filled"
+            />
+            <Button
+              className="save_btn"
+              onClick={addclick}
+              color="warning"
+              variant="contained"
+              aria-label="add"
+              sx={{ marginTop: 1 }}
+              endIcon={<LoupeIcon />}
+            >
+              KAYDET
+            </Button>
+          </CardContent>
+
+          {/* ANİMATİON-MASSAGE */}
+          <Snackbar
+            variant="soft"
+            color="warning"
+            anchorOrigin={{ vertical: "top", horizontal: "right" }}
+            open={massage}
+            onClose={handleClose2}
+            autoHideDuration={1000}
+            animationDuration={animationDuration}
+            startDecorator={<PlaylistAddCheckCircleRoundedIcon />}
+            sx={{
+              ...(open && {
+                animation: `${inAnimation} ${animationDuration}ms forwards`,
+              }),
+              ...(!open && {
+                animation: `${outAnimation} ${animationDuration}ms forwards`,
+              }),
+            }}
+          >
+            Kategori Başarıyla Kaydedildi
           </Snackbar>
         </Card>
       </div>
+
+
       <h1 className="p_h1">ÜRÜN TABLOSU</h1>
-      <Box sx={{ width: "50%" }} className="p_box">
-        <Paper sx={{ width: "100%", mb: 1 }} className="p_table">
+      <Box sx={{ width: "80%" }} className="p_box">
+        <Paper sx={{ mb: 1 }} className="p_table">
           <EnhancedTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table
-              sx={{ minWidth: 750 }}
               aria-labelledby="tableTitle"
               size={dense ? "small" : "medium"}
             >
@@ -474,7 +557,6 @@ export default function PContainer() {
                   backgroundColor: "rgb(190, 190, 190)",
                   color: "white",
                   fontSize: 30,
-                  paddingLeft: 8,
                 }}
               >
                 {visibleRows.map((row, index) => {
@@ -511,13 +593,13 @@ export default function PContainer() {
                         id={labelId}
                         scope="row"
                         padding="none"
-                        sx={{ paddingLeft: 2, color: "black" }}
+                        sx={{color: "black" }}
                       >
                         {row.isim}
                       </TableCell>
                       <TableCell
-                        align="left"
-                        sx={{ color: "black", paddingLeft: 81.5 }}
+                        align="right"
+                        sx={{ color: "black" }}
                       >
                         {row.kategori.isim}
                       </TableCell>
@@ -530,7 +612,7 @@ export default function PContainer() {
                       height: (dense ? 33 : 53) * emptyRows,
                     }}
                   >
-                    <TableCell colSpan={6} />
+                    <TableCell colSpan={1} />
                   </TableRow>
                 )}
               </TableBody>

@@ -16,6 +16,7 @@ import {
 import {Card} from "@mui/joy";
 import React from "react";
 
+
 export function CategoryAnalyzeP(){
     const [showDetails,setDetails]= useState(true);
 

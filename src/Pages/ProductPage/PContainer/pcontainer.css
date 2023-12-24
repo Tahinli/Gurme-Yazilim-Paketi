@@ -1,6 +1,5 @@
 .p_box{
-    width: 50%;
-    min-width: 1500px;
+    width: 88% !important;
     height: 640px auto;
     margin-bottom: 8rem;
     color: black;
@@ -14,8 +13,8 @@
 .p_inputcard{
     transition: 'all 1s ease-out';
     margin-bottom: 3rem;
-    margin-left: 24.5rem;
-    width: 60%;
+    margin-left: 12rem;
+    width: 40%;
     height: 430px;
     margin-top: 2rem;
 }
@@ -29,5 +28,10 @@
 .p_header{
     align-self: flex-start;
 }
-
-
+.product_body{
+    min-height: 100vh;
+    position: relative;
+}
+.pp_input{
+    display: flex;
+}

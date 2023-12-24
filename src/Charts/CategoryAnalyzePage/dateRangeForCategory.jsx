@@ -86,9 +86,10 @@ export  function DateRangeP() {
     }, [logList]);
 
     return (
-        <div className={"ChartsDate"}>
+        <div >
             <div>
-                <Card style={{width: '30%', height: '150px'}}
+                <Card className={"Date_part"}
+                      style={{width: '450px',height: '20%'}}
                       sx={{alignItems:'center'}}
                       color="neutral"
                       invertedColors={false}
