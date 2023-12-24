@@ -13,7 +13,8 @@ import urunApi from '../../../api/urun-api.js';
 import kategoriApi from '../../../api/kategori-api.js';
 import gunlukApi from '../../../api/gunluk-api.js';
 
-const palette = ['red', 'blue', 'green','orange','yellow','pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
+const palette = ['red', 'blue', 'green','yellow','pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
+const palette1 = ['pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
 const catList = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
 const logList = await gunlukApi.getGunlukler();
 var firstDate,lastDate
@@ -92,7 +93,7 @@ export  function PieAnimation() {
 
     setTimeout(function() {
         isRefreshed(false)
-    }, 5000);
+    }, 10000);
 
     firstDate = new Date(startDate.getUTCFullYear(),startDate.getUTCMonth(),startDate.getUTCDate())
     lastDate = new Date(endDate.getUTCFullYear(),endDate.getUTCMonth(),endDate.getUTCDate())
@@ -103,7 +104,7 @@ export  function PieAnimation() {
                 const firstDate = new Date(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate());
                 const lastDate = new Date(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate());
 
-                await filterByCatRange(firstDate, lastDate);
+                await filterByCatRange(startDate, endDate);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
@@ -151,6 +152,7 @@ export  function PieAnimation() {
                     selectsStart
                     startDate={startDate}
                     endDate={endDate}
+                    dateFormat='dd.MM.yyyy'
                 />
                 <DatePicker
                     selected={endDate}
@@ -159,6 +161,7 @@ export  function PieAnimation() {
                     startDate={startDate}
                     endDate={endDate}
                     minDate={startDate}
+                    dateFormat='dd.MM.yyyy'
                 />
             </div>
             <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning">ANALİZ</Button>
@@ -171,7 +174,7 @@ export  function PieAnimation() {
                          
         <Box sx={{ width: '100%' }}>
 <PieChart
-height={300}
+height={320}
 colors={palette}
 series={[
   { data: data1, outerRadius: radius },
@@ -199,11 +202,11 @@ value={itemNb}
 onChange={handleItemNbChange}
 valueLabelDisplay="auto"
 min={1}
-max={catList.length-4}
+max={catList.length-5}
 aria-labelledby="input-item-number"
 />
 <Typography id="input-radius" gutterBottom>
-Kategori
+Merkezin Büyüküğü
 </Typography>
 <Slider
 value={radius}

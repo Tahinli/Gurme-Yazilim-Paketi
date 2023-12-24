@@ -31,7 +31,8 @@ import { useEffect } from "react";
 import kategoriApi from "../../../api/kategori-api";
 import gunlukApi from "../../../api/gunluk-api";
 import urunApi from "../../../api/urun-api";
-
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 const inAnimation = keyframes`
   0% {
     transform: scale(0);
@@ -248,12 +249,15 @@ useEffect(() => {
 }, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
 
 /// rows'u tarihe göre sıralamak için
+const [startDate, setStartDate] = useState(new Date());
+const [endDate, setEndDate] = useState(new Date());
 useEffect(() => {
   const sortedRows = rows.sort((a, b) => {
     const dateA = new Date(a.tarih.split('.').reverse().join('-'));
     const dateB = new Date(b.tarih.split('.').reverse().join('-'));
     return dateB - dateA;
   });
+
   setRows(sortedRows);
 }, [rows]);
 
@@ -396,18 +400,26 @@ useEffect(() => {
             variant="outlined"
           >
             <div className="date_picker1">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer
-                  components={["DateRangePicker", "DateRangePicker"]}
-                >
-                  <DemoItem label="Filtrele" component="DateRangePicker">
-                    <DateRangePicker
-                      value={value}
-                      onChange={(newValue) => setValue(newValue)}
-                    />
-                  </DemoItem>
-                </DemoContainer>
-              </LocalizationProvider>
+            <DatePicker
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          dateFormat="dd.MM.yyyy"
+                          sx={{zIndex:1000}}
+                    
+                      />
+                      <DatePicker
+                          selected={endDate}
+                          onChange={(date) => setEndDate(date)}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          minDate={startDate}
+                          dateFormat="dd.MM.yyyy"
+                          sx={{zIndex:1000}}
+                      />
               <Button
                 className="list_btn1"
                 color="error"

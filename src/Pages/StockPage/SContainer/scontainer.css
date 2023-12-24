@@ -18,8 +18,8 @@
   margin-bottom: 3rem;
   margin-left: 5rem;
   padding-top: 7rem;
-  width: 70%;
-  height: 650px;
+  width: 80%;
+  height: 750px;
 }
 .autocomplete1 {
   display: flex;
@@ -91,9 +91,10 @@
 
 .pie_chart1 {
   margin-top: 120px !important;
-  margin-left: 100px !important;
-  width: 800px !important;
+  margin-left: 200px !important;
+  width: 1200px !important;
   height: 1000px !important;
+  align-items: center;
 }
 .input_sevk1 {
   display: flex;

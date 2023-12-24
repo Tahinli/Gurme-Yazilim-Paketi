@@ -26,6 +26,8 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Snackbar from '@mui/joy/Snackbar';
 import { keyframes } from '@mui/system';
 import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 
 import { PieAnimation } from "./stockpiechart2";
 import { useEffect } from 'react';
@@ -244,6 +246,8 @@ function updateurungir() {
   }, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
   
   /// rows'u tarihe göre sıralamak için
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date()); 
   useEffect(() => {
     const sortedRows = rows.sort((a, b) => {
       const dateA = new Date(a.tarih.split('.').reverse().join('-'));
@@ -387,18 +391,25 @@ function updateurungir() {
             variant="outlined"
           >
             <div className="date_picker2">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer
-                  components={["DateRangePicker", "DateRangePicker"]}
-                >
-                  <DemoItem label="Filtrele" component="DateRangePicker">
-                    <DateRangePicker
-                      value={value}
-                      onChange={(newValue) => setValue(newValue)}
-                    />
-                  </DemoItem>
-                </DemoContainer>
-              </LocalizationProvider>
+            <DatePicker
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          dateFormat="dd.MM.yyyy"
+                          sx={{zIndex:1000}}
+                      />
+                      <DatePicker
+                          selected={endDate}
+                          onChange={(date) => setEndDate(date)}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          minDate={startDate}
+                          dateFormat="dd.MM.yyyy"
+                          sx={{zIndex:1000}}
+                      />
               <Button
                 className="list_btn2"
                 color="error"

@@ -59,8 +59,7 @@ async function filterByCatRange(date1,date2)
 }
 
 export  function DateRangeP() {
-    let totalHamR=0,totalDesertR=0,totalDrinkR=0;
-
+  
     const[analyze,setAnalyze]=useState(false)
     const[refresh,isRefreshed]=useState(false)
     const [startDate, setStartDate] = useState(new Date());
