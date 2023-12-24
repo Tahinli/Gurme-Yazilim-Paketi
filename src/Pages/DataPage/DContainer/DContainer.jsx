@@ -525,7 +525,7 @@ export default function DContainer() {
                 />
 
                 <div>
-                  <Dialog open={open} onClose={() => handleClickClose()} maxWidth="xl" className='edit_dialog'>
+                  <Dialog open={open} onClose={() => handleClickClose()} maxWidth="xl" className='edit_dialog' BackdropProps={{style: {backgroundColor: 'transparent'}}} sx={{paddingBottom:73}}>
                     <DialogTitle sx={{ backgroundColor: 'rgb(72, 194, 102)' }}>DÜZENLE</DialogTitle>
                     <p style={{ paddingLeft: 20, marginBottom: 0, color: 'red', fontSize: 17 }}
                     >
@@ -563,7 +563,7 @@ export default function DContainer() {
   }
   return (
 <div className='Data_containerbody'>
-{/* INPUT TEXT_FİELDS*/}
+{/* INPUT PART*/}
   {showInputPart && <Card 
   className='input_card'
   color='success'
@@ -719,14 +719,14 @@ export default function DContainer() {
         </Paper>
         {/* ADD-BUTTON*/}
         <Stack direction="column" spacing={1}>
-          <Stack className='add_btn'>
+          <Stack className='add_btn' sx={{color:'white'}}>
             EKLE
             <Fab color="error" onClick={show_input_part} sx={{ width: 35, height: 0 }}>
               <AddIcon />
             </Fab>
           </Stack>
           
-          <Stack  className='add_btn'>
+          <Stack  className='add_btn' sx={{color:'white'}}>
             PDF İNDİR
             <Fab color='purple' onClick={exportTableToPDF} sx={{ width: 35, height: 0 }}>
               <AddIcon />
