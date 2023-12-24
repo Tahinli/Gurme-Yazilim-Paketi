@@ -20,6 +20,8 @@
     padding-top: 7rem;
     width: 80%;
     height: 750px;
+    animation-name: test;
+    animation-duration: 1s;
   }
   .autocomplete2 {
     display: flex;
@@ -88,10 +90,25 @@
   .pie_chart2 {
     margin-top: 120px !important;
     margin-left: 200px !important;
-    width: 800px !important;
+    width: 1200px !important;
     height: 1000px !important;
   }
   .input_sevk2 {
     display: flex;
   }
+  .date_11{
+    margin-top: 70px;
+    margin-left: 5rem;
+    height: 40px;
   
+  }
+  .date_22{
+    margin-top: 70px;
+    height: 40px;
+  }
+  .list_btn2{
+    height: 40px;
+  }
+  .sevkislem_2{
+    font-size: 18px;
+  }

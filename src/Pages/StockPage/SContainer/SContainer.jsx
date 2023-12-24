@@ -283,7 +283,7 @@ useEffect(() => {
         >
           <div className="input_header1">
             <CancelIcon className="close_btn1" onClick={close_input_part} />
-            <h4 style={{ maxHeight: "70px" }}>STOK ANALİZİ</h4>
+            <h4 className="stokislem_1 "style={{ maxHeight: "70px" }}>STOK ANALİZİ</h4>
             <br />
             <div className="pie_chart1">
               <PieAnimation />
@@ -302,7 +302,7 @@ useEffect(() => {
         >
           <div>
             <div className="input_header1">
-              <h4>STOK İŞLEMLERİ</h4>
+              <h4 className="stokislem_1">STOK İŞLEMLERİ</h4>
             </div>
 
             {/* AUTOCOMPLETE*/}
@@ -358,7 +358,7 @@ useEffect(() => {
                   color="success"
                   variant="contained"
                   aria-label="add"
-                  sx={{ marginTop: 1 }}
+                  sx={{ marginTop: -1 }}
                   onClick={handleClick}
                   endIcon={<LoupeIcon />}
                 >
@@ -391,16 +391,20 @@ useEffect(() => {
           </div>
         </Card>
 
-        <div>
-          <Card
-            className="date_card1"
-            color="danger"
-            orientation="horizontal"
-            size="lg"
-            variant="outlined"
-          >
-            <div className="date_picker1">
-            <DatePicker
+       
+{/* DATE TİME PİCKER*/}
+<div>
+             <Card className="date_card1"
+                      color='danger'
+                      orientation="horizontal"
+                      size="lg"
+                      variant='outlined'
+             >
+                <div className='div_div1'>
+                        
+                  <div className="date_picker1">
+                    
+                      <DatePicker className="date_1"
                           selected={startDate}
                           onChange={(date) => setStartDate(date)}
                           selectsStart
@@ -408,9 +412,8 @@ useEffect(() => {
                           endDate={endDate}
                           dateFormat="dd.MM.yyyy"
                           sx={{zIndex:1000}}
-                    
                       />
-                      <DatePicker
+                      <DatePicker className="date_2"
                           selected={endDate}
                           onChange={(date) => setEndDate(date)}
                           selectsEnd
@@ -420,18 +423,19 @@ useEffect(() => {
                           dateFormat="dd.MM.yyyy"
                           sx={{zIndex:1000}}
                       />
-              <Button
+                       <Button
                 className="list_btn1"
                 color="error"
                 variant="contained"
                 aria-label="add"
-                sx={{ marginTop: 1 }}
+                sx={{ marginTop: 9}}
               >
                 LİSTELE
               </Button>
+                    </div>
+                  </div>   
+                </Card>
             </div>
-          </Card>
-        </div>
       </div>
 
       <div className="add_table1">
@@ -443,6 +447,7 @@ useEffect(() => {
             components={VirtuosoTableComponents}
             fixedHeaderContent={fixedHeaderContent}
             itemContent={rowContent}
+            sx={{ zIndex: 0 }}
           />
         </Paper>
         {/* ADD-BUTTON*/}

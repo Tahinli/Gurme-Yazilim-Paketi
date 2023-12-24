@@ -278,7 +278,7 @@ function updateurungir() {
         >
           <div className="input_header2">
             <CancelIcon className="close_btn2" onClick={close_input_part} />
-            <h4 style={{ maxHeight: "70px" }}>SEVK ANALİZİ</h4>
+            <h4  className='sevkislem_2' style={{ maxHeight: "70px" }}>SEVK ANALİZİ</h4>
             <br />
             <div className="pie_chart2">
               <PieAnimation />
@@ -297,7 +297,7 @@ function updateurungir() {
         >
           <div>
             <div className="input_header2">
-              <h4>SEVK İŞLEMLERİ</h4>
+              <h4 className='sevkislem_2'>SEVK İŞLEMLERİ</h4>
             </div>
 
             {/* AUTOCOMPLETE*/}
@@ -382,16 +382,20 @@ function updateurungir() {
           </div>
         </Card>
 
-        <div>
-          <Card
-            className="date_card2"
-            color="danger"
-            orientation="horizontal"
-            size="lg"
-            variant="outlined"
-          >
-            <div className="date_picker2">
-            <DatePicker
+              
+{/* DATE TİME PİCKER*/}
+<div>
+             <Card className="date_card1"
+                      color='danger'
+                      orientation="horizontal"
+                      size="lg"
+                      variant='outlined'
+             >
+                <div className='div_div1'>
+                        
+                  <div className="date_picker1">
+                    
+                      <DatePicker className="date_11"
                           selected={startDate}
                           onChange={(date) => setStartDate(date)}
                           selectsStart
@@ -400,7 +404,7 @@ function updateurungir() {
                           dateFormat="dd.MM.yyyy"
                           sx={{zIndex:1000}}
                       />
-                      <DatePicker
+                      <DatePicker className="date_22"
                           selected={endDate}
                           onChange={(date) => setEndDate(date)}
                           selectsEnd
@@ -410,18 +414,19 @@ function updateurungir() {
                           dateFormat="dd.MM.yyyy"
                           sx={{zIndex:1000}}
                       />
-              <Button
+                       <Button
                 className="list_btn2"
                 color="error"
                 variant="contained"
                 aria-label="add"
-                sx={{ marginTop: 1 }}
+                sx={{ marginTop: 9}}
               >
                 LİSTELE
               </Button>
+                    </div>
+                  </div>   
+                </Card>
             </div>
-          </Card>
-        </div>
       </div>
 
       <div className="add_table2">
@@ -433,6 +438,7 @@ function updateurungir() {
             components={VirtuosoTableComponents}
             fixedHeaderContent={fixedHeaderContent}
             itemContent={rowContent}
+            sx={{ zIndex: 0 }}
           />
         </Paper>
         {/* ADD-BUTTON*/}
