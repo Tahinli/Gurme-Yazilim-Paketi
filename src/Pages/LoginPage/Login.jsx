@@ -4,12 +4,11 @@ import logo from "../../assets/img/logo.png";
 import Button from "@mui/material/Button";
 import React, { useRef, useState, useEffect, useContext } from "react"; // Add useEffect here
 import backgroundImage from "../../assets/img/photo.jpg";
-import "reactjs-popup/dist/index.css";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 
-import URL from "../../URL/server";
-const LOGIN_URL = URL + "/auth";
+import ServerURL from "../../../URL/server";
+const LOGIN_URL = ServerURL + "/auth";
 
 function Login() {
   const wrapperRef = useRef(null);

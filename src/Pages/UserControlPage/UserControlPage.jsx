@@ -13,7 +13,6 @@ import SaveIcon from "@mui/icons-material/Save";
 import CancelIcon from "@mui/icons-material/Close";
 import {
   GridRowModes,
-  GridToolbarContainer,
   GridActionsCellItem,
   GridRowEditStopReasons,
 } from "@mui/x-data-grid";
@@ -95,7 +94,6 @@ function UserPage() {
   }, [refresh]);
 
   const userRef = useRef();
-  const [value, setValue] = useState("");
   const [sifre, setPwd] = useState("");
   const [isim, setIsim] = useState("");
   const [soyisim, setSoyIsim] = useState("");
