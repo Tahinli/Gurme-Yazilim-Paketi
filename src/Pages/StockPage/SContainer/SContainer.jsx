@@ -280,6 +280,7 @@ useEffect(() => {
           orientation="horizontal"
           size="lg"
           variant="outlined"
+          sx={{paddingLeft:3}}
         >
           <div className="input_header1">
             <CancelIcon className="close_btn1" onClick={close_input_part} />

@@ -12,6 +12,7 @@ import {Button, responsiveFontSizes} from "@mui/material";
 import urunApi from '../../../api/urun-api.js';
 import kategoriApi from '../../../api/kategori-api.js';
 import gunlukApi from '../../../api/gunluk-api.js';
+import { padding } from '@mui/system';
 
 const palette = ['red', 'blue', 'green','yellow','pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
 const palette1 = ['pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
@@ -141,11 +142,10 @@ export  function PieAnimation() {
   };
 
   return (
-    <div className={"ChartsDate"}>
     <div>
-       
+    <div>
             Filtrele:
-            <div className={"dateArea"} style={{display:'flex'}}>
+            <div style={{display:'flex'}}>
                 <DatePicker
                     selected={startDate}
                     onChange={(date) => setStartDate(date)}
@@ -165,9 +165,6 @@ export  function PieAnimation() {
                 />
             </div>
             <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning">ANALİZ</Button>
-
-  
-
     </div>
     <div>
         {analyze && 
@@ -218,10 +215,10 @@ aria-labelledby="input-radius"
 />
 </Box>
 
-      
+              
 
-}</div>
-</div>
+        }</div>
+        </div>
   );
 }
 

@@ -160,7 +160,7 @@ function EnhancedTableHead(props) {
             sx={{
               backgroundColor: "rgb(126, 126, 126)",
               color: "white",
-              fontSize: 30,
+              fontSize: 35,
             }}
           >
             <TableSortLabel
@@ -368,8 +368,10 @@ export default function PContainer() {
       console.error("An error occurred:", error);
     }
   }
+
   return (
     <div className="product_body">
+
       <div className="pp_input">
         <Card
           className="p_inputcard"
@@ -534,13 +536,15 @@ export default function PContainer() {
         </Card>
       </div>
 
+<div className="p_box_div">
 
       <h1 className="p_h1">ÜRÜN TABLOSU</h1>
       <Box sx={{ width: "80%" }} className="p_box">
-        <Paper sx={{ mb: 1 }} className="p_table">
+        <Paper >
           <EnhancedTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table
+              className="p_table"
               aria-labelledby="tableTitle"
               size={dense ? "small" : "medium"}
             >
@@ -626,9 +630,11 @@ export default function PContainer() {
             page={page}
             onPageChange={handleChangePage}
             onRowsPerPageChange={handleChangeRowsPerPage}
+            sx={{paddingBottom:10}}
           />
         </Paper>
       </Box>
+      </div>
     </div>
   );
 }

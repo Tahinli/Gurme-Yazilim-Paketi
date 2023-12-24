@@ -5,7 +5,6 @@ import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import './CategoryAnalyze.css';
 import { useState } from 'react';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
 
 import {
     BarAnimation,
@@ -83,16 +82,6 @@ export function CategoryAnalyzeP(){
                       variant="soft"
                       sx={{width:'100%', alignItems:'center'}}
                 >
-                     <Button 
-                        id="zoomin_btn"
-                        size='small'
-                        color="success" 
-                        variant="contained"
-                        aria-label="add"  
-                        endIcon={ <ZoomInIcon/> }
-                    >
-                        Büyüt
-                    </Button >
                     {<BarAnimation />}
                 </Card>
             }

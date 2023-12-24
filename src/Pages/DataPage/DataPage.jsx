@@ -8,8 +8,6 @@ import "../HomePage/Footer/footer.css";
 import "../HomePage/Navbar/navbar.css";
 import "./DataSidebar/dside_navbar.css";
 import "./DContainer/dcontainer.css";
-import '../Responsive/mobile.css';
-import '../Responsive/tablet.css';
 
 function datapage() {
   return (
