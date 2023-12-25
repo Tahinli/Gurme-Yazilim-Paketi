@@ -39,13 +39,13 @@ impl Kullanici
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
                                             }
                                     }
                             }
                         Err(hata_degeri) =>
                             {
-                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
                             }
                     }
             }
@@ -76,7 +76,7 @@ impl Kullanici
                             }
                         Err(hata_degeri) =>
                             {
-                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
                 
@@ -120,14 +120,14 @@ impl Kullanici
                                                     }
                                                 Err(hata_degeri) =>
                                                     {
-                                                        return (StatusCode::EXPECTATION_FAILED, Json(serde_json::json!(hata_degeri.to_string())));
+                                                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
                                                     }
                                             }
                                     }
                             }
                         Err(hata_degeri) =>
                             {
-                                return (StatusCode::EXPECTATION_FAILED, Json(serde_json::json!(hata_degeri.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
                             }
                     }
                 (StatusCode::OK, Json(serde_json::json!(kullanicilar_vector)))
@@ -142,7 +142,7 @@ impl Kullanici
                             }
                         Err(hata_degeri) =>
                             {
-                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
             }
@@ -169,13 +169,13 @@ impl Kategori
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
                                             }
                                     }
                             }
                         Err(hata_degeri) =>
                             {
-                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
                             }
                     }
             }
@@ -210,7 +210,7 @@ impl Kategori
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::NO_CONTENT, Json(serde_json::json!(bulunamadi.to_string())))
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())))
                             }
                     }
                 match state.kategori_collection.insert_one(kategori, None).await
@@ -221,7 +221,7 @@ impl Kategori
                             }
                         Err(hata_degeri) =>
                             {
-                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
             }
@@ -283,14 +283,14 @@ impl Kategori
                                                     }
                                                 Err(hata) =>
                                                     {
-                                                        return (StatusCode::EXPECTATION_FAILED, Json(serde_json::json!(hata.to_string())));
+                                                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata.to_string())));
                                                     }
                                             }
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
                             }
                     }
                 (StatusCode::OK, Json(serde_json::json!(kategoriler_vector)))
@@ -305,7 +305,7 @@ impl Kategori
                             }
                         Err(hata_degeri) =>
                             {
-                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
             }
@@ -333,13 +333,13 @@ impl Urun
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
                                             }
                                     }
                             }
                         Err(hata_degeri) =>
                             {
-                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
                             }
                     }
             }
@@ -375,20 +375,20 @@ impl Urun
                                                             }
                                                         Err(hata_degeri) =>
                                                             {
-                                                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
                                                             }
                                                         
                                                     }
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
                                             }
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
                             }
                     }
             }
@@ -423,13 +423,13 @@ impl Urun
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
                                             }
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
                             }
                     }
             }
@@ -450,14 +450,14 @@ impl Urun
                                                     }
                                                 Err(hata_degeri) =>
                                                     {
-                                                        return (StatusCode::EXPECTATION_FAILED, Json(serde_json::json!(hata_degeri.to_string())));
+                                                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
                                                     }
                                             }
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
                             }
                     }
                 (StatusCode::OK, Json(serde_json::json!(urunler_vector)))
@@ -472,7 +472,7 @@ impl Urun
                             }
                         Err(hata_degeri) =>
                             {
-                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
             }
@@ -508,13 +508,13 @@ impl Gunluk
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
                                             }
                                     }
                             }
                         Err(hata_degeri) =>
                             {
-                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
                             }
                     }
             }
@@ -535,13 +535,13 @@ impl Gunluk
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
                                             }
                                     }                                
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
                             }
                     }
                 
@@ -591,19 +591,19 @@ impl Gunluk
                                                             }
                                                         Err(hata_degeri) =>
                                                             {
-                                                                return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
                                                             }
                                                     }
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
                                             }
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
                             }
                     }
                 
@@ -657,13 +657,13 @@ impl Gunluk
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::NO_CONTENT, Json(serde_json::json!("")));
+                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
                                             }
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
                             }
                     }
             }
@@ -684,14 +684,14 @@ impl Gunluk
                                                     }
                                                 Err(hata_degeri) =>
                                                     {
-                                                        return (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())));
+                                                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
                                                     }
                                             }
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::NOT_FOUND, Json(serde_json::json!(bulunamadi.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
                             }
                     }
                 (StatusCode::OK, Json(serde_json::json!(gunlukler_vector)))
@@ -706,7 +706,7 @@ impl Gunluk
                             }
                         Err(hata_degeri) =>
                             {
-                                (StatusCode::BAD_REQUEST, Json(serde_json::json!(hata_degeri.to_string())))
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
             }
