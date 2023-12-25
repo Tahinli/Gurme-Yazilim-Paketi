@@ -39,12 +39,14 @@ const addGunluk = async (urunAdi, userData) => {
     const atilan = userData.atilan
     const stok = userData.stok
     const sevk = userData.sevk
+    const stokta_sevke = userData.stokta_sevke
+    const stoktan_silinen = userData.stoktan_silinen
     const tarih = userData.tarih
 
     try {
         const options = {
             method: 'GET',
-            url: `${apiURL}/gunluk/ekle/${urunAdi}/${personel_sayisi}/${hedeflenen}/${ulasilan}/${atilan}/${stok}/${sevk}/${tarih}`,
+            url: `${apiURL}/gunluk/ekle/${urunAdi}/${personel_sayisi}/${hedeflenen}/${ulasilan}/${atilan}/${stok}/${sevk}/${stokta_sevke}/${stoktan_silinen}/${tarih}`,
             json: true,
             body: userData
         };
@@ -71,7 +73,7 @@ const deleteGunluk = async (urunIsim, tarih) => {
 };
 
 const updateGunluk = async (urunAdi, tarih, userData) => {
-    let yeni_urun, yeni_personel_sayisi, yeni_hedeflenen, yeni_ulasilan, yeni_atilan, yeni_tarih, yeni_stok, yeni_sevk
+    let yeni_urun, yeni_personel_sayisi, yeni_hedeflenen, yeni_ulasilan, yeni_atilan, yeni_tarih, yeni_stok, yeni_sevk, yeni_stoktan_sevke, yeni_stoktan_silinen
     yeni_urun = userData.yeni_urun
     yeni_personel_sayisi = userData.yeni_personel_sayisi
     yeni_hedeflenen = userData.yeni_hedeflenen
@@ -79,12 +81,14 @@ const updateGunluk = async (urunAdi, tarih, userData) => {
     yeni_atilan = userData.yeni_atilan
     yeni_stok = userData.yeni_stok
     yeni_sevk = userData.yeni_sevk
+    yeni_stoktan_sevke = userData.yeni_stoktan_sevke
+    yeni_stoktan_silinen = userData.yeni_stoktan_silinen
     yeni_tarih = userData.yeni_tarih
 
     try {
         const options = {
             method: 'GET',
-            url: `${apiURL}/gunluk/duzenle/${urunAdi}/${tarih}/${yeni_urun}/${yeni_personel_sayisi}/${yeni_hedeflenen}/${yeni_ulasilan}/${yeni_atilan}/${yeni_stok}/${yeni_sevk}/${yeni_tarih}`,
+            url: `${apiURL}/gunluk/duzenle/${urunAdi}/${tarih}/${yeni_urun}/${yeni_personel_sayisi}/${yeni_hedeflenen}/${yeni_ulasilan}/${yeni_atilan}/${yeni_stok}/${yeni_sevk}/${yeni_stoktan_sevke}/${yeni_stoktan_silinen}/${yeni_tarih}`,
             json: true,
             body: userData
         };
