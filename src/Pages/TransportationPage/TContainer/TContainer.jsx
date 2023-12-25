@@ -313,7 +313,7 @@ function updateurungir() {
                   <TextField onFocus={async () => await updatekategorigir()}
                     className="auto_cmplete1"
                     {...params}
-                    label="Ürün Katagorisi"
+                    label="Ürün Kategorisi"
                   />
                 )}
               />

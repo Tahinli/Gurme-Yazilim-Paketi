@@ -113,13 +113,13 @@ async function filterByCatDaily() {
     let totalVal = 0;
     let count=0
     //Günlük veriler sonrası karşılaştırma
-    await Promise.all(todayLog.map(async (log) => {
-        const productCategory = await urunApi.getUrunByName(log.urun_isim);
-        if (proVal === productCategory.isim) {
+   todayLog.map(async (log) => {
+        const productCategory = productList.filter(r=>r.isim===todayLog.urun_isim);
+        if (proVal === productCategory[0].isim) {
             count++
             totalVal += log.ulasilan / log.hedeflenen;
         }
-    }));
+    });
     totalVal=(totalVal/count)*100;
     let fail=100-totalVal
     if(fail<0){
@@ -150,14 +150,14 @@ async function filterByCatMonth()
     let totalVal = 0;
     let count=0
     //Aylık log verisi sonrası karşılaştırma
-    await Promise.all(rangeLog.map(async (MonthLog) => {
-        const productCategory = await urunApi.getUrunByName(MonthLog.urun_isim);
+   rangeLog.map(async (MonthLog) => {
+       const productCategory = productList.filter(r=>r.isim===MonthLog.urun_isim);
 
-        if (proVal === productCategory.isim) {
+        if (proVal === productCategory[0].isim) {
             count++
             totalVal += MonthLog.ulasilan / MonthLog.hedeflenen;
         }
-    }));
+    });
     totalVal=(totalVal/count)*100;
     let fail=100-totalVal
     if(fail<0){
@@ -179,17 +179,16 @@ async function monthlyBarChart(){
         const rangeLog = logList.filter(gunluk =>gunluk.tarih=== lastDay);
         let tempVal=0
         let count=0
-        await Promise.all(rangeLog.map(async (barLog) => {
-                    const productCategory = await urunApi.getUrunByName(barLog.urun_isim);
+      rangeLog.map(async (barLog) => {
+              const productCategory = productList.filter(r=>r.isim===barLog.urun_isim);
 
-                    if (proVal === productCategory.isim) {
+                    if (proVal === productCategory[0].isim) {
                         count++
                         tempVal += barLog.ulasilan / barLog.hedeflenen;
                     }
 
                 }
-            )
-        );
+                );
         //Mevcut değerler isimle uyuşuyorsa burada döngüden çıkan verileri eşitliyorum
         tempVal/=count
         tempVal*=100
@@ -219,13 +218,13 @@ async function filterByCatWeek()
     let totalVal = 0;
     let count=0
     //Haftanın içindeki verilere göre karşılaştırma yapılıyor
-    await Promise.all(rangeLog.map(async (WeekLog) => {
-        const productCategory = await urunApi.getUrunByName(WeekLog.urun_isim);
-        if (proVal === productCategory.isim) {
+    rangeLog.map(async (WeekLog) => {
+        const productCategory = productList.filter(r=>r.isim===WeekLog.urun_isim);
+        if (proVal === productCategory[0].isim) {
             count++
             totalVal += WeekLog.ulasilan / WeekLog.hedeflenen;
         }
-    }));
+    });
     totalVal=(totalVal/count)*100;
     let fail=100-totalVal
     if(fail<0){

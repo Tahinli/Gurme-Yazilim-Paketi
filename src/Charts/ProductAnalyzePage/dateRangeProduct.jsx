@@ -18,6 +18,12 @@ function getCurrentURL ()
 
     return window.location.href
 }
+function getTodayDate() {
+    const today = new Date();
+    // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return today.toLocaleDateString('tr-TR', options);
+}
 
 const url = getCurrentURL().toString()
 
@@ -87,8 +93,8 @@ export  function DateRangeProduct() {
 
     const[analyze,setAnalyze]=useState(false)
     const[refresh,isRefreshed]=useState(false)
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(convertDate(getTodayDate()));
+    const [endDate, setEndDate] = useState(convertDate(getTodayDate()));
 
     //fonksiyon
 

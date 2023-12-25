@@ -93,6 +93,7 @@ export default function SideNavbar() {
   const navigate = useNavigate();
   const handleClick1 = () => {
     navigate("/");
+
   };
   const handleClick2 = () => {
     navigate("/data");

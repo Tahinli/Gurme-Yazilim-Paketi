@@ -28,7 +28,7 @@ for (let i = 0; i < 30; i++) {
     }
 }
 const zort=arrProduct
-console.log(arrProduct)
+
 
 let range
 
@@ -81,13 +81,12 @@ async function filterByCatDaily() {
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
-        todayLog.map(async (log) => {
-            const productCategory = productList.filter(r=>r.isim===log.urun_isim);//await urunApi.getUrunByName(log.urun_isim);
-            if (catList[j] === productCategory[0].kategori.isim) {
+        for(let i=0;i<todayLog.length;i++){
+            if (catList[j] === todayLog[i].urun.kategori.isim) {
                 count++
-                totalVal += log.ulasilan / log.hedeflenen;
+                totalVal += todayLog[i].ulasilan / todayLog[i].hedeflenen;
             }
-        });
+        }
 
         DailyData.find(predicate => predicate.label === catList[j]).value = (totalVal/count)*100;
 
@@ -113,14 +112,12 @@ async function filterByCatMonth()
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
-        rangeLog.map(async (MonthLog) => {
-            const productCategory = productList.filter(r=>r.isim===MonthLog.urun_isim);
-
-            if (catList[j] === productCategory[0].kategori.isim) {
+        for(let i=0;i<rangeLog.length;i++){
+            if (catList[j] === rangeLog[i].urun.kategori.isim) {
                 count++
-                totalVal += MonthLog.ulasilan / MonthLog.hedeflenen;
+                totalVal += rangeLog[i].ulasilan / rangeLog[i].hedeflenen;
             }
-        });
+        }
 
         monthData.find(predicate => predicate.label === catList[j]).value = (totalVal/count)*100;
     }
@@ -138,16 +135,12 @@ async function monthlyBarChart(){
         for (let j = 0; j < catList.length; j++) {
             let tempVal=0
             let count=0
-            rangeLog.map(async (barLog) => {
-                        const productCategory = productList.filter(r=>r.isim===barLog.urun_isim);
-
-                        if (catList[j] === productCategory[0].kategori.isim) {
-                            count++
-                            tempVal += barLog.ulasilan / barLog.hedeflenen;
-                        }
-
-                    }
-                )
+            for(let i=0;i<rangeLog.length;i++){
+                if (catList[j] === rangeLog[i].urun.kategori.isim) {
+                    count++
+                    tempVal += rangeLog[i].ulasilan / rangeLog[i].hedeflenen;
+                }
+            }
             ;
             tempVal/=count
             tempVal*=100
@@ -171,15 +164,12 @@ async function filterByCatWeek()
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
-        rangeLog.map(async (WeekLog) => {
-            const productCategory = productList.filter(r=>r.isim===WeekLog.urun_isim);
-
-            if (catList[j] === productCategory[0].kategori.isim) {
+        for(let i=0;i<rangeLog.length;i++){
+            if (catList[j] === rangeLog[i].urun.kategori.isim) {
                 count++
-                totalVal += WeekLog.ulasilan / WeekLog.hedeflenen;
+                totalVal += rangeLog[i].ulasilan / rangeLog[i].hedeflenen;
             }
-        });
-
+        }
         weekData.find(predicate => predicate.label === catList[j]).value = (totalVal/count)*100;
     }
 
