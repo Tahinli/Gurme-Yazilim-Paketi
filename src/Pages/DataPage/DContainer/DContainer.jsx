@@ -37,6 +37,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 
+
 const inAnimation = keyframes`
   0% {
     transform: scale(0);
@@ -286,6 +287,7 @@ export default function DContainer() {
     setOpen(false);
   };
 
+
   function updateRows() {
     setRows(
       Gunlukler.map((Selection, index) => {
@@ -298,6 +300,53 @@ export default function DContainer() {
         return undefined;
       }).filter(item => item !== undefined));
   } // undefined değerlerini kaldır
+  
+  const exportTableToPDF = () => {
+
+    const data = rows.map(row => ({
+      urun_isim: row.urun_isim,
+      tarih: row.tarih,
+      hedeflenen: row.hedeflenen,
+      ulasilan: row.ulasilan,
+      atilan: row.atilan,
+      personel_sayisi: row.personel_sayisi,
+      sevk: row.sevk,
+      stok: row.stok
+    }));
+
+    const doc = new jsPDF()
+
+    const columns = [
+      { header: 'Urun Adı', dataKey: 'urun_isim' },
+      { header: 'Tarih', dataKey: 'tarih' },
+      { header: 'Hedeflenen', dataKey: 'hedeflenen' },
+      { header: 'Ulaşılan', dataKey: 'ulasilan' },
+      { header: 'Fire', dataKey: 'atilan' },
+      { header: 'Personel Sayısı', dataKey: 'personel_sayisi' },
+      { header: 'Sevk', dataKey: 'sevk' },
+      { header: 'Stok', dataKey: 'stok' },
+    ];
+
+    autoTable(doc, {
+      columns,
+      body: data,
+      styles: { cellWidth: 'wrap' }, // Wraps cell text if it's too wide
+      margin: { top: 15, right: 10, bottom: 10, left: 10 }, // Adjusts the margin
+      didDrawPage: (data) => {
+        doc.setFontSize(10)
+        doc.text(`${data.pageNumber}`, data.settings.margin.left, doc.internal.pageSize.height - 10)
+
+        let text = `Tarih: ${getTodayDate()}`
+        let textWidth = doc.getStringUnitWidth(text) * doc.internal.getFontSize() / doc.internal.scaleFactor
+        let textOffset = doc.internal.pageSize.width - textWidth - data.settings.margin.right // subtract margin.right for padding
+
+        // Move the text to the top right of the page
+        doc.text(text, textOffset, 10) // 10 units from the top of the page
+      },
+    });
+
+    doc.save("Data-Report.pdf")
+  }
 
   /// ilk rows'u oluşturmak için
   useEffect(() => {
@@ -354,7 +403,6 @@ export default function DContainer() {
       }
     };
   }
-
   ////////////////////////// GUNLUK SILME /////////////////////////////
   const handleDelete = async (row) => {
     try {
@@ -527,6 +575,7 @@ export default function DContainer() {
 
                 <div>
                   <Dialog open={open} onClose={() => handleClickClose()} maxWidth="xl" className='edit_dialog' BackdropProps={{style: {backgroundColor: 'transparent'}}} sx={{paddingBottom:73}}>
+
                     <DialogTitle sx={{ backgroundColor: 'rgb(72, 194, 102)' }}>DÜZENLE</DialogTitle>
                     <p style={{ paddingLeft: 20, marginBottom: 0, color: 'red', fontSize: 17 }}
                     >
@@ -534,13 +583,16 @@ export default function DContainer() {
                     </p>
 
                     <Card
+
                       className='edit_card'
+
                       color='neutral'
                       orientation="horizontal"
                       size="lg"
                       variant='soft'
                       sx={{ width: '100%' }}
                     >
+
                       <TextField onChange={(e) => editsetPersonel_sayisi(e.target.value)} type="number" autoFocus margin="dense" label="Personel Sayısı" fullWidth defaultValue={editpersonel_sayisi} inputProps={{ min: 0 }} />
                       <TextField onChange={(e) => editsetTarih(e.target.value)} margin="dense" label="Tarih" fullWidth defaultValue={edittarih} />
                       <TextField onChange={(e) => editsetHedef(e.target.value)} type="number" autoFocus margin="dense" label="Hedef" fullWidth defaultValue={edithedef} inputProps={{ min: 0 }} />
@@ -553,6 +605,7 @@ export default function DContainer() {
                     <DialogActions sx={{ alignItems: 'left' }}>
                       <Button variant="contained" color="error" onClick={() => handleClickClose()}>İptal</Button>
                       <Button variant="contained" color="success" onClick={() => handleEdit()}>Güncelle</Button>
+
                     </DialogActions>
                   </Dialog>
                 </div>
@@ -563,6 +616,7 @@ export default function DContainer() {
     );
   }
   return (
+
 <div className='Data_containerbody'>
 {/* INPUT PART*/}
   {showInputPart && <Card 
@@ -705,6 +759,7 @@ export default function DContainer() {
                 </Card>
             </div>
 
+
       <div className='add_table' >
         <Stack className="add" sx={{ backgroundColor: '#28342b' }}></Stack>
 
@@ -715,6 +770,7 @@ export default function DContainer() {
             components={VirtuosoTableComponents}
             fixedHeaderContent={fixedHeaderContent}
             itemContent={rowContent}
+
             sx={{ zIndex: 0 }}
           />
         </Paper>
@@ -735,6 +791,7 @@ export default function DContainer() {
           </Stack>
         </Stack>
       </div>
+
     </div>
   );
 }
