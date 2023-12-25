@@ -27,7 +27,7 @@
   margin-left: 5rem;
   padding-top: 7rem;
   width: 600px;
-  height: 250px;
+  height: 335px;
 }
 .input_sevk1 {
   display: flex;
@@ -61,7 +61,7 @@
 .input_part1 {
   width: 100%;
   display: flex;
-  padding-bottom: 7rem;
+  padding-bottom: 2rem;
   transition: "all 1s ease-out";
 }
 
@@ -127,4 +127,9 @@
 .stock_analyzebtn{
   width: 70px;
   height: 25px;
+}
+
+.throw_part{
+  width: 40%;
+  margin-top: 0rem !important;
 }

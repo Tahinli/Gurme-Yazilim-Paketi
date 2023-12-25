@@ -222,8 +222,9 @@ body {
  .add_table{
   flex-direction: column-reverse;
  }
- .add_btn{
-  margin-left: -2rem !important;
+ .data_tablebtns{
+  display: flex;
+  margin-left: -1rem !important;
  }
  .p_inputcard{
   min-width: 360px !important;
@@ -355,7 +356,7 @@ body {
   }
    .input_card1{
      width: 70% !important;
-     height: 370px !important;
+     height: 410px !important;
    }
    .input_card11{
     width: 85% !important;
@@ -371,13 +372,18 @@ body {
     flex-direction: column;
   }
   .input_card1{
-    height: 450px !important;
+    height: 530px !important;
   }
   .div_div1{
     padding-left: 6.8rem;
   }
   .date_picker1{
     flex-direction: column;
+   }
+   .throw_partdiv{
+    margin-top:-1rem !important;
+    margin-left: 0.2rem;
+
    }
 }
 

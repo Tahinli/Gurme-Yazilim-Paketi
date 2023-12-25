@@ -23,7 +23,7 @@ import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { useState } from "react";
 import Card from "@mui/joy/Card";
 import Snackbar from "@mui/joy/Snackbar";
-import { fontSize, keyframes } from "@mui/system";
+import { fontSize, height, keyframes, style } from "@mui/system";
 import PlaylistAddCheckCircleRoundedIcon from "@mui/icons-material/PlaylistAddCheckCircleRounded";
 import { PieAnimation } from "./stockpiechart";
 import { useEffect } from "react";
@@ -33,6 +33,11 @@ import urunApi from "../../../api/urun-api";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
+import DeleteForeverIcon from '@mui/icons-material/DeleteForeverTwoTone';
+import InputAdornment from '@mui/material/InputAdornment';
+import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
+import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+
 const inAnimation = keyframes`
   0% {
     transform: scale(0);
@@ -270,6 +275,12 @@ useEffect(() => {
   console.log(toplamstok);
 }, [toplamstok]);
 
+const [showThrowPart,setThrowPart]= useState(false);
+
+    const show_ThrowPart= () => {
+     setThrowPart(!showThrowPart);
+    }
+
   return (
     <div className="Stok_containerbody">
       {/* INPUT TEXT_FİELDS1*/}
@@ -346,7 +357,6 @@ useEffect(() => {
                 label="Sevk Edilecek Miktar"
                 variant="filled"
               />
-
               <Stack className="field_btn1">
                 <Button
                   color="success"
@@ -382,7 +392,41 @@ useEffect(() => {
                 Sevk İşlemi Başarıyla Gerçekleşti
               </Snackbar>
             </div>
+      
+            <div style={{display:'flex', flexDirection:'column',marginTop:-30}} className="throw_partdiv"> 
+            {showThrowPart || false ?  <KeyboardArrowUpIcon color="error"  onClick={show_ThrowPart} style={{backgroundColor:'rgb(231, 201, 201)'}}/> : < KeyboardArrowDownIcon color="error" onClick={show_ThrowPart} style={{backgroundColor:'rgb(231, 201, 201)'}}/> }
+            
+            {showThrowPart && <div className="throw_part">
+            <TextField
+                sx={{ paddingRight: 0.5}}
+                label="Stoktan Atılacak Miktar"
+                variant="filled"
+                InputProps={{
+                  startAdornment: (
+                    <InputAdornment position="start">
+                      <DeleteForeverIcon
+                        color="error"
+                        variant="contained"
+                        aria-label="add"
+                      />
+                    </InputAdornment>
+                  ), }}
+              />
+              <Button
+                  color="error"
+                  variant="contained"
+                  aria-label="add"
+                  sx={{ height:20,alignSelf:'flex-end'}}
+                  onClick={handleClick}
+                >
+                  AT
+              </Button>
+              </div>}
+            </div>
+            
+         
           </div>
+       
         </Card>
 
        

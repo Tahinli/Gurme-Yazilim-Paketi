@@ -728,7 +728,9 @@ export default function DContainer() {
           />
         </Paper>
         {/* ADD-BUTTON*/}
-        <Stack direction="column" spacing={1}>
+        <div className='data_tablebtns'>
+       
+
           <Stack className='add_btn' sx={{color:'white'}}>
             EKLE
             <Fab color="error" onClick={show_input_part} sx={{ width: 35, height: 0 }}>
@@ -742,9 +744,10 @@ export default function DContainer() {
               <AddIcon />
             </Fab>
           </Stack>
-        </Stack>
-      </div>
 
+        </div>
+
+      </div>
     </div>
   );
 }
