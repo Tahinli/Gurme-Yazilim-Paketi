@@ -1,10 +1,26 @@
 * {
   font-size: 15px;
 }
-.Stok_containerbody{
+
+.Stok_containerbody {
   min-height: 100vh;
   position: relative;
 }
+
+.Stok_containerbody::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  close_btn1: visible;
+  background-image: url("src/assets/img/sevk.jpg");
+  background-position: 100% 100%;
+  opacity: 0.5; /* Görünürlüğü ayarlamak için değeri değiştirin (0.0 ile 1.0 arasında) */
+}
+
+
 .input_card1 {
   transition: "all 1s ease-out";
   margin-bottom: 3rem;
@@ -74,6 +90,8 @@
   margin-top: 1rem;
   margin-left: 5rem;
   color: red;
+ 
+
 }
 
 .input_header1 {
@@ -84,6 +102,7 @@
 
 .add_btn1 {
   margin-left: 1rem;
+  font-weight: bolder;
 }
 
 .date_card1{

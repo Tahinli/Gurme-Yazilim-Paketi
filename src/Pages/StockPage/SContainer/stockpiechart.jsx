@@ -16,8 +16,8 @@ import { padding } from '@mui/system';
 import { catList,logList,productList } from '../../../Charts/CategoryAnalyzePage/CategoryAnalyzeComponents.jsx';
 import Card from "@mui/joy/Card";
 
-const palette = ['red', 'blue', 'green','yellow','pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
-const palette1 = ['pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
+//const palette = ['red', 'blue', 'green','yellow','pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
+//const palette1 = ['pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
 
 var firstDate,lastDate
 let f1,f2
@@ -194,12 +194,13 @@ export  function PieAnimation() {
         >
         <PieChart
           height={300}
+          //colors={palette}
           series={[
             { data: data1, outerRadius: radius },
             {
               data: data2.slice(0, itemNb),
               innerRadius: radius,
-              arcLabel: (params) => params.label ?? '',
+         
             },
           ]}
           skipAnimation={skipAnimation}

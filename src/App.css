@@ -392,15 +392,92 @@ body {
 
 
 
+/*TRANSPORTATİONPAGE*/
+
+ 
+@media screen and (max-width:1700px){
+  .input_card22{
+     width:90% !important;
+  }
+
+ }
+
+ @media screen and (max-width:1500px){
+  .input_sevk2{
+    flex-direction: column;
+  }
+  .date_card2{
+    margin-left: 5rem !important;
+   }
+ }
+
+
+ @media screen and (max-width:1200px){
+ .pie_chart5{
+    max-width: 500px !important;
+  }
+  .pie_chartpart{
+    min-width: 1000px !important;
+  }
+
+  }
+
+@media screen and (max-width:768px){
+  .autocomplete2{
+     flex-direction:column ;
+     width:180px !important;
+   }
+   .input_part2{
+    width: 95% !important;
+  }
+   .input_card2{
+     width: 70% !important;
+     height: 370px !important;
+   }
+   .input_card22{
+    width: 85% !important;
+    min-width: 270px;
+   }
+   .date_card2{
+    width: 70% !important;
+   }
+}
+
+@media screen and (max-width:600px){
+  .input_part2{
+    flex-direction: column;
+  }
+  .input_card2{
+    height: 450px !important;
+  }
+  .div_div2{
+    padding-left: 6.8rem;
+  }
+  .date_picker2{
+    flex-direction: column;
+   }
+}
+
+@media screen and (max-width:500px){
+  .add_table2{
+    width: 385px !important;
+    flex-direction:row-reverse;
+    margin-left: 0 !important;
+    margin-right: 8rem !important;
+  }
+}
+
+
+
 @media screen and (max-width:400px){
   .Date_part{
     width:225px !important;
   }
-  .input_card11{
+  .input_card22{
     max-width: 50px !important;
     margin-left: 3.7rem !important; 
   }
-  .add_table1{
+  .add_table2{
     width: 330px !important;
     margin-left: 0.8rem !important;
   }

@@ -24,11 +24,11 @@ import Card from '@mui/joy/Card';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Snackbar from '@mui/joy/Snackbar';
-import { keyframes } from '@mui/system';
+import { fontSize, keyframes } from '@mui/system';
 import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import { PieAnimation } from "./stockpiechart2";
 import { useEffect } from 'react';
 import kategoriApi from '../../../api/kategori-api';
@@ -149,7 +149,7 @@ function rowContent(_index, row) {
   );
 }
 
-export default function SContainer() {
+export default function Tontainer() {
 
   const [Gunlukler, setGunlukler] = useState([]);
   const [ urunadi, setUrunadi ] = useState('');
@@ -269,23 +269,16 @@ function updateurungir() {
     <div className='Transportation_containerbody'>
       {/* INPUT TEXT_FİELDS1*/}
       {showInputPart && (
-        <Card
-          className="input_card22"
-          color="success"
-          orientation="horizontal"
-          size="lg"
-          variant="outlined"
-        >
-          <div className="input_header2">
-            <CancelIcon className="close_btn2" onClick={close_input_part} />
-            <h4  className='sevkislem_2' style={{ maxHeight: "70px" }}>SEVK ANALİZİ</h4>
-            <br />
-            <div className="pie_chart2">
-              <PieAnimation />
-            </div>
-          </div>
-        </Card>
-      )}
+        
+        <div>
+            <CancelIcon className="close_btn1" onClick={close_input_part} />
+              <div>
+                <PieAnimation />
+              </div>
+        </div>
+    )}
+
+
       {/* INPUT TEXT_FİELDS*/}
       <div className="input_sevk2">
         <Card
@@ -294,24 +287,25 @@ function updateurungir() {
           orientation="horizontal"
           size="lg"
           variant="outlined"
+          sx={{marginTop:6}}
         >
           <div>
-            <div className="input_header2">
-              <h4 className='sevkislem_2'>SEVK İŞLEMLERİ</h4>
+            <div className="input_header12">
+              <h4>SEVK İŞLEMLERİ</h4>
             </div>
 
             {/* AUTOCOMPLETE*/}
-            <div className="autocomplete1">
+            <div className="autocomplete2">
               <Autocomplete
                 onChange={(event, value) => {
                 setKategoriadi(value);
                 }}
-                className="autocomplete1"
+                className="autocomplete2"
                 disablePortal
                 options={kategorigir}
                 renderInput={(params) => (
                   <TextField onFocus={async () => await updatekategorigir()}
-                    className="auto_cmplete1"
+                    className="auto_cmplete2"
                     {...params}
                     label="Ürün Kategorisi"
                   />
@@ -321,12 +315,12 @@ function updateurungir() {
                 onChange={async (event, value) => {
                   setUrunadi(value);
                 }}
-                className="autocomplete1"
+                className="autocomplete2"
                 disablePortal
                 options={urungir}
                 renderInput={(params) => (
                   <TextField onFocus={() => updateurungir()}
-                    className="auto_cmplete1"
+                    className="auto_cmplete2"
                     {...params}
                     label="Ürünler"
                   />
@@ -385,17 +379,20 @@ function updateurungir() {
               
 {/* DATE TİME PİCKER*/}
 <div>
-             <Card className="date_card1"
+             <Card className="date_card2"
                       color='danger'
                       orientation="horizontal"
                       size="lg"
                       variant='outlined'
+                      sx={{marginTop:6}}
              >
-                <div className='div_div1'>
+                <div className='div_div2'>
+                <EditCalendarIcon size='small'/>
+                  Filtrele:
                         
-                  <div className="date_picker1">
+                  <div className="date_picker2">
                     
-                      <DatePicker className="date_11"
+                      <DatePicker className="date_3"
                           selected={startDate}
                           onChange={(date) => setStartDate(date)}
                           selectsStart
@@ -404,7 +401,7 @@ function updateurungir() {
                           dateFormat="dd.MM.yyyy"
                           sx={{zIndex:1000}}
                       />
-                      <DatePicker className="date_22"
+                      <DatePicker className="date_4"
                           selected={endDate}
                           onChange={(date) => setEndDate(date)}
                           selectsEnd
@@ -414,15 +411,7 @@ function updateurungir() {
                           dateFormat="dd.MM.yyyy"
                           sx={{zIndex:1000}}
                       />
-                       <Button
-                className="list_btn2"
-                color="error"
-                variant="contained"
-                aria-label="add"
-                sx={{ marginTop: 9}}
-              >
-                LİSTELE
-              </Button>
+                       
                     </div>
                   </div>   
                 </Card>
@@ -430,7 +419,7 @@ function updateurungir() {
       </div>
 
       <div className="add_table2">
-        <Stack className="add1" sx={{ backgroundColor: "#28342b" }}></Stack>
+        <Stack className="add2" sx={{ backgroundColor: "#28342b" }}></Stack>
 
         <Paper className="table2">
           <TableVirtuoso

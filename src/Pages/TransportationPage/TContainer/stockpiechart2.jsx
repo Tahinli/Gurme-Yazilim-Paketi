@@ -12,10 +12,12 @@ import {Button, responsiveFontSizes} from "@mui/material";
 import urunApi from '../../../api/urun-api.js';
 import kategoriApi from '../../../api/kategori-api.js';
 import gunlukApi from '../../../api/gunluk-api.js';
+import { padding } from '@mui/system';
 import { catList,logList,productList } from '../../../Charts/CategoryAnalyzePage/CategoryAnalyzeComponents.jsx';
+import Card from "@mui/joy/Card";
 
-const palette = ['red', 'blue', 'green','yellow','pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
-const palette1 = ['pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
+//const palette = ['red', 'blue', 'green','yellow','pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
+//const palette1 = ['pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
 
 var firstDate,lastDate
 let f1,f2
@@ -23,6 +25,7 @@ function setDate(fD,lD){
     f1=fD
     f2=lD
 }
+
 var rangeData1 = catList.slice(0,4).map((label) => ({
     value: 0,
     label: label
@@ -43,11 +46,11 @@ function convertDate(date){
   return new Date(date.split('.').reverse().join('-'))
 }
 
-
 await filterByCatRange(f1,f2)
 
+
 async function filterByCatRange(date1,date2)
-{
+{ 
     const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
     for (let j = 0; j < 4; j++) {
         let totalVal = 0;
@@ -56,7 +59,7 @@ async function filterByCatRange(date1,date2)
             const productCategory = productList.filter(r=>r.isim===rangeLog.urun_isim);
             if (catList[j] === productCategory[0].kategori.isim) {
                 count++
-                totalVal += rangeLog.sevk;
+                totalVal += rangeLog.stok;
             }
         });
         
@@ -71,7 +74,7 @@ async function filterByCatRange(date1,date2)
           const productCategory = productList.filter(r=>r.isim===rangeLog.urun_isim);
           if (catList[j] === productCategory[0].kategori.isim) {
               count++
-              totalVal += rangeLog.sevk;
+              totalVal += rangeLog.stok;
           }
       });
       
@@ -143,9 +146,19 @@ export  function PieAnimation() {
   };
 
   return (
-    <div className={"ChartsDate"}>
     <div>
-       
+    <div style={{display:'flex' , flexDirection:'column', color:'black'}}>
+               <Card  className={"Date_part"}
+                      style={{width: '450px',height: '20%'}}
+                      sx={{alignItems:'center',marginLeft:10}}
+                      color="neutral"
+                      invertedColors={false}
+                      orientation="vertical"
+                      size="lg"
+                      variant="solid"
+                >
+              
+              <h4 className="sevkislem_2">SEVK ANALİZİ</h4>
             Filtrele:
             <div className={"dateArea"} style={{display:'flex'}}>
                 <DatePicker
@@ -166,64 +179,70 @@ export  function PieAnimation() {
                     dateFormat='dd.MM.yyyy'
                 />
             </div>
-            <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning">ANALİZ</Button>
-
-  
-
+            <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning" className='sevk_analyzebtn'>ANALİZ</Button>
+            </Card>
     </div>
+    
     <div>
-        {analyze && 
-                         
-        <Box sx={{ width: '100%' }}>
-<PieChart
-height={320}
-colors={palette}
-series={[
-  { data: data1, outerRadius: radius },
-  {
-    data: data2.slice(0, itemNb),
-    innerRadius: radius,
-    //arcLabel: (params) => params.label ?? '',
-  },
-]}
-skipAnimation={skipAnimation}
-/>
-<FormControlLabel
-checked={skipAnimation}
-control={
-  <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />
-}
-label="Animasyon"
-labelPlacement="end"
-/>
-<Typography id="input-item-number" gutterBottom>
-Ürün Sayısı
-</Typography>
-<Slider
-value={itemNb}
-onChange={handleItemNbChange}
-valueLabelDisplay="auto"
-min={1}
-max={catList.length-5}
-aria-labelledby="input-item-number"
-/>
-<Typography id="input-radius" gutterBottom>
-Merkezin Büyüküğü
-</Typography>
-<Slider
-value={radius}
-onChange={handleRadius}
-valueLabelDisplay="auto"
-min={15}
-max={100}
-aria-labelledby="input-radius"
-/>
-</Box>
-
-      
-
-}</div>
-</div>
+        {analyze &&         
+        <Card className="input_card11"
+        color="warning"
+        orientation="horizontal"
+        size="lg"
+        variant="soft"
+        sx={{display:'flex', flexDirection:'column'}}
+        >
+        <PieChart
+          height={300}
+          //colors={palette}
+          series={[
+            { data: data1, outerRadius: radius },
+            {
+              data: data2.slice(0, itemNb),
+              innerRadius: radius,
+         
+            },
+          ]}
+          skipAnimation={skipAnimation}
+        />
+    
+        
+        <FormControlLabel
+        checked={skipAnimation}
+        control={
+          <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />
+        }
+        label="Animasyon"
+        labelPlacement="end"
+        />
+        <Typography id="input-item-number" gutterBottom>
+        Ürün Sayısı
+        </Typography>
+        <Slider
+        value={itemNb}
+        onChange={handleItemNbChange}
+        valueLabelDisplay="auto"
+        min={1}
+        sx={{width:'70%'}}
+        max={catList.length-5}
+        aria-labelledby="input-item-number"
+        />
+        <Typography id="input-radius" gutterBottom>
+        Merkezin Büyüküğü
+        </Typography>
+        <Slider
+        value={radius}
+        onChange={handleRadius}
+        valueLabelDisplay="auto"
+        min={15}
+        max={100}
+        sx={{width:'50%'}}
+        aria-labelledby="input-radius"
+        />
+        </Card>
+       }
+        </div>
+        </div>
   );
 }
 
