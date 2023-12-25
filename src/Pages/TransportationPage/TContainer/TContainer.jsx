@@ -336,19 +336,19 @@ function updateurungir() {
 
             <div className="input_part2">
               <TextField
-                disabled='true'
+                disabled={true}
                 sx={{ paddingRight: 1.5 }}
                 label="Günlük Toplam Sevk"
                 variant="filled"
               />
               <TextField
-                disabled='true'
+                disabled={true}
                 sx={{ paddingRight: 1.5 }}
                 label="Haftalık Toplam Sevk"
                 variant="filled"
               />
                <TextField
-                disabled='true'
+                disabled={true}
                 sx={{ paddingRight: 1.5 }}
                 label="Aylık Toplam Sevk"
                 variant="filled"

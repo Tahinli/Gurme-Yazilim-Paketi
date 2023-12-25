@@ -300,54 +300,6 @@ export default function DContainer() {
         return undefined;
       }).filter(item => item !== undefined));
   } // undefined değerlerini kaldır
-  
-  const exportTableToPDF = () => {
-
-    const data = rows.map(row => ({
-      urun_isim: row.urun_isim,
-      tarih: row.tarih,
-      hedeflenen: row.hedeflenen,
-      ulasilan: row.ulasilan,
-      atilan: row.atilan,
-      personel_sayisi: row.personel_sayisi,
-      sevk: row.sevk,
-      stok: row.stok
-    }));
-
-    const doc = new jsPDF()
-
-    const columns = [
-      { header: 'Urun Adı', dataKey: 'urun_isim' },
-      { header: 'Tarih', dataKey: 'tarih' },
-      { header: 'Hedeflenen', dataKey: 'hedeflenen' },
-      { header: 'Ulaşılan', dataKey: 'ulasilan' },
-      { header: 'Fire', dataKey: 'atilan' },
-      { header: 'Personel Sayısı', dataKey: 'personel_sayisi' },
-      { header: 'Sevk', dataKey: 'sevk' },
-      { header: 'Stok', dataKey: 'stok' },
-    ];
-
-    autoTable(doc, {
-      columns,
-      body: data,
-      styles: { cellWidth: 'wrap' }, // Wraps cell text if it's too wide
-      margin: { top: 15, right: 10, bottom: 10, left: 10 }, // Adjusts the margin
-      didDrawPage: (data) => {
-        doc.setFontSize(10)
-        doc.text(`${data.pageNumber}`, data.settings.margin.left, doc.internal.pageSize.height - 10)
-
-        let text = `Tarih: ${getTodayDate()}`
-        let textWidth = doc.getStringUnitWidth(text) * doc.internal.getFontSize() / doc.internal.scaleFactor
-        let textOffset = doc.internal.pageSize.width - textWidth - data.settings.margin.right // subtract margin.right for padding
-
-        // Move the text to the top right of the page
-        doc.text(text, textOffset, 10) // 10 units from the top of the page
-      },
-    });
-
-    doc.save("Data-Report.pdf")
-  }
-
   /// ilk rows'u oluşturmak için
   useEffect(() => {
     updateRows();
@@ -387,7 +339,8 @@ export default function DContainer() {
             atilan: fire,
             stok: stok,
             sevk: sevk,
-
+            stokta_sevke:0,
+            stoktan_silinen:0,
             tarih: getTodayDate(),
           });
         //////////////////////////////////////////////////////////////////////
@@ -492,7 +445,7 @@ export default function DContainer() {
   /////////////////////////////////////////
 
   //PDF EXPORT
-  const doc = new jsPDF()
+  // const doc = new jsPDF()
 
   // const fontBlob = await fetch('../../assets/fonts/arbutusslab-regular.ttf').then(response => response.blob());
   // const fontBase64 = await blobToDataURL(fontBlob);
