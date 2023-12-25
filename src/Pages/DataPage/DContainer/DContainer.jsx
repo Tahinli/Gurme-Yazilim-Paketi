@@ -298,7 +298,6 @@ export default function DContainer() {
         return undefined;
       }).filter(item => item !== undefined));
   } // undefined değerlerini kaldır
-
   /// ilk rows'u oluşturmak için
   useEffect(() => {
     updateRows();
@@ -338,7 +337,8 @@ export default function DContainer() {
             atilan: fire,
             stok: stok,
             sevk: sevk,
-
+            stokta_sevke:0,
+            stoktan_silinen:0,
             tarih: getTodayDate(),
           });
         //////////////////////////////////////////////////////////////////////
@@ -444,7 +444,7 @@ export default function DContainer() {
   /////////////////////////////////////////
 
   //PDF EXPORT
-  const doc = new jsPDF()
+  // const doc = new jsPDF()
 
   // const fontBlob = await fetch('../../assets/fonts/arbutusslab-regular.ttf').then(response => response.blob());
   // const fontBase64 = await blobToDataURL(fontBlob);
