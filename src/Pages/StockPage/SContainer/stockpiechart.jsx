@@ -14,6 +14,7 @@ import kategoriApi from '../../../api/kategori-api.js';
 import gunlukApi from '../../../api/gunluk-api.js';
 import { padding } from '@mui/system';
 import { catList,logList,productList } from '../../../Charts/CategoryAnalyzePage/CategoryAnalyzeComponents.jsx';
+import Card from "@mui/joy/Card";
 
 const palette = ['red', 'blue', 'green','yellow','pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
 const palette1 = ['pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
@@ -146,9 +147,20 @@ export  function PieAnimation() {
 
   return (
     <div>
-    <div>
+    <div style={{display:'flex' , flexDirection:'column', color:'black'}}>
+               <Card  className={"Date_part"}
+                      style={{width: '450px',height: '20%'}}
+                      sx={{alignItems:'center',marginLeft:10}}
+                      color="neutral"
+                      invertedColors={false}
+                      orientation="vertical"
+                      size="lg"
+                      variant="solid"
+                >
+              
+              <h4 className="stokislem_1">STOK ANALİZİ</h4>
             Filtrele:
-            <div style={{display:'flex'}}>
+            <div className={"dateArea"} style={{display:'flex'}}>
                 <DatePicker
                     selected={startDate}
                     onChange={(date) => setStartDate(date)}
@@ -167,60 +179,68 @@ export  function PieAnimation() {
                     dateFormat='dd.MM.yyyy'
                 />
             </div>
-            <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning">ANALİZ</Button>
+            <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning" className='stock_analyzebtn'>ANALİZ</Button>
+            </Card>
     </div>
+    
     <div>
-        {analyze && 
-                         
-        <Box sx={{ width: '100%' }}>
-<PieChart
-height={320}
-colors={palette}
-series={[
-  { data: data1, outerRadius: radius },
-  {
-    data: data2.slice(0, itemNb),
-    innerRadius: radius,
-    //arcLabel: (params) => params.label ?? '',
-  },
-]}
-skipAnimation={skipAnimation}
-/>
-<FormControlLabel
-checked={skipAnimation}
-control={
-  <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />
-}
-label="Animasyon"
-labelPlacement="end"
-/>
-<Typography id="input-item-number" gutterBottom>
-Ürün Sayısı
-</Typography>
-<Slider
-value={itemNb}
-onChange={handleItemNbChange}
-valueLabelDisplay="auto"
-min={1}
-max={catList.length-5}
-aria-labelledby="input-item-number"
-/>
-<Typography id="input-radius" gutterBottom>
-Merkezin Büyüküğü
-</Typography>
-<Slider
-value={radius}
-onChange={handleRadius}
-valueLabelDisplay="auto"
-min={15}
-max={100}
-aria-labelledby="input-radius"
-/>
-</Box>
-
-              
-
-        }</div>
+        {analyze &&         
+        <Card className="input_card11"
+        color="warning"
+        orientation="horizontal"
+        size="lg"
+        variant="soft"
+        sx={{display:'flex', flexDirection:'column'}}
+        >
+        <PieChart
+          height={300}
+          series={[
+            { data: data1, outerRadius: radius },
+            {
+              data: data2.slice(0, itemNb),
+              innerRadius: radius,
+              arcLabel: (params) => params.label ?? '',
+            },
+          ]}
+          skipAnimation={skipAnimation}
+        />
+    
+        
+        <FormControlLabel
+        checked={skipAnimation}
+        control={
+          <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />
+        }
+        label="Animasyon"
+        labelPlacement="end"
+        />
+        <Typography id="input-item-number" gutterBottom>
+        Ürün Sayısı
+        </Typography>
+        <Slider
+        value={itemNb}
+        onChange={handleItemNbChange}
+        valueLabelDisplay="auto"
+        min={1}
+        sx={{width:'70%'}}
+        max={catList.length-5}
+        aria-labelledby="input-item-number"
+        />
+        <Typography id="input-radius" gutterBottom>
+        Merkezin Büyüküğü
+        </Typography>
+        <Slider
+        value={radius}
+        onChange={handleRadius}
+        valueLabelDisplay="auto"
+        min={15}
+        max={100}
+        sx={{width:'50%'}}
+        aria-labelledby="input-radius"
+        />
+        </Card>
+       }
+        </div>
         </div>
   );
 }

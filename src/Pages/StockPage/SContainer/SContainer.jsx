@@ -14,6 +14,7 @@ import LoupeIcon from "@mui/icons-material/Loupe";
 import Button from "@mui/material/Button";
 import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
+import CancelIcon from "@mui/icons-material/Cancel";
 import dayjs from "dayjs";
 import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
@@ -21,8 +22,6 @@ import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { useState } from "react";
 import Card from "@mui/joy/Card";
-import CancelIcon from "@mui/icons-material/Cancel";
-import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Snackbar from "@mui/joy/Snackbar";
 import { fontSize, keyframes } from "@mui/system";
 import PlaylistAddCheckCircleRoundedIcon from "@mui/icons-material/PlaylistAddCheckCircleRounded";
@@ -33,6 +32,7 @@ import gunlukApi from "../../../api/gunluk-api";
 import urunApi from "../../../api/urun-api";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 const inAnimation = keyframes`
   0% {
     transform: scale(0);
@@ -274,36 +274,29 @@ useEffect(() => {
     <div className="Stok_containerbody">
       {/* INPUT TEXT_FİELDS1*/}
       {showInputPart && (
-        <Card
-          className="input_card11"
-          color="success"
-          orientation="horizontal"
-          size="lg"
-          variant="outlined"
-          sx={{paddingLeft:3}}
-        >
-          <div className="input_header1">
-            <CancelIcon className="close_btn1" onClick={close_input_part} />
-            <h4 className="stokislem_1 "style={{ maxHeight: "70px" }}>STOK ANALİZİ</h4>
-            <br />
-            <div className="pie_chart1">
-              <PieAnimation />
-            </div>
+        
+          <div>
+              <CancelIcon className="close_btn1" onClick={close_input_part} />
+                <div>
+                  <PieAnimation />
+                </div>
           </div>
-        </Card>
       )}
+
+
       {/* INPUT TEXT_FİELDS*/}
-      <div className="input_sevk1 ">
+      <div className="input_sevk1">
         <Card
           className="input_card1"
           color="success"
           orientation="horizontal"
           size="lg"
           variant="outlined"
+          sx={{marginTop:6}}
         >
           <div>
-            <div className="input_header1">
-              <h4 className="stokislem_1">STOK İŞLEMLERİ</h4>
+            <div className="input_header12">
+              <h4>STOK İŞLEMLERİ</h4>
             </div>
 
             {/* AUTOCOMPLETE*/}
@@ -359,7 +352,7 @@ useEffect(() => {
                   color="success"
                   variant="contained"
                   aria-label="add"
-                  sx={{ marginTop: -1 }}
+                  sx={{ marginTop: 1 }}
                   onClick={handleClick}
                   endIcon={<LoupeIcon />}
                 >
@@ -400,9 +393,11 @@ useEffect(() => {
                       orientation="horizontal"
                       size="lg"
                       variant='outlined'
+                      sx={{marginTop:6}}
              >
                 <div className='div_div1'>
-                        
+                <EditCalendarIcon size='small'/>
+                  Filtrele:
                   <div className="date_picker1">
                     
                       <DatePicker className="date_1"
@@ -424,15 +419,6 @@ useEffect(() => {
                           dateFormat="dd.MM.yyyy"
                           sx={{zIndex:1000}}
                       />
-                       <Button
-                className="list_btn1"
-                color="error"
-                variant="contained"
-                aria-label="add"
-                sx={{ marginTop: 9}}
-              >
-                LİSTELE
-              </Button>
                     </div>
                   </div>   
                 </Card>
@@ -441,27 +427,26 @@ useEffect(() => {
 
       <div className="add_table1">
         <Stack className="add1" sx={{ backgroundColor: "#28342b" }}></Stack>
-
         <Paper className="table1">
-          <TableVirtuoso
-            data={rows}
-            components={VirtuosoTableComponents}
-            fixedHeaderContent={fixedHeaderContent}
-            itemContent={rowContent}
-            sx={{ zIndex: 0 }}
-          />
-        </Paper>
-        {/* ADD-BUTTON*/}
-        <Stack className="add_btn1">
-          ANALİZ
-          <Fab
-            color="error"
-            onClick={show_input_part}
-            sx={{ width: 35, height: 0 }}
-          >
-            <AddIcon />
-          </Fab>
-        </Stack>
+                <TableVirtuoso
+                  data={rows}
+                  components={VirtuosoTableComponents}
+                  fixedHeaderContent={fixedHeaderContent}
+                  itemContent={rowContent}
+                  sx={{ zIndex: 0 }}
+                />
+              </Paper>
+              {/* ADD-BUTTON*/}
+              <Stack className="add_btn1">
+                ANALİZ
+                <Fab
+                  color="error"
+                  onClick={show_input_part}
+                  sx={{ width: 35, height: 0 }}
+                >
+                  <AddIcon />
+                </Fab>
+              </Stack>
       </div>
     </div>
   );

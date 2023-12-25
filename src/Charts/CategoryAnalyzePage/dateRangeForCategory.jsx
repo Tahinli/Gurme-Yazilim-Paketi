@@ -133,7 +133,7 @@ export  function DateRangeP() {
 
             </div>
             <div>
-                {analyze && <Card className={"Charts"} style={{width: '65%', height: '400px', marginTop:15}}
+                {analyze && <Card className={"Charts"} style={{width: '65%' ,height: '400px', marginTop:15}} sx={{minWidth:325}}
                                   color="neutral"
                                   invertedColors={false}
                                   orientation="vertical"
