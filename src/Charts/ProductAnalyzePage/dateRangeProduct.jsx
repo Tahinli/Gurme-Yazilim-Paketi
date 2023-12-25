@@ -7,9 +7,10 @@ import {Button} from "@mui/material";
 import CancelIcon from '@mui/icons-material/Cancel';
 import gunlukApi from "../../api/gunluk-api.js";
 import urunApi from "../../api/urun-api.js";
+import { logList,productList } from '../CategoryAnalyzePage/CategoryAnalyzeComponents.jsx';
 
-const logList = await gunlukApi.getGunlukler();
-const proList = (await urunApi.getUrunler()).map((urun) => urun.isim);
+
+const proList = productList.map((urun) => urun.isim);
 
 function getCurrentURL ()
 {

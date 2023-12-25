@@ -16,10 +16,9 @@ import {useLocation} from "react-router-dom";
 
 //APIDEN GELEN DEĞERLER ÇEKİLİYOR
 const palette = ['red','blue','yellow','orange','brown','green','grey','tomato','tan','steelblue','slateblue','powderblue','orchid','olive','magenta'];
-const productList = await urunApi.getUrunler();
-const logList = await gunlukApi.getGunlukler();
-const urungir = (await urunApi.getUrunler()).map((urun) => urun.isim);
-const catList = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
+export const productList = await urunApi.getUrunler();
+export const logList = await gunlukApi.getGunlukler();
+export const catList = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
 
 let arrProduct = [];
 for (let i = 0; i < 30; i++) {
@@ -82,14 +81,13 @@ async function filterByCatDaily() {
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
-        await Promise.all(todayLog.map(async (log) => {
-            const productCategory = await urunApi.getUrunByName(log.urun_isim);
-
-            if (catList[j] === productCategory.kategori.isim) {
+        todayLog.map(async (log) => {
+            const productCategory = productList.filter(r=>r.isim===log.urun_isim);//await urunApi.getUrunByName(log.urun_isim);
+            if (catList[j] === productCategory[0].kategori.isim) {
                 count++
                 totalVal += log.ulasilan / log.hedeflenen;
             }
-        }));
+        });
 
         DailyData.find(predicate => predicate.label === catList[j]).value = (totalVal/count)*100;
 
@@ -115,14 +113,14 @@ async function filterByCatMonth()
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
-        await Promise.all(rangeLog.map(async (MonthLog) => {
-            const productCategory = await urunApi.getUrunByName(MonthLog.urun_isim);
+        rangeLog.map(async (MonthLog) => {
+            const productCategory = productList.filter(r=>r.isim===MonthLog.urun_isim);
 
-            if (catList[j] === productCategory.kategori.isim) {
+            if (catList[j] === productCategory[0].kategori.isim) {
                 count++
                 totalVal += MonthLog.ulasilan / MonthLog.hedeflenen;
             }
-        }));
+        });
 
         monthData.find(predicate => predicate.label === catList[j]).value = (totalVal/count)*100;
     }
@@ -140,17 +138,17 @@ async function monthlyBarChart(){
         for (let j = 0; j < catList.length; j++) {
             let tempVal=0
             let count=0
-            await Promise.all(rangeLog.map(async (barLog) => {
-                        const productCategory = await urunApi.getUrunByName(barLog.urun_isim);
+            rangeLog.map(async (barLog) => {
+                        const productCategory = productList.filter(r=>r.isim===barLog.urun_isim);
 
-                        if (catList[j] === productCategory.kategori.isim) {
+                        if (catList[j] === productCategory[0].kategori.isim) {
                             count++
                             tempVal += barLog.ulasilan / barLog.hedeflenen;
                         }
 
                     }
                 )
-            );
+            ;
             tempVal/=count
             tempVal*=100
             arrProduct[i][j]=tempVal
@@ -173,14 +171,14 @@ async function filterByCatWeek()
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
-        await Promise.all(rangeLog.map(async (WeekLog) => {
-            const productCategory = await urunApi.getUrunByName(WeekLog.urun_isim);
+        rangeLog.map(async (WeekLog) => {
+            const productCategory = productList.filter(r=>r.isim===WeekLog.urun_isim);
 
-            if (catList[j] === productCategory.kategori.isim) {
+            if (catList[j] === productCategory[0].kategori.isim) {
                 count++
                 totalVal += WeekLog.ulasilan / WeekLog.hedeflenen;
             }
-        }));
+        });
 
         weekData.find(predicate => predicate.label === catList[j]).value = (totalVal/count)*100;
     }

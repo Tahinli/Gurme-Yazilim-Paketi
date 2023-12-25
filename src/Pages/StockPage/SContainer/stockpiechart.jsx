@@ -13,18 +13,18 @@ import urunApi from '../../../api/urun-api.js';
 import kategoriApi from '../../../api/kategori-api.js';
 import gunlukApi from '../../../api/gunluk-api.js';
 import { padding } from '@mui/system';
+import { catList,logList,productList } from '../../../Charts/CategoryAnalyzePage/CategoryAnalyzeComponents.jsx';
 
 const palette = ['red', 'blue', 'green','yellow','pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
 const palette1 = ['pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
-const catList = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
-const logList = await gunlukApi.getGunlukler();
+
 var firstDate,lastDate
 let f1,f2
 function setDate(fD,lD){
     f1=fD
     f2=lD
 }
-console.log("HOHOHOHO:"+f1)
+
 var rangeData1 = catList.slice(0,4).map((label) => ({
     value: 0,
     label: label
@@ -33,30 +33,34 @@ var rangeData2 = catList.slice(4,catList.length+1).map((label) => ({
   value: 0,
     label: label
 }));
-console.log(rangeData1)
-console.log(rangeData2)
-await filterByCatRange(f1,f2)
-function convertDate(date){
-    return new Date(date.split('.').reverse().join('-'))
+
+function getTodayDate() {
+  const today = new Date();
+  // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  return today.toLocaleDateString('tr-TR', options);
 }
-console.log("İLK DATE DEĞERİ:"+firstDate)
+
+function convertDate(date){
+  return new Date(date.split('.').reverse().join('-'))
+}
+
+await filterByCatRange(f1,f2)
+
+
 async function filterByCatRange(date1,date2)
-{
-    console.log("Değerler1"+date1)
-    console.log("Değerler2"+date2)
+{ 
     const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
-    console.log(rangeLog)
     for (let j = 0; j < 4; j++) {
         let totalVal = 0;
         let count=0
-        await Promise.all(rangeLog.map(async (rangeLog) => {
-            const productCategory = await urunApi.getUrunByName(rangeLog.urun_isim);
-             console.log(rangeLog[0])
-            if (catList[j] === productCategory.kategori.isim) {
+        rangeLog.map(async (rangeLog) => {
+            const productCategory = productList.filter(r=>r.isim===rangeLog.urun_isim);
+            if (catList[j] === productCategory[0].kategori.isim) {
                 count++
                 totalVal += rangeLog.stok;
             }
-        }));
+        });
         
         rangeData1.find(predicate => predicate.label === catList[j]).value =totalVal
    
@@ -65,14 +69,13 @@ async function filterByCatRange(date1,date2)
     for (let j = 4; j < catList.length; j++) {
       let totalVal = 0;
       let count=0
-      await Promise.all(rangeLog.map(async (rangeLog) => {
-          const productCategory = await urunApi.getUrunByName(rangeLog.urun_isim);
-           console.log(rangeLog[0])
-          if (catList[j] === productCategory.kategori.isim) {
+      rangeLog.map(async (rangeLog) => {
+          const productCategory = productList.filter(r=>r.isim===rangeLog.urun_isim);
+          if (catList[j] === productCategory[0].kategori.isim) {
               count++
               totalVal += rangeLog.stok;
           }
-      }));
+      });
       
       rangeData2.find(predicate => predicate.label === catList[j]).value =totalVal
   }
@@ -83,8 +86,8 @@ async function filterByCatRange(date1,date2)
 export  function PieAnimation() {
   const[analyze,setAnalyze]=useState(false)
     const[refresh,isRefreshed]=useState(false)
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(convertDate(getTodayDate()));
+    const [endDate, setEndDate] = useState(convertDate(getTodayDate()));
     const [radius, setRadius] = React.useState(50);
     const [itemNb, setItemNb] = React.useState(1);
     const [skipAnimation, setSkipAnimation] = useState(false)

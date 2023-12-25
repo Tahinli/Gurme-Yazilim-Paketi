@@ -48,8 +48,8 @@ const Navbar = () => {
       },
       credentials: "include",
     });
-    await setVerify(response.status === 200);
-    await setVerify1(response.status !== 200);
+    setVerify(response.status === 200);
+    setVerify1(response.status !== 200);
   };
   const buttonClick = () => {
     navigate("/login");
@@ -59,7 +59,7 @@ const Navbar = () => {
   };
   useEffect(() => {
     verifyUser();
-  }, []);
+   }, []);
 
   return (
     <div>

@@ -218,6 +218,7 @@ export default function DContainer() {
       await updateGunlukler();
     };
 
+
     fetchData();
   }, [startDate, endDate]);
 
@@ -476,7 +477,7 @@ export default function DContainer() {
       { header: 'Sevk', dataKey: 'sevk' },
       { header: 'Stok', dataKey: 'stok' },
     ]
-
+    
     autoTable(doc, {
       columns,
       body: data,

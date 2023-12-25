@@ -9,14 +9,20 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import urunApi from "../../api/urun-api.js";
 import kategoriApi from "../../api/kategori-api.js";
 import gunlukApi from "../../api/gunluk-api.js";
-const catList = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
-const logList = await gunlukApi.getGunlukler();
+import { logList,catList,productList} from "./CategoryAnalyzeComponents.jsx";
 
 var rangeData = catList.map((label, index) => ({
     id: index,
     value: 0,
     label: label
 }));
+
+function getTodayDate() {
+    const today = new Date();
+    // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
+    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+    return today.toLocaleDateString('tr-TR', options);
+  }
 
 function convertDate(date){
     return new Date(date.split('.').reverse().join('-'))
@@ -28,14 +34,14 @@ async function filterByCatRange(date1,date2)
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
-        await Promise.all(rangeLog.map(async (rangeLog) => {
-            const productCategory = await urunApi.getUrunByName(rangeLog.urun_isim);
-
-            if (catList[j] === productCategory.kategori.isim) {
+       rangeLog.map(async (rangeLog) => {
+            const productCategory = productList.filter(r=>r.isim===rangeLog.urun_isim);
+            
+            if (catList[j] === productCategory[0].kategori.isim) {
                 count++
                 totalVal += rangeLog.ulasilan / rangeLog.hedeflenen;
             }
-        }));
+        });
 
         rangeData.find(predicate => predicate.label === catList[j]).value = (totalVal/count)*100;
     }
@@ -47,8 +53,11 @@ export  function DateRangeP() {
 
     const[analyze,setAnalyze]=useState(false)
     const[refresh,isRefreshed]=useState(false)
-    const [startDate, setStartDate] = useState(new Date());
-    const [endDate, setEndDate] = useState(new Date());
+    const [startDate, setStartDate] = useState(convertDate(getTodayDate()));
+    const [endDate, setEndDate] = useState(convertDate(getTodayDate()));
+
+    // const [startDate, setStartDate] = useState(new Date());
+    // const [endDate, setEndDate] = useState(new Date());
 
 
 

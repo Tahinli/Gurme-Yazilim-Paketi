@@ -62,6 +62,7 @@ export default function ControllableStates({ onValue2Change }) {
 
     const goto_product= () => {
         { navigate(url) }
+        window.location.reload();
     };
 //TÜRKÇE KARAKTER DEĞİŞİMİ
     const pName = (text) => {

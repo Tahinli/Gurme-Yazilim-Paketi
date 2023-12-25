@@ -8,9 +8,10 @@ import Typography from "@mui/material/Typography";
 import Slider from "@mui/material/Slider";
 import urunApi from "../../api/urun-api.js";
 import gunlukApi from "../../api/gunluk-api.js";
-const logList = await gunlukApi.getGunlukler();
-const proList = (await urunApi.getUrunler()).map((urun) => urun.isim);
+import { logList,productList } from '../CategoryAnalyzePage/CategoryAnalyzeComponents.jsx';
 
+
+const proList = productList.map((urun) => urun.isim);
 
 let arrProduct = [];
 for (let i = 0; i < 30; i++) {
@@ -19,6 +20,8 @@ for (let i = 0; i < 30; i++) {
         arrProduct[i][j] = 0;
     }
 }
+
+
 let range
 const date=new Date()
 var datePerc=date.getUTCDay()
@@ -45,7 +48,9 @@ const productNameVar=url.split("/")
 
 //BU KISIMDA TÜRKÇE KARAKTERDEN YABANCI KARAKTERLERE DÖNÜŞTÜREREK KARŞILAŞTIRMAY YAPIP ATAMASINI YAPIYORUM
 
-let productName=productNameVar[4]
+let productName=productNameVar[4] 
+console.log(productName)
+console.log(proVal)
 for(let i=0;i<proList.length;i++){
     proVal=proList[i].replaceAll('Ğ','g')
         .replaceAll('Ü','u')
