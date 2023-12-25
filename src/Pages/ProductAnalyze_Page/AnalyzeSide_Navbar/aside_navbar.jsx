@@ -116,7 +116,7 @@ export default function SideNavbar() {
           <DrawerHeader>
             <img
               className="header_img"
-              src="/Products/src/assets/img/cemens_resmi.jpg"
+              src="/src/assets/img/cemens_resmi.jpg"
               width={30}
               height={20}
               alt="Çemen's Gurme"
@@ -180,13 +180,13 @@ export default function SideNavbar() {
 
             <img
               className="sideBar_img"
-              src="/Products/src/assets/img/cemens_cover.jpeg"
+              src="/src/assets/img/cemens_cover.jpeg"
               alt="Çemen's Gurme"
             ></img>
           </List>
         </Drawer>
 
-        <Main open={open}>
+        <Main open={open} className="ProductAnalyze_containerbody">
           <ProductPageAnalyze />
         </Main>
       </Box>

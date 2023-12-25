@@ -4,7 +4,7 @@ import corsOptions from "./config/corsOptions.js";
 import { handleLogin, authenticateToken } from "./src/authController.js"; // Import the handleLogin function
 import allowedOrigins from "./config/allowedOrigins.js";
 import cookieParser from "cookie-parser";
-import URL from "./src/URL/url.js";
+import URL from "./URL/url.js";
 
 const app = express();
 const IP_ADDRESS = URL; // replace with your IP address

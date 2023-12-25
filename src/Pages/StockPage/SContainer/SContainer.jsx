@@ -24,10 +24,15 @@ import Card from "@mui/joy/Card";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DeleteForeverIcon from "@mui/icons-material/DeleteForever";
 import Snackbar from "@mui/joy/Snackbar";
-import { keyframes } from "@mui/system";
+import { fontSize, keyframes } from "@mui/system";
 import PlaylistAddCheckCircleRoundedIcon from "@mui/icons-material/PlaylistAddCheckCircleRounded";
 import { PieAnimation } from "./stockpiechart";
-
+import { useEffect } from "react";
+import kategoriApi from "../../../api/kategori-api";
+import gunlukApi from "../../../api/gunluk-api";
+import urunApi from "../../../api/urun-api";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 const inAnimation = keyframes`
   0% {
     transform: scale(0);
@@ -50,49 +55,33 @@ const outAnimation = keyframes`
   }
 `;
 
-const sample = [
-  ["Frozen yoghurt", 159, 6.0, 24, 4.0],
-  ["Ice cream sandwich", 237, 9.0, 37, 4.3],
-  ["Eclair", 262, 16.0, 24, 6.0],
-  ["Cupcake", 305, 3.7, 67, 4.3],
-  ["Gingerbread", 356, 16.0, 49, 3.9],
-];
-const sample2 = [
-  ["Frozen yoghurt"],
-  ["Ice cream sandwich"],
-  ["Eclair"],
-  ["Cupcake"],
-  ["Gingerbread"],
-];
-
-function createData(id, dessert, calories) {
-  return { id, dessert, calories };
+function createData(id, urun_isim, tarih, stok) {
+  return { id, urun_isim, tarih, stok };
 }
 
 const columns = [
   {
     width: 20,
     label: "Ürünler",
-    dataKey: "dessert",
+    dataKey: "urun_isim",
   },
   {
     width: 20,
     label: "Tarih",
-    dataKey: "calories",
-    numeric: true,
+    dataKey: "tarih",
+    numeric: false,
   },
   {
     width: 20,
-    label: "Stok Miktarı",
-    dataKey: "fat",
-    numeric: true,
-  },
+    label: "Stok",
+    dataKey: "stok",
+  }
 ];
 
-const rows = Array.from({ length: 200 }, (_, index) => {
-  const randomSelection = sample[Math.floor(Math.random() * sample.length)];
-  return createData(index, ...randomSelection);
-});
+// const rows = Array.from({ length: 200 }, (_, index) => {
+//   const randomSelection = sample[Math.floor(Math.random() * sample.length)];
+//   return createData(index, ...randomSelection);
+// });
 
 const VirtuosoTableComponents = {
   Scroller: React.forwardRef((props, ref) => (
@@ -149,6 +138,17 @@ function rowContent(_index, row) {
 }
 
 export default function SContainer() {
+
+
+  const [Gunlukler, setGunlukler] = useState([]);
+  const [ urunadi, setUrunadi ] = useState('');
+  const [ kategoriadi, setKategoriadi ] = useState(''); 
+  const [urungir, setUrungir] = useState([]);
+  const [kategorigir, setKategorigir] = useState([]);
+  const [rows, setRows] = useState([]);
+  const [Urunler, setUrunler] = useState([]);
+  const [toplamstok, setToplamstok] = useState(0);
+
   const [value, setValue] = useState([
     dayjs("2022-04-17"),
     dayjs("2022-04-21"),
@@ -174,8 +174,104 @@ export default function SContainer() {
     setMassage(false);
   };
 
+  async function updateGunlukler() {
+    try {
+      const newGunlukler = await gunlukApi.getGunlukler();
+      setGunlukler(newGunlukler);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+
+  useEffect(() => {
+    const fetchData = async () => {
+        await updateGunlukler();
+    };
+
+    fetchData();
+}, []);
+
+  async function updateUrunler() {
+    try {
+      const newUrunler = await urunApi.getUrunler(); 
+      setUrunler(newUrunler);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+  
+  useEffect(() => {
+    updateUrunler();
+  }, [kategoriadi]);
+
+  async function updatekategorigir() {
+    console.log('updatekategorigir')
+    try {
+      const newKategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
+      setKategorigir(newKategorigir);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+
+  function updateurungir() {
+    console.log('updateurungir')
+    const newUrungir = [];
+    for (let urun of Urunler) {
+      if(urun.kategori_isim === kategoriadi)
+        newUrungir.push(urun.isim);
+    }
+    setUrungir(newUrungir);
+  }
+
+  function toplamstokhesapla() {  ////DATE RANGE E GORE HESAPLAMA EKLENMELİ
+    console.log('toplamstokhesapla'+urunadi)
+    try {
+      const matchedGunlukler = Gunlukler.filter(gunluk => gunluk.urun_isim === urunadi);
+      console.log(matchedGunlukler)
+      const totalStock = matchedGunlukler.reduce((total, gunluk) => total + gunluk.stok, 0);
+      console.log(totalStock)
+      setToplamstok(totalStock);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+
+
+
+  /// ilk rows'u oluşturmak için
+useEffect(() => {
+  setRows(Array.from({ length: Gunlukler.length }, (_, index) => {
+      const Selection = Gunlukler[index];
+      return createData(index, Selection.urun_isim,
+          Selection.tarih, Selection.stok);
+  }));
+}, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
+
+/// rows'u tarihe göre sıralamak için
+const [startDate, setStartDate] = useState(new Date());
+const [endDate, setEndDate] = useState(new Date());
+useEffect(() => {
+  const sortedRows = rows.sort((a, b) => {
+    const dateA = new Date(a.tarih.split('.').reverse().join('-'));
+    const dateB = new Date(b.tarih.split('.').reverse().join('-'));
+    return dateB - dateA;
+  });
+
+  setRows(sortedRows);
+}, [rows]);
+
+useEffect(() => {
+  toplamstokhesapla();
+  console.log(urunadi);
+}, [urunadi]);
+
+useEffect(() => {
+  console.log(toplamstok);
+}, [toplamstok]);
+
   return (
-    <div>
+    <div className="Stok_containerbody">
       {/* INPUT TEXT_FİELDS1*/}
       {showInputPart && (
         <Card
@@ -184,10 +280,11 @@ export default function SContainer() {
           orientation="horizontal"
           size="lg"
           variant="outlined"
+          sx={{paddingLeft:3}}
         >
           <div className="input_header1">
-            <CancelIcon className="close_btn" onClick={close_input_part} />
-            <h4 style={{ maxHeight: "70px" }}>STOK ANALİZİ</h4>
+            <CancelIcon className="close_btn1" onClick={close_input_part} />
+            <h4 className="stokislem_1 "style={{ maxHeight: "70px" }}>STOK ANALİZİ</h4>
             <br />
             <div className="pie_chart1">
               <PieAnimation />
@@ -206,29 +303,35 @@ export default function SContainer() {
         >
           <div>
             <div className="input_header1">
-              <h4>STOK İŞLEMLERİ</h4>
+              <h4 className="stokislem_1">STOK İŞLEMLERİ</h4>
             </div>
 
             {/* AUTOCOMPLETE*/}
             <div className="autocomplete1">
               <Autocomplete
+                onChange={(event, value) => {
+                setKategoriadi(value);
+                }}
                 className="autocomplete1"
                 disablePortal
-                options={sample2}
+                options={kategorigir}
                 renderInput={(params) => (
-                  <TextField
+                  <TextField onFocus={async () => await updatekategorigir()}
                     className="auto_cmplete1"
                     {...params}
-                    label="Ürün Katagorisi"
+                    label="Ürün Kategorisi"
                   />
                 )}
               />
               <Autocomplete
+                onChange={async (event, value) => {
+                  setUrunadi(value);
+                }}
                 className="autocomplete1"
                 disablePortal
-                options={sample2}
+                options={urungir}
                 renderInput={(params) => (
-                  <TextField
+                  <TextField onFocus={() => updateurungir()}
                     className="auto_cmplete1"
                     {...params}
                     label="Ürünler"
@@ -239,6 +342,7 @@ export default function SContainer() {
 
             <div className="input_part1">
               <TextField
+                value={toplamstok}
                 disabled='true'
                 sx={{ paddingRight: 1.5 }}
                 label="Toplam Stok"
@@ -255,7 +359,7 @@ export default function SContainer() {
                   color="success"
                   variant="contained"
                   aria-label="add"
-                  sx={{ marginTop: 1 }}
+                  sx={{ marginTop: -1 }}
                   onClick={handleClick}
                   endIcon={<LoupeIcon />}
                 >
@@ -288,39 +392,51 @@ export default function SContainer() {
           </div>
         </Card>
 
-        <div>
-          <Card
-            className="date_card1"
-            color="danger"
-            orientation="horizontal"
-            size="lg"
-            variant="outlined"
-          >
-            <div className="date_picker1">
-              <LocalizationProvider dateAdapter={AdapterDayjs}>
-                <DemoContainer
-                  components={["DateRangePicker", "DateRangePicker"]}
-                >
-                  <DemoItem label="Filtrele" component="DateRangePicker">
-                    <DateRangePicker
-                      value={value}
-                      onChange={(newValue) => setValue(newValue)}
-                    />
-                  </DemoItem>
-                </DemoContainer>
-              </LocalizationProvider>
-              <Button
+       
+{/* DATE TİME PİCKER*/}
+<div>
+             <Card className="date_card1"
+                      color='danger'
+                      orientation="horizontal"
+                      size="lg"
+                      variant='outlined'
+             >
+                <div className='div_div1'>
+                        
+                  <div className="date_picker1">
+                    
+                      <DatePicker className="date_1"
+                          selected={startDate}
+                          onChange={(date) => setStartDate(date)}
+                          selectsStart
+                          startDate={startDate}
+                          endDate={endDate}
+                          dateFormat="dd.MM.yyyy"
+                          sx={{zIndex:1000}}
+                      />
+                      <DatePicker className="date_2"
+                          selected={endDate}
+                          onChange={(date) => setEndDate(date)}
+                          selectsEnd
+                          startDate={startDate}
+                          endDate={endDate}
+                          minDate={startDate}
+                          dateFormat="dd.MM.yyyy"
+                          sx={{zIndex:1000}}
+                      />
+                       <Button
                 className="list_btn1"
                 color="error"
                 variant="contained"
                 aria-label="add"
-                sx={{ marginTop: 1 }}
+                sx={{ marginTop: 9}}
               >
                 LİSTELE
               </Button>
+                    </div>
+                  </div>   
+                </Card>
             </div>
-          </Card>
-        </div>
       </div>
 
       <div className="add_table1">
@@ -332,6 +448,7 @@ export default function SContainer() {
             components={VirtuosoTableComponents}
             fixedHeaderContent={fixedHeaderContent}
             itemContent={rowContent}
+            sx={{ zIndex: 0 }}
           />
         </Paper>
         {/* ADD-BUTTON*/}

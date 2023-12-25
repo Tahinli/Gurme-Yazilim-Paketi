@@ -1,6 +1,10 @@
 * {
   font-size: 15px;
 }
+.Stok_containerbody{
+  min-height: 100vh;
+  position: relative;
+}
 .input_card1 {
   transition: "all 1s ease-out";
   margin-bottom: 3rem;
@@ -8,14 +12,18 @@
   padding-top: 7rem;
   width: 40%;
   height: 250px;
+
+  
 }
 .input_card11 {
   transition: "all 1s ease-out";
   margin-bottom: 3rem;
   margin-left: 5rem;
   padding-top: 7rem;
-  width: 60%;
-  height: 650px;
+  width: 80%;
+  height: 750px;
+  animation-name: test;
+  animation-duration: 1s;
 }
 .autocomplete1 {
   display: flex;
@@ -47,13 +55,12 @@
   width: 15%;
 }
 
-.date_picker1 {
-  width: 100%;
-  margin-top: -5rem;
-  margin-bottom: 3rem;
-  margin-left: -0.4rem;
-  padding-top: 7rem;
+.date_picker1{
+  display: flex;
+  width: 80%;
+  min-width: 300px;
 }
+
 
 .add_table1 {
   display: flex;
@@ -61,13 +68,13 @@
 }
 .close_btn1 {
   margin-top: 1rem;
-}
-.close_btn:hover1 {
   color: red;
 }
 
 .input_header1 {
   display: flex;
+
+
 }
 
 .input_header1 h4 {
@@ -78,20 +85,42 @@
   margin-left: 1rem;
 }
 
-.date_card1 {
+.date_card1{
+  display: flex;
   margin-bottom: 3rem;
   margin-left: 5rem;
-  padding-top: 7rem;
+  margin-top: 0rem;
   width: 600px;
   height: 250px;
-}
+  position: relative;
+ }
 
 .pie_chart1 {
   margin-top: 120px !important;
-  margin-left: 100px !important;
-  width: 800px !important;
+  margin-left: 200px !important;
+  width: 1200px !important;
   height: 1000px !important;
+  align-items: center;
 }
 .input_sevk1 {
   display: flex;
+}
+.div_div1{
+  font-size: 50px;
+}
+.date_1{
+  margin-top: 70px;
+  margin-left: 5rem;
+  height: 40px;
+
+}
+.date_2{
+  margin-top: 70px;
+  height: 40px;
+}
+.list_btn1{
+  height: 40px;
+}
+.stokislem_1{
+  font-size: 18px;
 }

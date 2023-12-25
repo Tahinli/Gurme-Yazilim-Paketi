@@ -2,9 +2,9 @@
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-width: 520px;
   height: 80px auto;
   background-color: #305630;
-  margin-top: 2.5rem;
   color: #e7dcdc;
   align-items: center;
   justify-content: space-around;
@@ -18,7 +18,6 @@
 }
 .footer p {
   color: #000000;
-  margin-left: 4rem;
 }
 .footer ul li a {
   color: rgb(189, 185, 185);
@@ -30,4 +29,8 @@
 }
 .footer_img {
   border-radius: 100%;
+}
+.ProductAnalyze_containerbody{
+  min-height: 100vh;
+  position: relative;
 }

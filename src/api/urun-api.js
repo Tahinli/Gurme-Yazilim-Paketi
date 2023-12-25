@@ -37,6 +37,8 @@ const addUrun = async (userData) => {
 
     const isim = userData.isim
     const kategori = userData.kategori
+    //const stok = userData.stok  <--- çalışır
+    //const sevk = userData.sevk  <--- Her türlü problem var düşünmek gerek
     try {
         const options = {
             method: 'GET',

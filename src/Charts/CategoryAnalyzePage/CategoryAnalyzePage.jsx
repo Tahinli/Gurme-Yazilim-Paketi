@@ -5,8 +5,7 @@ import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import './CategoryAnalyze.css';
 import { useState } from 'react';
-import ZoomInIcon from '@mui/icons-material/ZoomIn';
-import ZoomOutIcon from '@mui/icons-material/ZoomOut';
+
 import {
     BarAnimation,
     CategoryDailyAnalyzeComp,
@@ -16,6 +15,7 @@ import {
 import {Card} from "@mui/joy";
 import React from "react";
 
+
 export function CategoryAnalyzeP(){
     const [showDetails,setDetails]= useState(true);
 
@@ -24,10 +24,9 @@ export function CategoryAnalyzeP(){
     }
     return (
         <div >
-            <div className={"ChartsDiv"}>
+            <div>
                 <ControllableStates/>
             </div>
-            <br/>
          <DateRangeP/>
             <div className="pie_charts" > 
             
@@ -83,16 +82,6 @@ export function CategoryAnalyzeP(){
                       variant="soft"
                       sx={{width:'100%', alignItems:'center'}}
                 >
-                     <Button 
-                        id="zoomin_btn"
-                        size='small'
-                        color="success" 
-                        variant="contained"
-                        aria-label="add"  
-                        endIcon={ <ZoomInIcon/> }
-                    >
-                        Büyüt
-                    </Button >
                     {<BarAnimation />}
                 </Card>
             }

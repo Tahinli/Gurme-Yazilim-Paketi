@@ -9,96 +9,108 @@ import CancelIcon from '@mui/icons-material/Cancel';
 import urunApi from "../../api/urun-api.js";
 import kategoriApi from "../../api/kategori-api.js";
 import gunlukApi from "../../api/gunluk-api.js";
-import { logList,catList,productList} from "./CategoryAnalyzeComponents.jsx";
-
-var rangeData = catList.map((label, index) => ({
+const catList = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
+const logList = await gunlukApi.getGunlukler();
+var firstDate,lastDate
+let f1,f2
+function setDate(fD,lD){
+    f1=fD
+    f2=lD
+}
+console.log("HOHOHOHO:"+f1)
+var rangeData1 = catList.map((label, index) => ({
     id: index,
     value: 0,
     label: label
 }));
-
-function getTodayDate() {
-    const today = new Date();
-    // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
-    const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
-    return today.toLocaleDateString('tr-TR', options);
-  }
-
+var rangeData2 = catList.map((label, index) => ({
+    id: index,
+    value: 0,
+    label: label
+}));
+await filterByCatRange(f1,f2)
 function convertDate(date){
     return new Date(date.split('.').reverse().join('-'))
 }
-//DATE VERİLDİKTEN SONRA DEĞERLER BURADA FİLTRELENİP GÜNCELLENİYOR
+console.log("İLK DATE DEĞERİ:"+firstDate)
 async function filterByCatRange(date1,date2)
 {
+    console.log("Değerler1"+date1)
+    console.log("Değerler2"+date2)
     const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
+    console.log(rangeLog)
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
-       rangeLog.map(async (rangeLog) => {
-            const productCategory = productList.filter(r=>r.isim===rangeLog.urun_isim);
-            
-            if (catList[j] === productCategory[0].kategori.isim) {
-                count++
-                totalVal += rangeLog.ulasilan / rangeLog.hedeflenen;
-            }
-        });
+        await Promise.all(rangeLog.map(async (rangeLog) => {
+            const productCategory = await urunApi.getUrunByName(rangeLog.urun_isim);
 
-        rangeData.find(predicate => predicate.label === catList[j]).value = (totalVal/count)*100;
+            if (catList[j] === productCategory.kategori.isim) {
+                count++
+                totalVal += rangeLog.stok;
+            }
+        }));
+        if(j<4)
+        rangeData1.find(predicate => predicate.label === catList[j]).value = (totalVal);
+        else 
+        rangeData2.find(predicate => predicate.label === catList[j]).value = (totalVal);
     }
 
 }
 
 export  function DateRangeP() {
-
-
+  
     const[analyze,setAnalyze]=useState(false)
     const[refresh,isRefreshed]=useState(false)
-    const [startDate, setStartDate] = useState(convertDate(getTodayDate()));
-    const [endDate, setEndDate] = useState(convertDate(getTodayDate()));
+    const [startDate, setStartDate] = useState(new Date());
+    const [endDate, setEndDate] = useState(new Date());
 
-    // const [startDate, setStartDate] = useState(new Date());
-    // const [endDate, setEndDate] = useState(new Date());
-
-
+    //fonksiyon
 
 
     setTimeout(function() {
         isRefreshed(false)
     }, 5000);
 
+    firstDate = new Date(startDate.getUTCFullYear(),startDate.getUTCMonth(),startDate.getUTCDate())
+    lastDate = new Date(endDate.getUTCFullYear(),endDate.getUTCMonth(),endDate.getUTCDate())
     useEffect(() => {
         const fetchData = async () => {
             try {
                 // İlk date ve last date'i buraya taşıyabilirsiniz
+                const firstDate = new Date(startDate.getUTCFullYear(), startDate.getUTCMonth(), startDate.getUTCDate());
+                const lastDate = new Date(endDate.getUTCFullYear(), endDate.getUTCMonth(), endDate.getUTCDate());
 
-
-                await filterByCatRange(startDate, endDate);
+                await filterByCatRange(firstDate, lastDate);
             } catch (error) {
                 console.error('Error fetching data:', error);
             }
         };
         fetchData()
-    }, [startDate,endDate,refresh]);
+    }, [firstDate,lastDate]);
 
     function setValAnalyze(bool){
         setAnalyze(bool)
         isRefreshed(bool)
     }
 
+    if(refresh){
+        valHam=totalHamR
+        valDesert=totalDesertR
+        valDrink=totalDrinkR
+    }
 
     const data=rangeData
     const close_datepicker = () => {
         setAnalyze(false);
     };
-    useEffect(() => {
-        console.log('Gunlukler :>> ', logList);
-    }, [logList]);
-
+    
+    const data1=rangeData1
+    const data2=rangeData2
     return (
-        <div >
+        <div className={"ChartsDate"}>
             <div>
-                <Card className={"Date_part"}
-                      style={{width: '450px',height: '20%'}}
+                <Card style={{width: '30%', height: '150px'}}
                       sx={{alignItems:'center'}}
                       color="neutral"
                       invertedColors={false}
@@ -114,7 +126,6 @@ export  function DateRangeP() {
                             selectsStart
                             startDate={startDate}
                             endDate={endDate}
-                            dateFormat='dd.MM.yyyy'
                         />
                         <DatePicker
                             selected={endDate}
@@ -123,11 +134,9 @@ export  function DateRangeP() {
                             startDate={startDate}
                             endDate={endDate}
                             minDate={startDate}
-                            dateFormat='dd.MM.yyyy'
                         />
                     </div>
-                    <Button onClick={() =>{ setValAnalyze(true)
-                        async () => await filterByCatRange()}} variant="contained" color="warning">ANALİZ</Button>
+                    <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning">ANALİZ</Button>
 
                 </Card>
 
@@ -143,16 +152,51 @@ export  function DateRangeP() {
                     <CancelIcon onClick={close_datepicker} variant="contained" color="warning"/>
 
                     <h4 style={{paddingRight: '100px'}}>Seçilen Aralıktaki Verimlilik</h4>
-                    <PieChart
-                        series={[
-                            {
-                                data,
-                                highlightScope: {faded: 'global', highlighted: 'item'},
-                                faded: {innerRadius: 30, additionalRadius: -30, color: 'gray'},
-                            },
-                        ]}
-                        height={300}
-                    />
+                    <Box sx={{ width: '100%' }}>
+      <PieChart
+        height={300}
+        series={[
+          { data: data1, outerRadius: radius },
+          {
+            data: data2.slice(0, itemNb),
+            innerRadius: radius,
+            arcLabel: (params) => params.label ?? '',
+          },
+        ]}
+        skipAnimation={skipAnimation}
+      />
+      <FormControlLabel
+        checked={skipAnimation}
+        control={
+          <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />
+        }
+        label="Animasyon"
+        labelPlacement="end"
+      />
+      <Typography id="input-item-number" gutterBottom>
+        Ürün Sayısı
+      </Typography>
+      <Slider
+        value={itemNb}
+        onChange={handleItemNbChange}
+        valueLabelDisplay="auto"
+        min={1}
+        max={catList.length}
+        aria-labelledby="input-item-number"
+      />
+      <Typography id="input-radius" gutterBottom>
+        Kategori
+      </Typography>
+      <Slider
+        value={radius}
+        onChange={handleRadius}
+        valueLabelDisplay="auto"
+        min={15}
+        max={100}
+        aria-labelledby="input-radius"
+      />
+    </Box>
+ 
                 </Card>}
 
             </div>

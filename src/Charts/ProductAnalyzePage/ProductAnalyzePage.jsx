@@ -2,7 +2,7 @@ import {
     DailyProductAnalyze,
     WeeklyProductAnalyze,
     MonthlyProductAnalyze,
-    BarAnimationDaily
+    BarAnimationProduct
 } from "./productAnalyze.jsx";
 import {Card} from "@mui/joy";
 import ControllableStates from "../CategoryAnalyzePage/getInputAutocomplete.jsx";
@@ -15,40 +15,42 @@ export default function ProductPageAnalyze (){
     return(
         <div className={"mainAreaP"}>
             <div className={"maAreaP"}>
-                <DateRangeProduct/>
-
             </div>
             <div className={"maAreaP"}>
                 <ControllableStates/>
             </div>
-            <div className={"maAreaP"}>
-                <Card className={"Charts"}
+            <DateRangeProduct/>
+            <div className='pie_charts'>
+                <Card className={"pie_card"}
                       color="neutral"
                       invertedColors={false}
                       orientation="vertical"
                       size="lg"
                       variant="soft"
+                      sx={{width:'30%'}}
                 >
                     {<DailyProductAnalyze/>}
 
                 </Card>
-                <Card className={"Charts"}
+                <Card className={"pie_card"}
                       color="neutral"
                       invertedColors={false}
                       orientation="vertical"
                       size="lg"
                       variant="soft"
+                      sx={{width:'30%'}}
                 >
                     {<WeeklyProductAnalyze/>}
 
 
                 </Card>
-                <Card className={"Charts"}
+                <Card className={"pie_card"}
                       color="neutral"
                       invertedColors={false}
                       orientation="vertical"
                       size="lg"
                       variant="soft"
+                      sx={{width:'30%'}}
                 >
                     {<MonthlyProductAnalyze/>}
 
@@ -57,14 +59,15 @@ export default function ProductPageAnalyze (){
             </div>
             <br/>
             <div className={"maAreaP"}  >
-                <Card style={{width:'1600px'}}
+                <Card 
                       color="neutral"
                       invertedColors={false}
                       orientation="horizontal"
                       size="lg"
                       variant="soft"
+                      sx={{width:'100%', alignItems:'center'}}
                 >
-                    {<BarAnimationDaily/>}
+                    {<BarAnimationProduct/>}
 
                 </Card>
             </div>

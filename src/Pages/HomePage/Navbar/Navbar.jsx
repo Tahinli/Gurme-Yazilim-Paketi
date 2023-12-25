@@ -8,12 +8,13 @@ import PersonAdd from "@mui/icons-material/PersonAdd";
 import Logout from "@mui/icons-material/Logout";
 import IconButton from "@mui/material/IconButton";
 import axios from "axios";
-const LOGOUT_URL = "http://localhost:5000/logout";
+
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import Button from "@mui/material/Button";
 import LoginIcon from "@mui/icons-material/Login";
-import URL from "../../../URL/server";
+import ServerURL from "../../../../URL/server";
+const LOGOUT_URL = ServerURL + "/logout";
 const Navbar = () => {
   const navigate = useNavigate();
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -40,15 +41,15 @@ const Navbar = () => {
     await verifyUser();
   };
   const verifyUser = async () => {
-    const response = await fetch(URL + "/verify", {
+    const response = await fetch(ServerURL + "/verify", {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
       },
       credentials: "include",
     });
-    await setVerify(response.status === 200);
-    await setVerify1(response.status !== 200);
+    setVerify(response.status === 200);
+    setVerify1(response.status !== 200);
   };
   const buttonClick = () => {
     navigate("/login");
@@ -58,7 +59,7 @@ const Navbar = () => {
   };
   useEffect(() => {
     verifyUser();
-  }, []);
+   }, []);
 
   return (
     <div>
@@ -67,121 +68,124 @@ const Navbar = () => {
           rel="stylesheet"
           href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
         ></link>
-        <div className="container">
+        <div>
           <nav className="navbar">
-            <h1 className="header">ÇEMEN'S GURME</h1>
-            <ul className="navbar_links">
-              {verify && (
-                <React.Fragment>
-                  <Box
-                    sx={{
-                      display: "flex",
-                      alignItems: "center",
-                      textAlign: "center",
-                    }}
-                  >
-                    <IconButton
-                      className="login_menu"
-                      onClick={handleClick}
-                      size="small"
-                      sx={{ ml: 2, paddingRight: 5 }}
-                      aria-controls={open ? "account-menu" : undefined}
-                      aria-haspopup="true"
-                      aria-expanded={open ? "true" : undefined}
-                    >
-                      <Avatar
-                        className="login_symbol"
-                        sx={{
-                          width: 40,
-                          height: 40,
-                          backgroundColor: "#305630",
-                        }}
-                      ></Avatar>
-                    </IconButton>
-                  </Box>
-                  <Menu
-                    anchorEl={anchorEl}
-                    id="account-menu"
-                    open={open}
-                    onClose={handleClose}
-                    onClick={handleClose}
-                    PaperProps={{
-                      elevation: 0,
-                      sx: {
-                        overflow: "visible",
-                        filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
-                        mt: 1.5,
-                        "& .MuiAvatar-root": {
-                          width: 32,
-                          height: 32,
-                          ml: -0.5,
-                          mr: 1,
-                        },
-                        "&:before": {
-                          content: '""',
-                          display: "block",
-                          position: "absolute",
-                          top: 0,
-                          right: 14,
-                          width: 10,
-                          height: 10,
-                          bgcolor: "background.paper",
-                          transform: "translateY(-50%) rotate(45deg)",
-                          zIndex: 0,
-                        },
-                      },
-                    }}
-                    transformOrigin={{ horizontal: "right", vertical: "top" }}
-                    anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
-                  >
-                    <MenuItem
-                      onClick={() => {
-                        handleClose();
-                        handleUyeEkle();
-                      }}
-                    >
-                      <ListItemIcon>
-                        <PersonAdd fontSize="small" />
-                      </ListItemIcon>
-                      Üye Ekle
-                    </MenuItem>
+            <div style={{ width: "20%", textAlign: "end", flexGrow: 0.56 }}>
+              <h1 className="header">ÇEMEN'S GURME</h1>
+            </div>
 
-                    <MenuItem
-                      onClick={() => {
-                        handleClose();
-                        handleLogout();
+            <ul>
+              <div className="navbar_rightbox">
+                <img
+                  className="logo"
+                  src="/src/assets/img/cemens_logo.jpg"
+                  alt="Çemen's Gurme"
+                ></img>
+
+                {verify && (
+                  <React.Fragment>
+                    <Box
+                      sx={{
+                        display: "flex",
+                        alignItems: "center",
+                        textAlign: "center",
+                        marginRight: -1.5,
                       }}
+                      className="login_lpart"
                     >
-                      <ListItemIcon>
-                        <Logout fontSize="small" />
-                      </ListItemIcon>
-                      Çıkış
-                    </MenuItem>
-                  </Menu>
-                </React.Fragment>
-              )}
-              {verify1 && (
-                <Button
-                  className="login_btn"
-                  color="error"
-                  variant="contained"
-                  aria-label="add"
-                  sx={{ marginTop: 1 }}
-                  onClick={buttonClick}
-                  startIcon={<LoginIcon />}
-                >
-                  GİRİŞ YAP
-                </Button>
-              )}
+                      <IconButton
+                        className="login_menu"
+                        onClick={handleClick}
+                        size="small"
+                        aria-controls={open ? "account-menu" : undefined}
+                        aria-haspopup="true"
+                        aria-expanded={open ? "true" : undefined}
+                      >
+                        <Avatar
+                          className="login_symbol"
+                          sx={{
+                            width: 40,
+                            height: 40,
+                            backgroundColor: "#305630",
+                          }}
+                        ></Avatar>
+                      </IconButton>
+                    </Box>
+                    <Menu
+                      anchorEl={anchorEl}
+                      id="account-menu"
+                      open={open}
+                      onClose={handleClose}
+                      onClick={handleClose}
+                      PaperProps={{
+                        elevation: 0,
+                        sx: {
+                          overflow: "visible",
+                          filter: "drop-shadow(0px 2px 8px rgba(0,0,0,0.32))",
+                          mt: 1.5,
+                          "& .MuiAvatar-root": {
+                            width: 32,
+                            height: 32,
+                            ml: -0.5,
+                            mr: 1,
+                          },
+                          "&:before": {
+                            content: '""',
+                            display: "flex",
+                            width: 10,
+                            height: 10,
+                            bgcolor: "background.paper",
+                            transform: "translateY(-50%) rotate(45deg)",
+                            zIndex: 0,
+                          },
+                        },
+                      }}
+                      transformOrigin={{ horizontal: "right", vertical: "top" }}
+                      anchorOrigin={{ horizontal: "right", vertical: "bottom" }}
+                    >
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          handleUyeEkle();
+                        }}
+                      >
+                        <ListItemIcon>
+                          <PersonAdd fontSize="small" />
+                        </ListItemIcon>
+                        Üye Ekle
+                      </MenuItem>
+
+                      <MenuItem
+                        onClick={() => {
+                          handleClose();
+                          handleLogout();
+                        }}
+                      >
+                        <ListItemIcon>
+                          <Logout fontSize="small" />
+                        </ListItemIcon>
+                        Çıkış
+                      </MenuItem>
+                    </Menu>
+                  </React.Fragment>
+                )}
+                {verify1 && (
+                  <Button
+                    className="login_button"
+                    color="error"
+                    variant="contained"
+                    aria-label="add"
+                    onClick={buttonClick}
+                    startIcon={<LoginIcon />}
+                  >
+                    GİRİŞ YAP
+                  </Button>
+                )}
+              </div>
             </ul>
           </nav>
         </div>
       </header>
-      <img
-        className="logo"
-        src="/src/assets/img/cemens_logo.jpg"
-        alt="Çemen's Gurme"
-      ></img>
     </div>
   );
 };

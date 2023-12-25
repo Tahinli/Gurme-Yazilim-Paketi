@@ -1,25 +1,22 @@
 .p_box{
-    width: 50%;
-    min-width: 1500px;
+    width: 88% !important;
     height: 640px auto;
-    margin-bottom: 8rem;
     color: black;
-    margin-left: 12rem;
+    margin-left: 9.5rem;
 }
 .p_h1{
     padding-top: 4rem; 
     font-size: x-large;
-    padding-left: 12rem;
+    padding-left: 9.5rem;
+    color: white;
 }
 .p_inputcard{
     transition: 'all 1s ease-out';
     margin-bottom: 3rem;
-    margin-left: 24.5rem;
-    padding-top: 7rem;
-    width: 60%;
+    margin-left: 9.5rem;
+    width: 40%;
     height: 430px;
-    align-self: center;
-    justify-content: center;
+    margin-top: 1.4rem;
 }
 .save_btn{
     width: 45%;
@@ -30,4 +27,15 @@
 }
 .p_header{
     align-self: flex-start;
+}
+.product_body{
+    min-height: 100vh;
+    background-image: url("src/assets/img/genel.png");
+    background-attachment: fixed;
+    background-repeat:repeat-x;
+    background-color: rgb(48, 47, 47);
+    padding-bottom: 3rem;
+}
+.pp_input{
+    display: flex;
 }
