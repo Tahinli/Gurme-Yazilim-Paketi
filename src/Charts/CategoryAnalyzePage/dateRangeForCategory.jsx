@@ -36,7 +36,7 @@ async function filterByCatRange(date1,date2)
         let count=0
        rangeLog.map(async (rangeLog) => {
             const productCategory = productList.filter(r=>r.isim===rangeLog.urun_isim);
-            
+
             if (catList[j] === productCategory[0].kategori.isim) {
                 count++
                 totalVal += rangeLog.ulasilan / rangeLog.hedeflenen;
@@ -56,15 +56,11 @@ export  function DateRangeP() {
     const [startDate, setStartDate] = useState(convertDate(getTodayDate()));
     const [endDate, setEndDate] = useState(convertDate(getTodayDate()));
 
-    // const [startDate, setStartDate] = useState(new Date());
-    // const [endDate, setEndDate] = useState(new Date());
-
-
 
 
     setTimeout(function() {
         isRefreshed(false)
-    }, 5000);
+    }, 1000);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -90,9 +86,7 @@ export  function DateRangeP() {
     const close_datepicker = () => {
         setAnalyze(false);
     };
-    useEffect(() => {
-        console.log('Gunlukler :>> ', logList);
-    }, [logList]);
+
 
     return (
         <div >
@@ -126,8 +120,7 @@ export  function DateRangeP() {
                             dateFormat='dd.MM.yyyy'
                         />
                     </div>
-                    <Button onClick={() =>{ setValAnalyze(true)
-                        async () => await filterByCatRange()}} variant="contained" color="warning">ANALİZ</Button>
+                    <Button onClick={() =>{ setValAnalyze(true)}} variant="contained" color="warning">ANALİZ</Button>
 
                 </Card>
 

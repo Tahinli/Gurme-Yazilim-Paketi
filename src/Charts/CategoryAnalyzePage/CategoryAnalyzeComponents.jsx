@@ -45,6 +45,7 @@ var DailyData = catList.map((label, index) => ({
     value: 0,
     label: label
 }));
+
 await filterByCatDaily()
 
 var monthData = catList.map((label, index) => ({
@@ -82,7 +83,7 @@ async function filterByCatDaily() {
         let totalVal = 0;
         let count=0
         for(let i=0;i<todayLog.length;i++){
-            if (catList[j] === todayLog[i].urun.kategori.isim) {
+            if (catList[j] === todayLog[i].urun.kategori.isim&&todayLog[i].personel_sayisi!==0&&todayLog[i].stok!==0&&todayLog[i].sevk!==0){
                 count++
                 totalVal += todayLog[i].ulasilan / todayLog[i].hedeflenen;
             }
@@ -94,26 +95,24 @@ async function filterByCatDaily() {
     }
 
 }
-async function createData(){
-    const [data,setData]=useState([])
 
-}
 async function filterByCatMonth()
 {
 
     let todayValues=getTodayDate().split('.')
     const date1=new Date(`${todayValues[2]}-${todayValues[1]}`)
+    date1.setHours(3,0)
     const date2=new Date(date1)
     date2.setMonth(date2.getMonth()+1)
     date2.setDate(date2.getDate()-1)
-
+    date2.setHours(3,0)
     const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
 
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
         for(let i=0;i<rangeLog.length;i++){
-            if (catList[j] === rangeLog[i].urun.kategori.isim) {
+            if (catList[j] === rangeLog[i].urun.kategori.isim&&rangeLog[i].personel_sayisi!==0&&rangeLog[i].stok!==0&&rangeLog[i].sevk!==0) {
                 count++
                 totalVal += rangeLog[i].ulasilan / rangeLog[i].hedeflenen;
             }
@@ -136,12 +135,12 @@ async function monthlyBarChart(){
             let tempVal=0
             let count=0
             for(let i=0;i<rangeLog.length;i++){
-                if (catList[j] === rangeLog[i].urun.kategori.isim) {
+                if (catList[j] === rangeLog[i].urun.kategori.isim&&rangeLog[i].personel_sayisi!==0&&rangeLog[i].stok!==0&&rangeLog[i].sevk!==0) {
                     count++
                     tempVal += rangeLog[i].ulasilan / rangeLog[i].hedeflenen;
                 }
             }
-            ;
+
             tempVal/=count
             tempVal*=100
             arrProduct[i][j]=tempVal
@@ -157,15 +156,19 @@ async function filterByCatWeek()
 
     let todayValues=getTodayDate().split('.')
     const date1=new Date(`${todayValues[2]}-${todayValues[1]}-${todayValues[0]}`)
-    date1.setDate(date1.getDate()-(datePerc-1))
+    date1.setDate(date1.getDate()-(datePerc))
+    date1.setHours(3,0)
+
     const date2=new Date(date1)
     date2.setDate(date2.getDate()+6)
+    date2.setHours(3,0)
+
     const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
         for(let i=0;i<rangeLog.length;i++){
-            if (catList[j] === rangeLog[i].urun.kategori.isim) {
+            if (catList[j] === rangeLog[i].urun.kategori.isim&&rangeLog[i].personel_sayisi!==0&&rangeLog[i].stok!==0&&rangeLog[i].sevk!==0) {
                 count++
                 totalVal += rangeLog[i].ulasilan / rangeLog[i].hedeflenen;
             }
@@ -174,30 +177,6 @@ async function filterByCatWeek()
     }
 
 }
-const refreshPage = () => {
-    window.location.reload();
-
-};
-function refresh(){
-    const location = useLocation();
-
-    useEffect(() => {
-        // Sadece belirli bir sayfada çalışmasını istiyorsanız
-        if (location.pathname === '/belirli-sayfa') {
-            // localStorage'da bir anahtar var mı kontrol et
-            const hasVisitedBefore = localStorage.getItem('hasVisitedBefore');
-
-            if (!hasVisitedBefore) {
-                // Eğer daha önce ziyaret edilmemişse sayfa yenileme işlemi gerçekleştir
-                window.location.reload();
-
-                // localStorage'a ziyaret edildi bilgisini kaydet
-                localStorage.setItem('hasVisitedBefore', 'true');
-            }
-        }
-    }, [location.pathname]);
-}
-//refresh()
 
 //GÜNLÜK HESAPLAMA
 export  function  CategoryDailyAnalyzeComp() {
@@ -248,6 +227,7 @@ export function CategoryWeeklyAnalyzeComp() {
                                     faded: { innerRadius: 30, additionalRadius: -30, color: 'gray' },
                                 },
                             ]}
+
                             height={300}
                         />
                     </div>

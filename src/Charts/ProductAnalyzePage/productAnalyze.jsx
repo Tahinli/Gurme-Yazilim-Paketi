@@ -49,8 +49,7 @@ const productNameVar=url.split("/")
 //BU KISIMDA TÜRKÇE KARAKTERDEN YABANCI KARAKTERLERE DÖNÜŞTÜREREK KARŞILAŞTIRMAY YAPIP ATAMASINI YAPIYORUM
 
 let productName=productNameVar[4] 
-console.log(productName)
-console.log(proVal)
+
 for(let i=0;i<proList.length;i++){
     proVal=proList[i].replaceAll('Ğ','g')
         .replaceAll('Ü','u')
@@ -115,10 +114,13 @@ async function filterByCatDaily() {
     //Günlük veriler sonrası karşılaştırma
    todayLog.map(async (log) => {
         const productCategory = productList.filter(r=>r.isim===todayLog.urun_isim);
-        if (proVal === productCategory[0].isim) {
-            count++
-            totalVal += log.ulasilan / log.hedeflenen;
-        }
+
+       if (proVal === productCategory[0].isim&&todayLog.stok!==0&&todayLog.sevk!==0&&todayLog.personel_sayisi!==0) {
+           count++
+           totalVal += log.ulasilan / log.hedeflenen;
+       }
+
+
     });
     totalVal=(totalVal/count)*100;
     let fail=100-totalVal
@@ -142,9 +144,11 @@ async function filterByCatMonth()
 
     let todayValues=getTodayDate().split('.')
     const date1=new Date(`${todayValues[2]}-${todayValues[1]}`)
+    date1.setHours(3,0)
     const date2=new Date(date1)
     date2.setMonth(date2.getMonth()+1)
     date2.setDate(date2.getDate()-1)
+    date2.setHours(3,0)
 
     const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
     let totalVal = 0;
@@ -182,7 +186,7 @@ async function monthlyBarChart(){
       rangeLog.map(async (barLog) => {
               const productCategory = productList.filter(r=>r.isim===barLog.urun_isim);
 
-                    if (proVal === productCategory[0].isim) {
+                    if (proVal === productCategory[0].isim&&rangeLog.stok!==0&&rangeLog.sevk!==0&&rangeLog.personel_sayisi!==0) {
                         count++
                         tempVal += barLog.ulasilan / barLog.hedeflenen;
                     }
@@ -211,16 +215,18 @@ async function filterByCatWeek()
 
     let todayValues=getTodayDate().split('.')
     const date1=new Date(`${todayValues[2]}-${todayValues[1]}-${todayValues[0]}`)
-    date1.setDate(date1.getDate()-(datePerc-1))
+    date1.setDate(date1.getDate()-(datePerc))
+    date1.setHours(3,0)
     const date2=new Date(date1)
     date2.setDate(date2.getDate()+6)
+    date2.setHours(3,0)
     const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
     let totalVal = 0;
     let count=0
     //Haftanın içindeki verilere göre karşılaştırma yapılıyor
     rangeLog.map(async (WeekLog) => {
         const productCategory = productList.filter(r=>r.isim===WeekLog.urun_isim);
-        if (proVal === productCategory[0].isim) {
+        if (proVal === productCategory[0].isim&&rangeLog.stok!==0&&rangeLog.sevk!==0&&rangeLog.personel_sayisi!==0) {
             count++
             totalVal += WeekLog.ulasilan / WeekLog.hedeflenen;
         }
@@ -230,7 +236,7 @@ async function filterByCatWeek()
     if(fail<0){
         fail=0
     }
-    console.log("TOTAL VAL :"+totalVal)
+
     //Burada veriler labela göre sırayla yazdırılıyor
     weekData.find(predicate => predicate.label === "Başarılı").value = totalVal
     weekData.find(predicate => predicate.label === "Başarısız").value = fail

@@ -70,7 +70,7 @@ async function filterByProRange(date1,date2)
     await Promise.all(rangeLog.map(async (rangeLog) => {
         const productCategory = await urunApi.getUrunByName(rangeLog.urun_isim);
 
-        if (proVal=== productCategory.isim) {
+        if (proVal=== productCategory[0].isim&&rangeLog.stok!==0&&rangeLog.sevk!==0&&rangeLog.personel_sayisi!==0) {
             count++
             totalVal += rangeLog.ulasilan / rangeLog.hedeflenen;
         }
@@ -101,7 +101,7 @@ export  function DateRangeProduct() {
 
     setTimeout(function() {
         isRefreshed(false)
-    }, 5000);
+    }, 1000);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -124,9 +124,7 @@ export  function DateRangeProduct() {
     const close_datepicker = () => {
         setAnalyze(false);
     };
-    useEffect(() => {
-        console.log('Gunlukler :>> ', logList);
-    }, [logList]);
+
 
     return (
             <div>
