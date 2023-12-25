@@ -37,6 +37,7 @@ import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
 import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 
+
 const inAnimation = keyframes`
   0% {
     transform: scale(0);
@@ -286,6 +287,7 @@ export default function DContainer() {
     setOpen(false);
   };
 
+
   function updateRows() {
     setRows(
       Gunlukler.map((Selection, index) => {
@@ -354,7 +356,6 @@ export default function DContainer() {
       }
     };
   }
-
   ////////////////////////// GUNLUK SILME /////////////////////////////
   const handleDelete = async (row) => {
     try {
@@ -527,6 +528,7 @@ export default function DContainer() {
 
                 <div>
                   <Dialog open={open} onClose={() => handleClickClose()} maxWidth="xl" className='edit_dialog' BackdropProps={{style: {backgroundColor: 'transparent'}}} sx={{paddingBottom:73}}>
+
                     <DialogTitle sx={{ backgroundColor: 'rgb(72, 194, 102)' }}>DÜZENLE</DialogTitle>
                     <p style={{ paddingLeft: 20, marginBottom: 0, color: 'red', fontSize: 17 }}
                     >
@@ -534,13 +536,16 @@ export default function DContainer() {
                     </p>
 
                     <Card
+
                       className='edit_card'
+
                       color='neutral'
                       orientation="horizontal"
                       size="lg"
                       variant='soft'
                       sx={{ width: '100%' }}
                     >
+
                       <TextField onChange={(e) => editsetPersonel_sayisi(e.target.value)} type="number" autoFocus margin="dense" label="Personel Sayısı" fullWidth defaultValue={editpersonel_sayisi} inputProps={{ min: 0 }} />
                       <TextField onChange={(e) => editsetTarih(e.target.value)} margin="dense" label="Tarih" fullWidth defaultValue={edittarih} />
                       <TextField onChange={(e) => editsetHedef(e.target.value)} type="number" autoFocus margin="dense" label="Hedef" fullWidth defaultValue={edithedef} inputProps={{ min: 0 }} />
@@ -553,6 +558,7 @@ export default function DContainer() {
                     <DialogActions sx={{ alignItems: 'left' }}>
                       <Button variant="contained" color="error" onClick={() => handleClickClose()}>İptal</Button>
                       <Button variant="contained" color="success" onClick={() => handleEdit()}>Güncelle</Button>
+
                     </DialogActions>
                   </Dialog>
                 </div>
@@ -563,6 +569,7 @@ export default function DContainer() {
     );
   }
   return (
+
 <div className='Data_containerbody'>
 {/* INPUT PART*/}
   {showInputPart && <Card 
@@ -705,6 +712,7 @@ export default function DContainer() {
                 </Card>
             </div>
 
+
       <div className='add_table' >
         <Stack className="add" sx={{ backgroundColor: '#28342b' }}></Stack>
 
@@ -715,6 +723,7 @@ export default function DContainer() {
             components={VirtuosoTableComponents}
             fixedHeaderContent={fixedHeaderContent}
             itemContent={rowContent}
+
             sx={{ zIndex: 0 }}
           />
         </Paper>
@@ -735,6 +744,7 @@ export default function DContainer() {
           </Stack>
         </Stack>
       </div>
+
     </div>
   );
 }
