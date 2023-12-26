@@ -68,14 +68,14 @@ async function filterByProRange(date1,date2)
     const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
     let totalVal = 0;
     let count=0
-    await Promise.all(rangeLog.map(async (rangeLog) => {
-        const productCategory = await urunApi.getUrunByName(rangeLog.urun_isim);
+    rangeLog.map(async (rLog) => {
+        const productCategory = productList.filter(r=>r.isim===rLog.urun_isim);
 
         if (proVal=== productCategory[0].isim&&rangeLog.stok!==0&&rangeLog.sevk!==0&&rangeLog.personel_sayisi!==0) {
             count++
-            totalVal += rangeLog.ulasilan / rangeLog.hedeflenen;
+            totalVal += rLog.ulasilan / rLog.hedeflenen;
         }
-    }));
+    });
     totalVal=(totalVal/count)*100;
     let fail=100-totalVal
     if(fail<0){
