@@ -63,7 +63,7 @@ async function filterByCatRange(date1,date2)
             }
         });
         
-        rangeData1.find(predicate => predicate.label === catList[j]).value =totalVal
+        // rangeData1.find(predicate => predicate.label === catList[j]).value =totalVal
    
         
     }

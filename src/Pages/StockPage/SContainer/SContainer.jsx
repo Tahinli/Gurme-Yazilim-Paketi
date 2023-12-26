@@ -37,6 +37,7 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForeverTwoTone';
 import InputAdornment from '@mui/material/InputAdornment';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
+import { set } from "date-fns";
 
 const inAnimation = keyframes`
   0% {
@@ -153,6 +154,9 @@ export default function SContainer() {
   const [rows, setRows] = useState([]);
   const [Urunler, setUrunler] = useState([]);
   const [toplamstok, setToplamstok] = useState(0);
+  const [stoktansevk, setStoktansevk] = useState(0);
+  const [stoktansilinen, setStoktansilinen] = useState(0);
+  const [refresh, setRefresh] = useState(false);
 
   const [value, setValue] = useState([
     dayjs("2022-04-17"),
@@ -171,8 +175,9 @@ export default function SContainer() {
   const animationDuration = 600;
   const [massage, setMassage] = useState(false);
 
+  
   const handleClick = () => {
-    setMassage(true);
+    SevkEt();
   };
 
   const handleClose = () => {
@@ -195,6 +200,11 @@ export default function SContainer() {
 
     fetchData();
 }, []);
+
+useEffect(() => {
+  console.log(Gunlukler);
+}, [Gunlukler]);
+  
 
   async function updateUrunler() {
     try {
@@ -229,19 +239,85 @@ export default function SContainer() {
     setUrungir(newUrungir);
   }
 
-  function toplamstokhesapla() {  ////DATE RANGE E GORE HESAPLAMA EKLENMELİ
+  async function toplamstokhesapla() {  ////DATE RANGE E GORE HESAPLAMA EKLENMELİ
     console.log('toplamstokhesapla'+urunadi)
     try {
+      //eğer bugüne ait bir log varsa onu tekrar düzenlemesi için değerleri getirir
+      const presentgunluk = Gunlukler.find(gunluk => gunluk.urun_isim === urunadi
+        &&gunluk.tarih===dayjs().format('DD.MM.YYYY'));
+      if(presentgunluk){
+          setStoktansevk(presentgunluk.stoktan_sevke);
+          setStoktansilinen(presentgunluk.stoktan_silinen);
+        }
+        //bütün logları bulup matematik işlemleri ile toplam stok hesaplar
       const matchedGunlukler = Gunlukler.filter(gunluk => gunluk.urun_isim === urunadi);
-      console.log(matchedGunlukler)
-      const totalStock = matchedGunlukler.reduce((total, gunluk) => total + gunluk.stok, 0);
-      console.log(totalStock)
+      const totalStock = matchedGunlukler.reduce((total, gunluk) => total + gunluk.stok - (gunluk.stoktan_sevke + gunluk.stoktan_silinen), 0);
       setToplamstok(totalStock);
+
     } catch (error) {
       console.error("An error occurred:", error);
     }
   }
 
+  async function SevkEt() {
+    try {
+      const matchedGunluk = Gunlukler.find(gunluk => gunluk.urun_isim === urunadi
+        &&gunluk.tarih===dayjs().format('DD.MM.YYYY'));
+      if(matchedGunluk){         
+          if( ((stoktansevk - matchedGunluk.stoktan_sevke) + 
+          (stoktansilinen - matchedGunluk.stoktan_silinen))
+           > toplamstok) {
+              alert('Sevk edilecek miktar toplam stoktan fazla olamaz');
+              return;
+          }
+        //bugüne ait bir log varsa onu editle
+        console.log(matchedGunluk)
+        await gunlukApi.updateGunluk(`${matchedGunluk.urun_isim}`, `${matchedGunluk.tarih}`, {
+          yeni_urun: matchedGunluk.urun_isim,
+          yeni_personel_sayisi: matchedGunluk.personel_sayisi,
+          yeni_hedeflenen: matchedGunluk.hedeflenen,
+          yeni_ulasilan: matchedGunluk.ulasilan,
+          yeni_atilan: matchedGunluk.atilan,
+          yeni_stok: matchedGunluk.stok,
+          yeni_sevk: matchedGunluk.sevk,
+          yeni_stoktan_sevke: stoktansevk,
+          yeni_stoktan_silinen: stoktansilinen,
+          yeni_tarih: matchedGunluk.tarih,
+      });          
+      }
+      else{
+        if(stoktansevk + stoktansilinen > toplamstok) {
+          alert('Sevk edilecek miktar toplam stoktan fazla olamaz');
+          return;
+        }
+        //bugüne ait bir log yoksa yeni bir log oluştur
+        await gunlukApi.addGunluk(`${urunadi}`,
+        {
+          personel_sayisi: 0,
+          hedeflenen: 0,
+          ulasilan: 0,
+          atilan: 0,
+          stok: 0,
+          sevk: 0,
+          stokta_sevke: stoktansevk,
+          stoktan_silinen: stoktansilinen,
+          tarih: getTodayDate(),
+        });
+      }
+      await updateGunlukler();
+      setMassage(true);
+    }
+    catch (error) {
+      console.error("An error occurred:", error);
+    }
+    finally{
+      setRefresh(!refresh)//TAM OLARAK ISTEDIGIMI YAPAMADIM DEGERLERI GUNCELLEMESI GEREKIYOR AMA ASENKRONDAN OLMUYOR
+    } //BAŞARDIM
+}
+
+useEffect(() => {
+  toplamstokhesapla();
+}, [refresh]);
 
 
   /// ilk rows'u oluşturmak için
@@ -268,7 +344,6 @@ useEffect(() => {
 
 useEffect(() => {
   toplamstokhesapla();
-  console.log(urunadi);
 }, [urunadi]);
 
 useEffect(() => {
@@ -315,10 +390,12 @@ const [showThrowPart,setThrowPart]= useState(false);
               <Autocomplete
                 onChange={(event, value) => {
                 setKategoriadi(value);
+                setUrunadi('');
                 }}
                 className="autocomplete1"
                 disablePortal
                 options={kategorigir}
+                isOptionEqualToValue={(option, value) => option === value || value === ''}
                 renderInput={(params) => (
                   <TextField onFocus={async () => await updatekategorigir()}
                     className="auto_cmplete1"
@@ -329,13 +406,19 @@ const [showThrowPart,setThrowPart]= useState(false);
               />
               <Autocomplete
                 onChange={async (event, value) => {
-                  setUrunadi(value);
+                    setUrunadi(value);
+                    setStoktansevk(0);
+                    setStoktansilinen(0);       
                 }}
                 className="autocomplete1"
                 disablePortal
                 options={urungir}
+                isOptionEqualToValue={(option, value) => option === value || value === ''}
                 renderInput={(params) => (
-                  <TextField onFocus={() => updateurungir()}
+                  <TextField onFocus={() => {
+                    updateurungir()
+                  }}
+                    value={urunadi}
                     className="auto_cmplete1"
                     {...params}
                     label="Ürünler"
@@ -347,14 +430,19 @@ const [showThrowPart,setThrowPart]= useState(false);
             <div className="input_part1">
               <TextField
                 value={toplamstok}
-                disabled='true'
+                disabled={true}
                 sx={{ paddingRight: 1.5 }}
                 label="Toplam Stok"
                 variant="filled"
               />
               <TextField
+                onChange={(e) => setStoktansevk(e.target.value)}
+                type="number"
+                inputProps={{ min: 0 }}
                 sx={{ paddingRight: 1.5 }}
+                value = {stoktansevk}
                 label="Sevk Edilecek Miktar"
+                disabled={toplamstok <= 0}
                 variant="filled"
               />
               <Stack className="field_btn1">
@@ -398,9 +486,14 @@ const [showThrowPart,setThrowPart]= useState(false);
             
             {showThrowPart && <div className="throw_part">
             <TextField
+                onChange={(e) => setStoktansilinen(e.target.value)}
                 sx={{ paddingRight: 0.5}}
                 label="Stoktan Atılacak Miktar"
                 variant="filled"
+                type="number"
+                value = {stoktansilinen}
+                disabled={toplamstok <= 0}
+                inputProps={{ min: 0 }}
                 InputProps={{
                   startAdornment: (
                     <InputAdornment position="start">
@@ -412,15 +505,6 @@ const [showThrowPart,setThrowPart]= useState(false);
                     </InputAdornment>
                   ), }}
               />
-              <Button
-                  color="error"
-                  variant="contained"
-                  aria-label="add"
-                  sx={{ height:20,alignSelf:'flex-end'}}
-                  onClick={handleClick}
-                >
-                  AT
-              </Button>
               </div>}
             </div>
             

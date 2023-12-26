@@ -62,8 +62,13 @@ async function filterByCatRange(date1,date2)
                 totalVal += rangeLog.stok;
             }
         });
+        try{
+          // rangeData1.find(predicate => predicate.label === catList[j]).value =totalVal
+        }
+        catch (e) {
+          console.log(e)
+        }
         
-        rangeData1.find(predicate => predicate.label === catList[j]).value =totalVal
    
         
     }

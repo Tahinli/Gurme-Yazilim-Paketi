@@ -218,11 +218,13 @@ export default function DContainer() {
     const fetchData = async () => {
       await updateGunlukler();
     };
-
-
     fetchData();
   }, [startDate, endDate]);
 
+useEffect(() => {
+      console.log(Gunlukler);
+    }, [Gunlukler]);
+    
   async function updateUrunler() {
     try {
       const newUrunler = await urunApi.getUrunler();
@@ -237,7 +239,6 @@ export default function DContainer() {
   }, [kategoriadi]);
 
   async function updatekategorigir() {
-    console.log('updatekategorigir')
     try {
       const newKategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
       setKategorigir(newKategorigir);
@@ -247,7 +248,6 @@ export default function DContainer() {
   }
 
   function updateurungir() {
-    console.log('updateurungir')
     const newUrungir = [];
     for (let urun of Urunler) {
       if (urun.kategori_isim === kategoriadi)
@@ -291,14 +291,28 @@ export default function DContainer() {
   function updateRows() {
     setRows(
       Gunlukler.map((Selection, index) => {
-        if (new Date(convertDate(Selection.tarih)) >= startDate && new Date(convertDate(Selection.tarih)) <= endDate) {
-          return createData(index, Selection.urun_isim,
-            Selection.tarih, Selection.hedeflenen,
-            Selection.ulasilan, Selection.atilan,
-            Selection.personel_sayisi, Selection.sevk, Selection.stok);
+        if (
+          new Date(convertDate(Selection.tarih)) >= startDate &&
+          new Date(convertDate(Selection.tarih)) <= endDate 
+          // &&
+          // Selection.hedeflenen !== 0 &&
+          // Selection.ulasilan !== 0
+        ) {
+          return createData(
+            index,
+            Selection.urun_isim,
+            Selection.tarih,
+            Selection.hedeflenen,
+            Selection.ulasilan,
+            Selection.atilan,
+            Selection.personel_sayisi,
+            Selection.sevk,
+            Selection.stok
+          );
         }
         return undefined;
-      }).filter(item => item !== undefined));
+      }).filter(item => item !== undefined)
+    );
   } // undefined değerlerini kaldır
   /// ilk rows'u oluşturmak için
   useEffect(() => {
@@ -370,49 +384,41 @@ export default function DContainer() {
   ////////////////////////// GUNLUK DÜZENLEME /////////////////////////////
   const handleEdit = async () => {
     console.log(rowname, rowtarih, (editpersonel_sayisi), (edithedef), (edittamamlanan), (editfire), (editstok), (editsevk), edittarih)
-    try {
-      await gunlukApi.updateGunluk(`${rowname}`, `${rowtarih}`, {
-        yeni_urun: rowname,
-        yeni_personel_sayisi: (editpersonel_sayisi),
-        yeni_hedeflenen: (edithedef),
-        yeni_ulasilan: (edittamamlanan),
-        yeni_atilan: (editfire),
-        yeni_stok: (editstok),
-        yeni_sevk: (editsevk),
-        yeni_tarih: edittarih,
+    
+    let datePattern = /^\d{2}\.\d{2}\.\d{4}$/; // gg.aa.yyyy
+    if (datePattern.test(edittarih)) {
+      // if (editpersonel_sayisi < 0 || edithedef < 0 || edittamamlanan < 0 || editfire < 0 || editstok < 0 || editsevk < 0) {
+      //   console.log(calisti)
+      //   alert("Değerler 0 veya daha büyük olmalıdır.");
+      //   return;
+      // }
+      try {
+        await gunlukApi.updateGunluk(`${rowname}`, `${rowtarih}`, {
+          yeni_urun: rowname,
+          yeni_personel_sayisi: (editpersonel_sayisi),
+          yeni_hedeflenen: (edithedef),
+          yeni_ulasilan: (edittamamlanan),
+          yeni_atilan: (editfire),
+          yeni_stok: (editstok),
+          yeni_sevk: (editsevk),
+          yeni_stoktan_sevke: 0,
+          yeni_stoktan_silinen: 0,
+          yeni_tarih: edittarih,
       });
-      updateRows();
-      // Güncellenmiş row'u oluştur
-
-      // const updatedRow = {
-      //     ...rows[rowindex],
-      //   personel_sayisi: parseInt(editpersonel_sayisi),
-      //     hedeflenen: parseInt(edithedef),
-      //     ulasilan: parseInt(edittamamlanan),
-      //     atilan: parseInt(editfire),
-      //     stok: parseInt(editstok),
-      //     sevk: parseInt(editsevk),
-      //     tarih: edittarih,
-      //     };
-
-
-
-      // // Yeni bir rows dizisi oluştur ve güncellenmiş row'u içine ekle
-      // const updatedRows = [
-      // ...rows.slice(0, rowindex),
-      // updatedRow,
-      // ...rows.slice(rowindex + 1),
-      // ];
-
-      // // Update the rows state
-      // setRows(updatedRows);
-
-    } catch (error) {
+        await updateGunlukler();
+        updateRows();
+    } 
+    catch (error) {
       console.error("An error occurred while updating:", error);
     }
-    finally {
-      handleClickClose();
+      finally {
+        handleClickClose();
+      }
     }
+      else{
+        alert("Lütfen 'gg.aa.yyyy' formatında bir tarih girin.");
+        return;
+      } 
   };
 
   const handleClear = async () => {
@@ -445,7 +451,7 @@ export default function DContainer() {
   /////////////////////////////////////////
 
   //PDF EXPORT
-  // const doc = new jsPDF()
+  
 
   // const fontBlob = await fetch('../../assets/fonts/arbutusslab-regular.ttf').then(response => response.blob());
   // const fontBase64 = await blobToDataURL(fontBlob);
@@ -453,7 +459,8 @@ export default function DContainer() {
   // doc.addFileToVFS("arbutusslab-regular.ttf", fontBase64.split(",")[1]);
   // doc.addFont("arbutusslab-regular.ttf", "MyFont", "normal");
   // doc.setFont("MyFont");
-
+  const doc = new jsPDF()
+  
   const exportTableToPDF = () => {
 
     const data = rows.map((row) => {
@@ -546,13 +553,46 @@ export default function DContainer() {
                       sx={{ width: '100%' }}
                     >
 
-                      <TextField onChange={(e) => editsetPersonel_sayisi(e.target.value)} type="number" autoFocus margin="dense" label="Personel Sayısı" fullWidth defaultValue={editpersonel_sayisi} inputProps={{ min: 0 }} />
-                      <TextField onChange={(e) => editsetTarih(e.target.value)} margin="dense" label="Tarih" fullWidth defaultValue={edittarih} />
-                      <TextField onChange={(e) => editsetHedef(e.target.value)} type="number" autoFocus margin="dense" label="Hedef" fullWidth defaultValue={edithedef} inputProps={{ min: 0 }} />
-                      <TextField onChange={(e) => editsetTamamlanan(e.target.value)} type="number" margin="dense" label="Tamamlanan" fullWidth defaultValue={edittamamlanan} inputProps={{ min: 0 }} />
-                      <TextField onChange={(e) => editsetFire(e.target.value)} type="number" autoFocus margin="dense" label="Fire" fullWidth defaultValue={editfire} inputProps={{ min: 0 }} />
-                      <TextField onChange={(e) => editsetSevk(e.target.value)} type="number" margin="dense" label="Sevk" fullWidth defaultValue={editsevk} inputProps={{ min: 0 }} />
-                      <TextField onChange={(e) => editsetStok(e.target.value)} type="number" autoFocus margin="dense" label="Stok" fullWidth defaultValue={editstok} inputProps={{ min: 0 }} />
+                      <TextField onChange={(e) => {
+                        let val = e.target.value;
+                        if (val > 0)
+                        editsetPersonel_sayisi(val);
+                      }} 
+                      type="number" autoFocus margin="dense" label="Personel Sayısı" fullWidth defaultValue={editpersonel_sayisi} inputProps={{ min: 0 }} />
+                      <TextField onChange={(e) => {
+                        editsetTarih(e.target.value);
+                      }} 
+                      margin="dense" label="Tarih" fullWidth defaultValue={edittarih} />
+                      <TextField onChange={(e) => {
+                        let val = e.target.value;
+                        if (val > 0)
+                        editsetHedef(e.target.value)
+                      }}
+                       type="number" autoFocus margin="dense" label="Hedef" fullWidth defaultValue={edithedef} inputProps={{ min: 0 }} />
+                      <TextField onChange={(e) => {
+                        let val = e.target.value;
+                        if (val >= 0)
+                        editsetTamamlanan(e.target.value)
+                      }}
+                       type="number" margin="dense" label="Tamamlanan" fullWidth defaultValue={edittamamlanan} inputProps={{ min: 0 }} />
+                      <TextField onChange={(e) => {
+                        let val = e.target.value;
+                        if (val >= 0)
+                        editsetFire(e.target.value)
+                      }}
+                      type="number" autoFocus margin="dense" label="Fire" fullWidth defaultValue={editfire} inputProps={{ min: 0 }} />
+                      <TextField onChange={(e) => {
+                        let val = e.target.value;
+                        if (val >= 0)
+                        editsetSevk(e.target.value)
+                      }}
+                      type="number" margin="dense" label="Sevk" fullWidth defaultValue={editsevk} inputProps={{ min: 0 }} />
+                      <TextField onChange={(e) => {
+                        let val = e.target.value;
+                        if (val >= 0)
+                        editsetStok(e.target.value)
+                      }} 
+                      type="number" autoFocus margin="dense" label="Stok" fullWidth defaultValue={editstok} inputProps={{ min: 0 }} />
                     </Card>
 
                     <DialogActions sx={{ alignItems: 'left' }}>
@@ -590,44 +630,46 @@ export default function DContainer() {
     <div className="autocomplete">
           <Autocomplete value={kategoriadi} onChange={(event, value) => {
           setKategoriadi(value);
-          setUrunadi(null);
+          setUrunadi('');
           }}
               className="autocomplete" 
               disablePortal
               options={kategorigir}
+              isOptionEqualToValue={(option, value) => option === value || value === ''}
               renderInput={(params) => <TextField value={kategoriadi} onFocus={async () => await updatekategorigir()} className='auto_cmplete' {...params} label="Ürün Kategorisi" />}
           />
           <Autocomplete value = {urunadi} onChange={(event, value) => setUrunadi(value)}
               className="autocomplete"
               disablePortal
               options={urungir}
+              isOptionEqualToValue={(option, value) => option === value || value === ''}
               renderInput={(params) => <TextField value={urunadi} onFocus={() => updateurungir()} className='auto_cmplete' {...params} label="Ürünler" />}
           />
     </div>
   
     <div> 
 
-    <TextField type="number" defaultValue = {0} 
+    <TextField type="number" 
      onChange={(e) => setHedef(e.target.value)}
      value={hedef} sx={{paddingRight:1.5,paddingTop:1.5}} label="Hedef Miktar" variant="filled" inputProps={{ min: 0 }}/>
 
-    <TextField type="number" defaultValue = {0} 
+    <TextField type="number"  
      onChange={(e) => setTamamlanan(e.target.value)}
      value={tamamlanan} sx={{paddingRight:1.5,paddingTop:1.5}} label="Tamamlanan Miktar" variant="filled" inputProps={{ min: 0 }}/>
 
-    <TextField type="number" defaultValue = {0}
+    <TextField type="number" 
      onChange={(e) => setFire(e.target.value)}
      value={fire} sx={{paddingRight:1.5,paddingTop:1.5}} label="Fire Miktarı" variant="filled" inputProps={{ min: 0 }}/>
 
-    <TextField type="number" defaultValue = {0}
+    <TextField type="number" 
      onChange={(e) => setSevk(e.target.value)}
      value={sevk} sx={{paddingRight:1.5,paddingTop:1.5}} label="Sevk Edilecek Miktar" variant="filled" inputProps={{ min: 0 }}/>
 
-    <TextField type="number" defaultValue = {0}
+    <TextField type="number" 
      onChange={(e) => setStok(e.target.value)}
      value={stok} sx={{paddingRight:1.5,paddingTop:1.5}} label="Stok Miktarı" variant="filled" inputProps={{ min: 0 }}/>
 
-    <TextField type="number" defaultValue = {0}
+    <TextField type="number" 
      onChange={(e) => setPersonel_sayisi(e.target.value)}
      value={personel_sayisi} sx={{paddingRight:1.5,paddingTop:1.5}} label="Personel Sayisi" variant="filled" inputProps={{ min: 0 }}/>
 

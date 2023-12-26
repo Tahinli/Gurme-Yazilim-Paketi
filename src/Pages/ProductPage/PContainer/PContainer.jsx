@@ -34,13 +34,12 @@ import urunApi from "../../../api/urun-api";
 import kategoriApi from "../../../api/kategori-api";
 import Autocomplete from '@mui/material/Autocomplete';
 import CategoryIcon from '@mui/icons-material/Category';
+import { useEffect } from "react";
 
-const urunler = await urunApi.getUrunler();
-// const urunler = (await urunApi.getUrunler()).map((urun) => urun.isim);
-const kategoriler = (await kategoriApi.getKategoriler()).map(
-  (kategori) => kategori.isim
-);
-const butunKategoriler = await kategoriApi.getKategoriler();
+// const urunler = await urunApi.getUrunler();
+// const kategoriler = (await kategoriApi.getKategoriler()).map(
+//   (kategori) => kategori.isim
+// );
 
 const inAnimation = keyframes`
   0% {
@@ -72,10 +71,6 @@ function createData(id, isim, kategori) {
   };
 }
 
-const rows = Array.from({ length: urunler.length }, (_, index) => {
-  return createData(index, urunler[index].isim, urunler[index].kategori);
-});
-
 function descendingComparator(a, b, orderBy) {
   if (b[orderBy] < a[orderBy]) {
     return -1;
@@ -103,6 +98,8 @@ function stableSort(array, comparator) {
   });
   return stabilizedThis.map((el) => el[0]);
 }
+
+
 
 const headCells = [
   {
@@ -191,64 +188,6 @@ EnhancedTableHead.propTypes = {
   rowCount: PropTypes.number.isRequired,
 };
 
-function EnhancedTableToolbar(props) {
-  const { numSelected } = props;
-
-  return (
-    <Toolbar
-      sx={{
-        pl: { sm: 2 },
-        pr: { xs: 1, sm: 1 },
-        ...(numSelected > 0 && {
-          bgcolor: (theme) =>
-            alpha(
-              theme.palette.primary.main,
-              theme.palette.action.activatedOpacity
-            ),
-        }),
-      }}
-    >
-      {numSelected > 0 ? (
-        <p
-          sx={{ flex: "1 1 100%" }}
-          color="inherit"
-          variant="subtitle1"
-          component="div"
-        >
-          {numSelected} selected
-        </p>
-      ) : (
-        <p
-          sx={{ flex: "1 1 100%" }}
-          variant="h6"
-          id="tableTitle"
-          component="div"
-        >
-          Ürünler
-        </p>
-      )}
-
-      {numSelected > 0 ? (
-        <Tooltip title="Delete">
-          <IconButton>
-            <DeleteIcon onClick={handleDelete} />
-          </IconButton>
-        </Tooltip>
-      ) : (
-        <Tooltip title="Filter list">
-          <IconButton>
-            <FilterListIcon />
-          </IconButton>
-        </Tooltip>
-      )}
-    </Toolbar>
-  );
-}
-
-EnhancedTableToolbar.propTypes = {
-  numSelected: PropTypes.number.isRequired,
-};
-
 // ************************* ANA FONKSIYON  ********************************
 export default function PContainer() {
   const [order, setOrder] = React.useState("asc");
@@ -257,6 +196,41 @@ export default function PContainer() {
   const [page, setPage] = React.useState(0);
   const [dense, setDense] = React.useState(false);
   const [rowsPerPage, setRowsPerPage] = React.useState(10);
+  const [rows, setRows] = useState([]);
+
+  const [kategoriler, setKategoriler] = useState([]);
+  const [urunler, setUrunler] = useState([]);
+
+  async function updateKategoriler() {
+    try {
+      const newKategoriler = (await kategoriApi.getKategoriler()).map(
+        (kategori) => kategori.isim
+      );
+      setKategoriler(newKategoriler);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+
+  async function updateUrunler() {
+    try {
+      const newUrunler = await urunApi.getUrunler();
+      setUrunler(newUrunler);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  }
+
+  useEffect(() => {
+    Promise.all([updateKategoriler(), updateUrunler()]).then(() => {
+    });
+  }, []);
+
+  useEffect(() => {
+    setRows(Array.from({ length: urunler.length }, (_, index) => {
+      return createData(index, urunler[index].isim, urunler[index].kategori_isim);
+    }));
+  }, [urunler]);
 
   //vvvvvvvvvvvvvvv textfieldlar için vvvvvvvvvvvvvvv
   const [urunadi, setUrunadi] = useState("");
@@ -326,37 +300,58 @@ export default function PContainer() {
         page * rowsPerPage,
         page * rowsPerPage + rowsPerPage
       ),
-    [order, orderBy, page, rowsPerPage]
+    [order, orderBy, page, rowsPerPage,rows]
   );
+
   const [massage, setMassage] = useState(false);
 
-  const addclick = async () => {
-    //vvvvvvvvvvvvvv KATEGORI EKLE vvvvvvvvvvvvvvv   (ŞUAN HEM KATEGORİ HEMDE ÜRÜN EKLENİYOR DÜZELTİLECEK)
-    
-    
-      if (!kategoriler.includes(urunkategorisi)) 
-      {
-        
-          await kategoriApi.addKategori({
-          isim: urunkategorisi,
-          ust_kategori: null,
-        });
-        kategoriler.push(urunkategorisi);
-      }
+  const addurun = async () => {
+    console.log('calisti')
+    console.log(kategoriadi)
+    console.log(urunadi)
     //vvvvvvvvvvvvvv URUN EKLE vvvvvvvvvvvvvvv
-    
+      if (kategoriadi&&kategoriler.includes(kategoriadi)&&urunadi&&urunadi!='') 
+      {
         await urunApi.addUrun({
         isim: urunadi,
-        kategori: urunkategorisi,
+        kategori: kategoriadi,
         });
+      }
+      else{
+        alert("Bir Hata Oluştu")
+        return;
+      }
+      setRows([
+        createData(rows.length, urunadi, kategoriadi),
+        ...rows,
+      ]);
+        
     setMassage(true);
+  };
+
+  const addkategori = async () => {
+    
+    //vvvvvvvvvvvvvv URUN EKLE vvvvvvvvvvvvvvv
+      if (kategoriler.includes(urunkategorisi)) 
+      {
+        alert("Kategori Zaten Var")
+        return;
+      }
+      else{
+        await kategoriApi.addKategori({
+        isim: urunkategorisi,
+        ust_kategorisi: null,
+        });
+        setMassage(true);
+      }
+      
+        
     
   };
 
   const handleClose2 = () => {
     setMassage(false);
   };
-  const [ urunadi1, setUrunadi1 ] = useState('');
   const [ kategoriadi, setKategoriadi ] = useState(''); 
   const [kategorigir, setKategorigir] = useState([]);
   async function updatekategorigir() {
@@ -368,6 +363,84 @@ export default function PContainer() {
       console.error("An error occurred:", error);
     }
   }
+
+  const handleDelete = async () => {
+    for (let id of selected) {
+      const row = rows.find(row => row.id === id);
+      if (row) {
+        try {
+          const result = await urunApi.deleteUrun(row.isim);
+          console.log(result); // Silme işleminin sonucunu logla
+        } catch (error) {
+          console.error(error); // Hata durumunda hatayı logla
+        }
+      }
+    }
+  
+    // Silinen öğeleri durumdan kaldır
+    setRows(rows.filter(row => !selected.includes(row.id)));
+  
+    // Seçili öğeleri temizle
+    setSelected([]);
+  };
+
+  function EnhancedTableToolbar(props) {
+    const { numSelected } = props;
+  
+    return (
+      <Toolbar
+        sx={{
+          pl: { sm: 2 },
+          pr: { xs: 1, sm: 1 },
+          ...(numSelected > 0 && {
+            bgcolor: (theme) =>
+              alpha(
+                theme.palette.primary.main,
+                theme.palette.action.activatedOpacity
+              ),
+          }),
+        }}
+      >
+        {numSelected > 0 ? (
+          <p
+            sx={{ flex: "1 1 100%" }}
+            color="inherit"
+            variant="subtitle1"
+            component="div"
+          >
+            {numSelected} selected
+          </p>
+        ) : (
+          <p
+            sx={{ flex: "1 1 100%" }}
+            variant="h6"
+            id="tableTitle"
+            component="div"
+          >
+            Ürünler
+          </p>
+        )}
+  
+        {numSelected > 0 ? (
+          <Tooltip title="Delete">
+            <IconButton>
+              <DeleteIcon onClick={handleDelete} />
+            </IconButton>
+          </Tooltip>
+        ) : (
+          <Tooltip title="Filter list">
+            <IconButton>
+              <FilterListIcon />
+            </IconButton>
+          </Tooltip>
+        )}
+      </Toolbar>
+    );
+  }
+
+  EnhancedTableToolbar.propTypes = {
+    numSelected: PropTypes.number.isRequired,
+  };
 
   return (
     <div className="product_body">
@@ -407,7 +480,7 @@ export default function PContainer() {
             <h4 className="p_header">Ürün Ekle</h4>
             <Autocomplete value={kategoriadi} onChange={(event, value) => {
               setKategoriadi(value);
-              setUrunadi(null);
+              setUrunadi('');
               }}
               options={kategorigir}
               renderInput={(params) => <TextField value={kategoriadi} onFocus={async () => await updatekategorigir()} {...params} label="Ürün Kategorisi" />}
@@ -415,14 +488,15 @@ export default function PContainer() {
             <TextField
               id = "urunadi"
               type="text"
-              onChange={(e) => setUrunadi(e.target.value)}
+              value = {urunadi}
+              onChange={(e) => {setUrunadi(e.target.value)}}
               sx={{ paddingTop: 1.5 }}
               label="Ürün Adı"
               variant="filled"
             />
             <Button
               className="save_btn"
-              onClick={addclick}
+              onClick={addurun}
               color="success"
               variant="contained"
               aria-label="add"
@@ -501,7 +575,7 @@ export default function PContainer() {
             />
             <Button
               className="save_btn"
-              onClick={addclick}
+              onClick={addkategori}
               color="warning"
               variant="contained"
               aria-label="add"
@@ -539,8 +613,8 @@ export default function PContainer() {
 <div className="p_box_div">
 
       <h1 className="p_h1">ÜRÜN TABLOSU</h1>
-      <Box sx={{ width: "80%" }} className="p_box">
-        <Paper >
+    <Box sx={{ width: "80%" }} className="p_box">
+       {visibleRows.length > 0 && <Paper >
           <EnhancedTableToolbar numSelected={selected.length} />
           <TableContainer>
             <Table
@@ -605,7 +679,7 @@ export default function PContainer() {
                         align="right"
                         sx={{ color: "black" }}
                       >
-                        {row.kategori.isim}
+                        {row.kategori}
                       </TableCell>
                     </TableRow>
                   );
@@ -632,7 +706,7 @@ export default function PContainer() {
             onRowsPerPageChange={handleChangeRowsPerPage}
             sx={{paddingBottom:10}}
           />
-        </Paper>
+        </Paper>}
       </Box>
       </div>
     </div>
