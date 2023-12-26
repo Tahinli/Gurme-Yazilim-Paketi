@@ -384,7 +384,7 @@ console.log(convertDate(getTodayDate()))
               <TextField
                 disabled={true}
                 value = {dailysevk}
-                sx={{ paddingRight: 1.5 ,backgroundColor:'#eaeaea'}}
+                sx={{ marginRight: 1.5 ,backgroundColor:'#eaeaea'}}
                 label="Günlük Toplam Sevk"
                 variant="outlined"
                 inputProps={{style: {fontWeight: 'bold', fontSize: 18, color: 'black'}}}   
@@ -392,7 +392,7 @@ console.log(convertDate(getTodayDate()))
               <TextField
                 disabled={true}
                 value = {weeklysevk}
-                sx={{ paddingRight: 1.5 ,backgroundColor:'#eaeaea'}}
+                sx={{marginRight: 1.5 ,backgroundColor:'#eaeaea'}}
                 label="Haftalık Toplam Sevk"
                 variant="outlined"
                 inputProps={{style: {fontWeight: 'bold', fontSize: 18, color: 'black'}}}
@@ -400,7 +400,7 @@ console.log(convertDate(getTodayDate()))
                <TextField
                 disabled={true}
                 value = {monthlysevk}
-                sx={{ paddingRight: 1.5 ,backgroundColor:'#eaeaea'}}
+                sx={{ marginRight: 1.5 ,backgroundColor:'#eaeaea'}}
                 label="Aylık Toplam Sevk"
                 variant="outlined"
                 inputProps={{style: {fontWeight: 'bold', fontSize: 18, color: 'black'}}}

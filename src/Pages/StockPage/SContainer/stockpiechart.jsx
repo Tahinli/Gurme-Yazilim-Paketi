@@ -16,7 +16,7 @@ import { padding } from '@mui/system';
 import { catList,logList,productList } from '../../../Charts/CategoryAnalyzePage/CategoryAnalyzeComponents.jsx';
 import Card from "@mui/joy/Card";
 
-const palette = ['red', 'blue', 'green','yellow','pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
+const palette = ['#FF6347', '#C24641', '#2F0909','#7E354D','#FC6C85','#733635','#7D0541','silver','#7E587E','#6F2DA8','#4E5180','#E9CFEC', 'magenta', 'lime', 'olive', 'navy'];
 //const palette1 = ['pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
 
 var firstDate,lastDate

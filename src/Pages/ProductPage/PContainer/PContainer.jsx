@@ -489,7 +489,7 @@ export default function PContainer() {
               type="text"
               value = {urunadi}
               onChange={(e) => {setUrunadi(e.target.value)}}
-              sx={{ paddingTop: 1.5 }}
+              sx={{backgroundColor:'#A0D6B4' }}
               label="Ürün Adı"
               variant="filled"
             />
@@ -568,7 +568,7 @@ export default function PContainer() {
               id = "urunkategorisi"
               type="text"
               onChange={(e) => setUrunkategorisi(e.target.value)}
-              sx={{ paddingTop: 1.5 }}
+              sx={{backgroundColor:'#FFE87C' }}
               label="Kategori Adı"
               variant="filled"
             />

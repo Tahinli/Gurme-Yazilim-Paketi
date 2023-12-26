@@ -15,7 +15,7 @@ import Gunluk from "../../api/gunluk-api.js";
 import {useLocation} from "react-router-dom";
 
 //APIDEN GELEN DEĞERLER ÇEKİLİYOR
-const palette = ['red','blue','yellow','orange','brown','green','grey','tomato','tan','steelblue','slateblue','powderblue','orchid','olive','magenta'];
+const palette = ['#045F5F','#3EA99F','#007C80','#BCE954','#808000','#64E986','#C2E5D3','#F67280','#3EB489','#555D50','steelblue','#254117','#FED8B1','#C34A2C','#FE632A','#F75D59'];
 export const productList = await urunApi.getUrunler();
 export const logList = await gunlukApi.getGunlukler();
 export const catList = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);

@@ -4,7 +4,6 @@
 
 .Stok_containerbody {
   min-height: 100vh;
-  position: relative;
 }
 
 .Stok_containerbody::before {
