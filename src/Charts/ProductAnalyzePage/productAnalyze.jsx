@@ -96,6 +96,7 @@ const dynamicSeries = [];
 await monthlyBarChart()
 
 
+
 function getTodayDate() {
     const today = new Date();
     // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
@@ -109,18 +110,22 @@ function convertDate(date){
 async function filterByCatDaily() {
 
     const todayLog = logList.filter(gunluk => gunluk.tarih === getTodayDate());
+    console.log(todayLog[0])
     let totalVal = 0;
     let count=0
+    let i=0
     //Günlük veriler sonrası karşılaştırma
    todayLog.map(async (log) => {
-        const productCategory = productList.filter(r=>r.isim===todayLog.urun_isim);
+        const productCategory = productList.filter(r=>r.isim===log.urun_isim);
 
-       if (proVal=== productCategory[0].isim&&todayLog.stok!==0&&todayLog.sevk!==0&&todayLog.personel_sayisi!==0) {
+       if (proVal=== productCategory[0].isim&&log.stok!==0&&log.sevk!==0&&log.personel_sayisi!==0) {
+           console.log(log.stok)
            count++
            totalVal += log.ulasilan / log.hedeflenen;
+
        }
 
-
+     i++
     });
     totalVal=(totalVal/count)*100;
     let fail=100-totalVal
@@ -135,10 +140,7 @@ async function filterByCatDaily() {
 
 
 }
-async function createData(){
-    const [data,setData]=useState([])
 
-}
 async function filterByCatMonth()
 {
 

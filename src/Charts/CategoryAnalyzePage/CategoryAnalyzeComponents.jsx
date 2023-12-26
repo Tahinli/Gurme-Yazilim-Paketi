@@ -13,14 +13,17 @@ import kategoriApi from "../../api/kategori-api.js";
 import Gunluk from "../../api/gunluk-api.js";
 
 import {useLocation} from "react-router-dom";
-
+import Table from "@mui/material/Table";
+let arrTopFive=[]
 //APIDEN GELEN DEĞERLER ÇEKİLİYOR
 const palette = ['#045F5F','#3EA99F','#007C80','#BCE954','#808000','#64E986','#C2E5D3','#F67280','#3EB489','#555D50','steelblue','#254117','#FED8B1','#C34A2C','#FE632A','#F75D59'];
 export const productList = await urunApi.getUrunler();
 export const logList = await gunlukApi.getGunlukler();
 export const catList = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
 
-let arrProduct = [];
+
+let arrProduct =[]
+let arrTopProduct=Array.from({ length: 5 }, () => new Array(3).fill(null));
 for (let i = 0; i < 30; i++) {
     arrProduct[i] = [];
     for (let j = 0; j < catList.length; j++) {
@@ -28,8 +31,20 @@ for (let i = 0; i < 30; i++) {
     }
 }
 const zort=arrProduct
+function createData(name, kategori, verimlilik) {
+    return { name, kategori, verimlilik};
+}
 
 
+await filterTopFive()
+console.log(arrTopProduct)
+const rows = [
+    createData(arrTopProduct[0][1], arrTopProduct[0][0], arrTopProduct[0][2]),
+    createData(arrTopProduct[1][1], arrTopProduct[1][0], arrTopProduct[1][2]),
+    createData(arrTopProduct[2][1], arrTopProduct[2][0], arrTopProduct[2][2]),
+    createData(arrTopProduct[3][1], arrTopProduct[3][0], arrTopProduct[3][2]),
+    createData(arrTopProduct[4][1], arrTopProduct[4][0], arrTopProduct[4][2]),
+];
 let range
 
 const date=new Date()
@@ -64,7 +79,7 @@ await filterByCatWeek()
 const dynamicSeries = [];
 await monthlyBarChart()
 
-
+console.log()
 function getTodayDate() {
     const today = new Date();
     // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
@@ -73,6 +88,41 @@ function getTodayDate() {
 }
 function convertDate(date){
     return new Date(date.split('.').reverse().join('-'))
+}
+async function filterTopFive()
+{
+    const todayLog = logList.filter(gunluk => gunluk.tarih === getTodayDate());
+    let totalVal = 0;
+    let count=0
+    let i=0
+
+    todayLog.map(async (rLog) => {
+
+        let j=0
+        if (rLog.stok!==0&&rLog.sevk!==0&&rLog.personel_sayisi!==0) {
+
+            totalVal += rLog.ulasilan / rLog.hedeflenen;
+
+        }
+        arrTopProduct[i][j]=totalVal*100
+        arrTopProduct[i][j+1]=rLog.urun_isim
+        arrTopProduct[i][j+2]=rLog.urun.kategori.isim
+
+        i++
+
+    });
+    arrTopProduct.sort((a, b) => b[0] - a[0]);
+
+    for(let i=0;i<5;i++){
+        if(arrTopProduct[i][0]!==null)
+        arrTopProduct[i][0]= Number(arrTopProduct[i][0].toFixed(2))
+    }
+
+
+    console.log((arrTopProduct[0][0]))
+
+
+
 }
 
 async function filterByCatDaily() {
@@ -357,6 +407,29 @@ export function BarAnimation() {
             </div>
 
         </Box>
+    );
+}
+export function TopFiveProduct(){
+    return (
+        <Table sx={{ '& thead th:nth-child(1)': { width: '50%' } }}>
+            <thead>
+            <tr>
+                <th>Ürün</th>
+                <th>Verimlilik  </th>
+                <th>Kategori</th>
+            </tr>
+            </thead>
+            <tbody>
+            {rows.map((row) => (
+                <tr key={row.name}>
+                    <td>{row.name}</td>
+                    <td>{row.kategori}</td>
+                    <td>{row.verimlilik}</td>
+
+                </tr>
+            ))}
+            </tbody>
+        </Table>
     );
 }
 
