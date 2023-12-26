@@ -194,6 +194,10 @@ impl Kategori
                         isim,
                         ust_kategori:None,
                     };
+                if kategori.isim =="null".to_string()
+                    {
+                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Kategori ismi null olamaz")));
+                    }
                 match state.kategori_collection.find_one(doc! {"isim": ust_kategori}, None).await
                     {
                         Ok(bulundu) =>
@@ -243,6 +247,10 @@ impl Kategori
                         isim:yeni_isim,
                         ust_kategori:None,
                     };
+                if yeni_kategori.isim =="null".to_string()
+                    {
+                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Kategori ismi null olamaz")));
+                    }
                 match state.kategori_collection.find_one(doc! {"isim": yeni_ust_kategori}, None).await
                     {
                         Ok(bulundu) =>
@@ -648,7 +656,7 @@ impl Gunluk
                                                         ulasilan:yeni_ulasilan_string.parse().unwrap(),
                                                         atilan:yeni_atilan_string.parse().unwrap(),
                                                         sevk:yeni_stok_string.parse().unwrap(),
-                                                        stok:yeni_stok_string.parse().unwrap(),
+                                                        stok:yeni_sevk_string.parse().unwrap(),
                                                         stoktan_sevke:yeni_stoktan_sevke_string.parse().unwrap(),
                                                         stoktan_silinen:yeni_stoktan_silinen_string.parse().unwrap(),
                                                         tarih:yeni_tarih_string,
@@ -816,7 +824,7 @@ async fn routing(State(state): State<AppState>) -> Router
 
         let gunluk_routers = Router::new()
         .route("/:urun/:tarih", get(Gunluk::gunluk))
-        .route("/ekle/:urun/:personel_sayisi/:hedeflenen/:ulasilan/:atilan/:stok/:sevk/:stokta_sevke/:stoktan_silinen/:tarih", get(Gunluk::ekle))
+        .route("/ekle/:urun/:personel_sayisi/:hedeflenen/:ulasilan/:atilan/:stok/:sevk/:stoktan_sevke/:stoktan_silinen/:tarih", get(Gunluk::ekle))
         .route("/sil/:urun/:tarih", get(Gunluk::sil))
         .route("/duzenle/:urun/:tarih/:yeni_urun/:yeni_personel_sayisi/:yeni_hedeflenen/:yeni_ulasilan/:yeni_atilan/:yeni_stok/:yeni_sevk/:yeni_stoktan_sevke/:yeni_stoktan_silinen/:yeni_tarih", get(Gunluk::duzenle))
         .route("/hepsi", get(Gunluk::hepsi))
