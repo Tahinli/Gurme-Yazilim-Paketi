@@ -51,7 +51,7 @@ const productNameVar=url.split("/")
 let productName=productNameVar[4] 
 
 for(let i=0;i<proList.length;i++){
-    proVal=proList[i].replaceAll('Ğ','g')
+    proVal=proList[i].split(' ').join('').replaceAll('Ğ','g')
         .replaceAll('Ü','u')
         .replaceAll('Ş','s')
         .replaceAll('I','i')
@@ -115,7 +115,7 @@ async function filterByCatDaily() {
    todayLog.map(async (log) => {
         const productCategory = productList.filter(r=>r.isim===todayLog.urun_isim);
 
-       if (proVal === productCategory[0].isim&&todayLog.stok!==0&&todayLog.sevk!==0&&todayLog.personel_sayisi!==0) {
+       if (proVal=== productCategory[0].isim&&todayLog.stok!==0&&todayLog.sevk!==0&&todayLog.personel_sayisi!==0) {
            count++
            totalVal += log.ulasilan / log.hedeflenen;
        }
@@ -157,7 +157,7 @@ async function filterByCatMonth()
    rangeLog.map(async (MonthLog) => {
        const productCategory = productList.filter(r=>r.isim===MonthLog.urun_isim);
 
-        if (proVal === productCategory[0].isim) {
+        if (proVal=== productCategory[0].isim&&rangeLog.stok!==0&&rangeLog.sevk!==0&&rangeLog.personel_sayisi!==0) {
             count++
             totalVal += MonthLog.ulasilan / MonthLog.hedeflenen;
         }

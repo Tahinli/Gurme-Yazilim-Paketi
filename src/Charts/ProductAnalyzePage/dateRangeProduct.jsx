@@ -32,9 +32,10 @@ let proVal
 //URLDEKİ DEĞERLERİ PARÇAYA AYIRDIKTAN SONRA SON DEĞERİN ATAMISINI YAPTIM DİLENİRSE DAHA FARKLI BİR BİÇİMDE MODİFİYE EDİLEBİLİR
 
 let productName=productNameVar[4]
+console.log(productName)
 //TÜRKÇE KARAKTERLERİ DÖNÜŞTÜRDÜM
 for(let i=0;i<proList.length;i++){
-    proVal=proList[i].replaceAll('Ğ','g')
+    proVal=proList[i].split(' ').join('').replaceAll('Ğ','g')
         .replaceAll('Ü','u')
         .replaceAll('Ş','s')
         .replaceAll('I','i')

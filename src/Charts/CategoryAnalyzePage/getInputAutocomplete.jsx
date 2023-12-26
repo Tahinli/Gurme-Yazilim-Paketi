@@ -67,7 +67,7 @@ export default function ControllableStates({ onValue2Change }) {
 //TÜRKÇE KARAKTER DEĞİŞİMİ
     const pName = (text) => {
         if(text !== null)
-            return text.replaceAll('Ğ','g')
+            return text.split(' ').join('').replaceAll('Ğ','g')
                 .replaceAll('Ü','u')
                 .replaceAll('Ş','s')
                 .replaceAll('I','i')
