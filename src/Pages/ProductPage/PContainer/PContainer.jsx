@@ -355,7 +355,6 @@ export default function PContainer() {
   const [ kategoriadi, setKategoriadi ] = useState(''); 
   const [kategorigir, setKategorigir] = useState([]);
   async function updatekategorigir() {
-    console.log('updatekategorigir')
     try {
       const newKategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
       setKategorigir(newKategorigir);
@@ -480,9 +479,9 @@ export default function PContainer() {
             <h4 className="p_header">Ürün Ekle</h4>
             <Autocomplete value={kategoriadi} onChange={(event, value) => {
               setKategoriadi(value);
-              setUrunadi('');
               }}
               options={kategorigir}
+              isOptionEqualToValue={(option, value) => option === value || value === ''}
               renderInput={(params) => <TextField value={kategoriadi} onFocus={async () => await updatekategorigir()} {...params} label="Ürün Kategorisi" />}
           />
             <TextField

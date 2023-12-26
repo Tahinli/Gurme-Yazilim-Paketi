@@ -63,7 +63,7 @@ const outAnimation = keyframes`
 
 function getTodayDate() {
   const today = new Date();
-  // today.setDate(today.getDate() + 1); // Bugünün tarihine bir gün ekler
+  today.setDate(today.getDate() -1); // Bugünün tarihine bir gün ekler
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   return today.toLocaleDateString('tr-TR', options);
 }
@@ -384,7 +384,8 @@ useEffect(() => {
   ////////////////////////// GUNLUK DÜZENLEME /////////////////////////////
   const handleEdit = async () => {
     console.log(rowname, rowtarih, (editpersonel_sayisi), (edithedef), (edittamamlanan), (editfire), (editstok), (editsevk), edittarih)
-    
+    const matchedGunluk = Gunlukler.find(gunluk => 
+      gunluk.urun_isim === rowname && gunluk.tarih === rowtarih);
     let datePattern = /^\d{2}\.\d{2}\.\d{4}$/; // gg.aa.yyyy
     if (datePattern.test(edittarih)) {
       // if (editpersonel_sayisi < 0 || edithedef < 0 || edittamamlanan < 0 || editfire < 0 || editstok < 0 || editsevk < 0) {
@@ -401,8 +402,8 @@ useEffect(() => {
           yeni_atilan: (editfire),
           yeni_stok: (editstok),
           yeni_sevk: (editsevk),
-          yeni_stoktan_sevke: 0,
-          yeni_stoktan_silinen: 0,
+          yeni_stoktan_sevke: matchedGunluk.stoktan_sevke,
+          yeni_stoktan_silinen: matchedGunluk.stoktan_silinen,
           yeni_tarih: edittarih,
       });
         await updateGunlukler();

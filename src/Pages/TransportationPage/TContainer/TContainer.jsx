@@ -158,7 +158,10 @@ export default function Tontainer() {
   const [kategorigir, setKategorigir] = useState([]);
   const [rows, setRows] = useState([]);
   const [Urunler, setUrunler] = useState([]);
-  const [toplamstok, setToplamstok] = useState(0);
+  const [dailysevk, setDailysevk] = useState(0);
+  const [weeklysevk, setWeeklysevk] = useState(0);
+  const [monthlysevk, setMonthlysevk] = useState(0);
+  
 
 
   const [value, setValue] = useState([
@@ -199,7 +202,6 @@ export default function Tontainer() {
     const fetchData = async () => {
         await updateGunlukler();
     };
-
     fetchData();
 }, []);
 
@@ -217,7 +219,6 @@ useEffect(() => {
 }, [kategoriadi]);
 
 async function updatekategorigir() {
-  console.log('updatekategorigir')
   try {
     const newKategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
     setKategorigir(newKategorigir);
@@ -227,7 +228,6 @@ async function updatekategorigir() {
 }
 
 function updateurungir() {
-  console.log('updateurungir')
   const newUrungir = [];
   for (let urun of Urunler) {
     if(urun.kategori_isim === kategoriadi)
@@ -296,13 +296,14 @@ function updateurungir() {
 
             {/* AUTOCOMPLETE*/}
             <div className="autocomplete2">
-              <Autocomplete
-                onChange={(event, value) => {
-                setKategoriadi(value);
-                }}
+              <Autocomplete value={kategoriadi} onChange={(event, value) => {
+                  setKategoriadi(value);
+                  setUrunadi('');
+                  }}
                 className="autocomplete2"
                 disablePortal
                 options={kategorigir}
+                isOptionEqualToValue={(option, value) => option === value || value === ''}
                 renderInput={(params) => (
                   <TextField onFocus={async () => await updatekategorigir()}
                     className="auto_cmplete2"
@@ -312,12 +313,12 @@ function updateurungir() {
                 )}
               />
               <Autocomplete
-                onChange={async (event, value) => {
-                  setUrunadi(value);
-                }}
+                value = {urunadi} 
+                onChange={(event, value) => setUrunadi(value)}
                 className="autocomplete2"
                 disablePortal
                 options={urungir}
+                isOptionEqualToValue={(option, value) => option === value || value === ''}
                 renderInput={(params) => (
                   <TextField onFocus={() => updateurungir()}
                     className="auto_cmplete2"

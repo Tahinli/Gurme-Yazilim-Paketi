@@ -61,6 +61,17 @@ const outAnimation = keyframes`
   }
 `;
 
+function getTodayDate() {
+  const today = new Date();
+  // today.setDate(today.getDate() +1); // Bugünün tarihine bir gün ekler
+  const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
+  return today.toLocaleDateString('tr-TR', options);
+}
+
+function convertDate(date) {
+  return new Date(date.split('.').reverse().join('-'))
+}
+
 function createData(id, urun_isim, tarih, stok) {
   return { id, urun_isim, tarih, stok };
 }
@@ -240,7 +251,6 @@ useEffect(() => {
   }
 
   async function toplamstokhesapla() {  ////DATE RANGE E GORE HESAPLAMA EKLENMELİ
-    console.log('toplamstokhesapla'+urunadi)
     try {
       //eğer bugüne ait bir log varsa onu tekrar düzenlemesi için değerleri getirir
       const presentgunluk = Gunlukler.find(gunluk => gunluk.urun_isim === urunadi
@@ -260,12 +270,18 @@ useEffect(() => {
   }
 
   async function SevkEt() {
+    if(!urunadi || !kategoriadi) {
+      alert('Lütfen ürün ve kategori seçiniz');
+      return;
+    }
     try {
       const matchedGunluk = Gunlukler.find(gunluk => gunluk.urun_isim === urunadi
         &&gunluk.tarih===dayjs().format('DD.MM.YYYY'));
-      if(matchedGunluk){         
-          if( ((stoktansevk - matchedGunluk.stoktan_sevke) + 
-          (stoktansilinen - matchedGunluk.stoktan_silinen))
+        console.log(matchedGunluk)
+      if(matchedGunluk){
+        console.log('matched')         
+          if( ( (parseInt(stoktansevk) - parseInt(matchedGunluk.stoktan_sevke)) + 
+          (parseInt(stoktansilinen) - parseInt(matchedGunluk.stoktan_silinen) ) )
            > toplamstok) {
               alert('Sevk edilecek miktar toplam stoktan fazla olamaz');
               return;
@@ -285,8 +301,8 @@ useEffect(() => {
           yeni_tarih: matchedGunluk.tarih,
       });          
       }
-      else{
-        if(stoktansevk + stoktansilinen > toplamstok) {
+      else{//atma ve sevk işlemlerinin stoğu geçmediğinin kontrolü
+        if( ( parseInt(stoktansevk) + parseInt(stoktansilinen) ) > parseInt(toplamstok) ) {
           alert('Sevk edilecek miktar toplam stoktan fazla olamaz');
           return;
         }
@@ -346,9 +362,9 @@ useEffect(() => {
   toplamstokhesapla();
 }, [urunadi]);
 
-useEffect(() => {
-  console.log(toplamstok);
-}, [toplamstok]);
+// useEffect(() => {
+//   console.log(toplamstok);
+// }, [toplamstok]);
 
 const [showThrowPart,setThrowPart]= useState(false);
 
@@ -387,11 +403,12 @@ const [showThrowPart,setThrowPart]= useState(false);
 
             {/* AUTOCOMPLETE*/}
             <div className="autocomplete1">
-              <Autocomplete
+              <Autocomplete 
+                value={kategoriadi} 
                 onChange={(event, value) => {
-                setKategoriadi(value);
-                setUrunadi('');
-                }}
+                  setKategoriadi(value);
+                  setUrunadi('');
+                  }}
                 className="autocomplete1"
                 disablePortal
                 options={kategorigir}
@@ -405,6 +422,7 @@ const [showThrowPart,setThrowPart]= useState(false);
                 )}
               />
               <Autocomplete
+                value = {urunadi}
                 onChange={async (event, value) => {
                     setUrunadi(value);
                     setStoktansevk(0);
