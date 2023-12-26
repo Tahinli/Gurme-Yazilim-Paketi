@@ -8,15 +8,18 @@
 }
 
 .Stok_containerbody::before {
-  content: "";
+  content:"" ;
   position: absolute;
+  z-index:-1;
   top: 0;
   right: 0;
   bottom: 0;
   left: 0;
   background-image: url("src/assets/img/sevk.jpg");
   background-position: 100% 100%;
-  opacity: 0.5; /* Görünürlüğü ayarlamak için değeri değiştirin (0.0 ile 1.0 arasında) */
+  background-repeat: no-repeat;
+  background-size: cover;
+  opacity: 0.8; /* Görünürlüğü ayarlamak için değeri değiştirin (0.0 ile 1.0 arasında) */
 }
 
 
