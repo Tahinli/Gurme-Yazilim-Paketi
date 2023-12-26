@@ -14,7 +14,6 @@
   right: 0;
   bottom: 0;
   left: 0;
-  close_btn1: visible;
   background-image: url("src/assets/img/sevk.jpg");
   background-position: 100% 100%;
   opacity: 0.5; /* Görünürlüğü ayarlamak için değeri değiştirin (0.0 ile 1.0 arasında) */
@@ -127,9 +126,4 @@
 .stock_analyzebtn{
   width: 70px;
   height: 25px;
-}
-
-.throw_part{
-  width: 40%;
-  margin-top: 0rem !important;
 }

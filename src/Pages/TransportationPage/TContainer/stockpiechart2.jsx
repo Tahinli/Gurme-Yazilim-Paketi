@@ -21,16 +21,17 @@ import Card from "@mui/joy/Card";
 
 var firstDate,lastDate
 let f1,f2
+const firstpart=Math.ceil(catList.length*(1/4));
 function setDate(fD,lD){
     f1=fD
     f2=lD
 }
 
-var rangeData1 = catList.slice(0,4).map((label) => ({
+var rangeData1 = catList.slice(0,firstpart).map((label) => ({
     value: 0,
     label: label
 }));
-var rangeData2 = catList.slice(4,catList.length+1).map((label) => ({
+var rangeData2 = catList.slice(firstpart,catList.length).map((label) => ({
   value: 0,
     label: label
 }));
@@ -52,7 +53,7 @@ await filterByCatRange(f1,f2)
 async function filterByCatRange(date1,date2)
 { 
     const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
-    for (let j = 0; j < 4; j++) {
+    for (let j = 0; j < firstpart; j++) {
         let totalVal = 0;
         let count=0
         rangeLog.map(async (rangeLog) => {
@@ -63,11 +64,11 @@ async function filterByCatRange(date1,date2)
             }
         });
         
-        // rangeData1.find(predicate => predicate.label === catList[j]).value =totalVal
+        rangeData1.find(predicate => predicate.label === catList[j]).value =totalVal
    
         
     }
-    for (let j = 4; j < catList.length; j++) {
+    for (let j = firstpart; j < catList.length; j++) {
       let totalVal = 0;
       let count=0
       rangeLog.map(async (rangeLog) => {
@@ -222,9 +223,9 @@ export  function PieAnimation() {
         value={itemNb}
         onChange={handleItemNbChange}
         valueLabelDisplay="auto"
-        min={1}
+        min={firstpart+1}
         sx={{width:'70%'}}
-        max={catList.length-5}
+        max={catList.length}
         aria-labelledby="input-item-number"
         />
         <Typography id="input-radius" gutterBottom>
