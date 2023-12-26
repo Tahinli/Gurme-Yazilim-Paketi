@@ -67,8 +67,8 @@ function convertDate(date){
   return new Date(date.split('.').reverse().join('-'))
 }
 
-function createData(id, urun_isim, tarih, sevk) {
-  return { id, urun_isim, tarih, sevk };
+function createData(id, urun_isim, tarih, sevk, stoktansevk) {
+  return { id, urun_isim, tarih, sevk , stoktansevk};
 }
 
 const columns = [
@@ -87,6 +87,11 @@ const columns = [
     width: 20,
     label: "Sevk",
     dataKey: "sevk",
+  },
+  {
+    width: 20,
+    label: "Stoktan Sevk",
+    dataKey: "stoktansevk",
   }
 ];
 
@@ -161,6 +166,7 @@ export default function Tontainer() {
   const [dailysevk, setDailysevk] = useState(0);
   const [weeklysevk, setWeeklysevk] = useState(0);
   const [monthlysevk, setMonthlysevk] = useState(0);
+  const [refresh, setRefresh] = useState(false);
   
 
 
@@ -236,12 +242,53 @@ function updateurungir() {
   setUrungir(newUrungir);
 }
 
+async function sevklerihesapla() {
+  let daily = 0;
+  let weekly = 0;
+  let monthly = 0;
+console.log('urunadi: ', urunadi);
+ // gunluk.tarih'in haftanın hangi günü olduğunu bul
+let haftaningunu = convertDate(getTodayDate()).getDay();
+console.log('gun: ', haftaningunu);
+
+// Haftanın başlangıcını bul (Pazartesi)
+let haftaninBasi = new Date(convertDate(getTodayDate()));
+haftaninBasi.setDate(haftaninBasi.getDate() - haftaningunu + (haftaningunu === 0 ? -6 : 1));
+console.log('haftaninBasi: ', haftaninBasi);
+
+// Haftanın sonunu bul (Pazar)
+let haftaninSonu = new Date(haftaninBasi);
+haftaninSonu.setDate(haftaninSonu.getDate() + 6);
+console.log('haftaninSonu: ', haftaninSonu);
+
+console.log('Bu ay:', convertDate(getTodayDate()).getMonth());
+
+console.log(convertDate(getTodayDate()))
+
+  for (let gunluk of Gunlukler) {
+    console.log(convertDate(gunluk.tarih))
+    if(gunluk.urun_isim === urunadi&&gunluk.tarih===getTodayDate()){
+      daily += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke)-parseInt(gunluk.stoktan_silinen));
+    }
+    if(gunluk.urun_isim === urunadi&&convertDate(gunluk.tarih)>=haftaninBasi
+    &&convertDate(gunluk.tarih) <= haftaninSonu){
+      weekly += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke)-parseInt(gunluk.stoktan_silinen));
+    }
+    if(gunluk.urun_isim === urunadi&&convertDate(gunluk.tarih).getMonth()===convertDate(getTodayDate()).getMonth()){
+      monthly += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke)-parseInt(gunluk.stoktan_silinen));
+    }
+  }
+  setDailysevk(daily);
+  setWeeklysevk(weekly);
+  setMonthlysevk(monthly);
+}
   /// ilk rows'u oluşturmak için
   useEffect(() => {
+    console.log('Gunlukler: ', Gunlukler);
     setRows(Array.from({ length: Gunlukler.length }, (_, index) => {
         const Selection = Gunlukler[index];
         return createData(index, Selection.urun_isim,
-            Selection.tarih, Selection.sevk);
+            Selection.tarih, Selection.sevk, Selection.stoktan_sevke);
     }));
   }, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
   
@@ -256,6 +303,10 @@ function updateurungir() {
     });
     setRows(sortedRows);
   }, [rows]);
+
+  useEffect(() => {
+    sevklerihesapla();
+  }, [urunadi,refresh]);
 
   // useEffect(() => {
   //   console.log('urunadi: ', urunadi);
@@ -332,21 +383,27 @@ function updateurungir() {
             <div className="input_part2">
               <TextField
                 disabled={true}
-                sx={{ paddingRight: 1.5 }}
+                value = {dailysevk}
+                sx={{ paddingRight: 1.5 ,backgroundColor:'#eaeaea'}}
                 label="Günlük Toplam Sevk"
-                variant="filled"
+                variant="outlined"
+                inputProps={{style: {fontWeight: 'bold', fontSize: 18, color: 'black'}}}   
               />
               <TextField
                 disabled={true}
-                sx={{ paddingRight: 1.5 }}
+                value = {weeklysevk}
+                sx={{ paddingRight: 1.5 ,backgroundColor:'#eaeaea'}}
                 label="Haftalık Toplam Sevk"
-                variant="filled"
+                variant="outlined"
+                inputProps={{style: {fontWeight: 'bold', fontSize: 18, color: 'black'}}}
               />
                <TextField
                 disabled={true}
-                sx={{ paddingRight: 1.5 }}
+                value = {monthlysevk}
+                sx={{ paddingRight: 1.5 ,backgroundColor:'#eaeaea'}}
                 label="Aylık Toplam Sevk"
-                variant="filled"
+                variant="outlined"
+                inputProps={{style: {fontWeight: 'bold', fontSize: 18, color: 'black'}}}
                 
               />
 

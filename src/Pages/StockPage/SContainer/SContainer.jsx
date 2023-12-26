@@ -16,10 +16,6 @@ import Fab from "@mui/material/Fab";
 import AddIcon from "@mui/icons-material/Add";
 import CancelIcon from "@mui/icons-material/Cancel";
 import dayjs from "dayjs";
-import { DemoContainer, DemoItem } from "@mui/x-date-pickers/internals/demo";
-import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
-import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
-import { DateRangePicker } from "@mui/x-date-pickers-pro/DateRangePicker";
 import { useState } from "react";
 import Card from "@mui/joy/Card";
 import Snackbar from "@mui/joy/Snackbar";
@@ -37,7 +33,6 @@ import DeleteForeverIcon from '@mui/icons-material/DeleteForeverTwoTone';
 import InputAdornment from '@mui/material/InputAdornment';
 import KeyboardArrowDownIcon from '@mui/icons-material/KeyboardArrowDown';
 import KeyboardArrowUpIcon from '@mui/icons-material/KeyboardArrowUp';
-import { set } from "date-fns";
 
 const inAnimation = keyframes`
   0% {
@@ -331,10 +326,6 @@ useEffect(() => {
     } //BAŞARDIM
 }
 
-useEffect(() => {
-  toplamstokhesapla();
-}, [refresh]);
-
 
   /// ilk rows'u oluşturmak için
 useEffect(() => {
@@ -360,7 +351,7 @@ useEffect(() => {
 
 useEffect(() => {
   toplamstokhesapla();
-}, [urunadi]);
+}, [urunadi,refresh]);
 
 // useEffect(() => {
 //   console.log(toplamstok);
