@@ -3,6 +3,7 @@ use serde_json::Value;
 use tower_http::cors::CorsLayer;
 use mongodb::{Client, options::{ClientOptions, IndexOptions}, Database, IndexModel, bson::doc, Collection, error::Error, results::CreateIndexResult};
 use serde::{Serialize, Deserialize};
+use chrono::NaiveDate;
 
 const DB_NAME:&str = "gurme";
 const CONNECTION_STRING:&str = "mongodb://172.17.0.2:27017";
@@ -152,6 +153,7 @@ struct Kategori
     {
         isim:String,
         ust_kategori:Option<Box<Kategori>>,
+        ust_kategori_isim:String,
     }
 impl Kategori 
     {
@@ -193,6 +195,7 @@ impl Kategori
                     {
                         isim,
                         ust_kategori:None,
+                        ust_kategori_isim:"".to_string(),
                     };
                 if kategori.isim =="null".to_string()
                     {
@@ -207,7 +210,8 @@ impl Kategori
                                     {
                                         Some(ust_kategori) =>
                                             {
-                                                kategori.ust_kategori = Some(Box::new(ust_kategori));
+                                                kategori.ust_kategori = Some(Box::new(ust_kategori.clone()));
+                                                kategori.ust_kategori_isim = ust_kategori.isim;
                                             }
                                         None =>{}
                                     }
@@ -234,6 +238,14 @@ impl Kategori
                 println!("{}", isim);
 
                 //TO-DO ya kategori yoksa, ya alt ürünler varsa
+                if Urun::hata_ayiklayici(state.urun_collection.find_one(doc! {"kategori_isim":isim.clone()}, None).await).await.0 == StatusCode::OK
+                    {
+                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Kategoriye ait ürün var silemezsiniz.")));
+                    }
+                if Kategori::hata_ayiklayici(state.kategori_collection.find_one(doc! {"ust_kategori_isim":isim.clone()}, None).await).await.0 == StatusCode::OK
+                    {
+                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Kategoriye ait alt kategori var silemezsiniz.")));
+                    }
                 Kategori::hata_ayiklayici(state.kategori_collection.find_one_and_delete(doc! {"isim":isim}, None).await).await
             }
         async fn duzenle(Path((isim, yeni_isim, yeni_ust_kategori)):Path<(String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
@@ -246,6 +258,7 @@ impl Kategori
                     {
                         isim:yeni_isim,
                         ust_kategori:None,
+                        ust_kategori_isim:"".to_string(),
                     };
                 if yeni_kategori.isim =="null".to_string()
                     {
@@ -259,17 +272,15 @@ impl Kategori
                                     {
                                         Some(ust_kategori) =>
                                             {
-                                                yeni_kategori.ust_kategori = Some(Box::new(ust_kategori));
+                                                yeni_kategori.ust_kategori = Some(Box::new(ust_kategori.clone()));
+                                                yeni_kategori.ust_kategori_isim = ust_kategori.isim;
                                             }
-                                        None =>
-                                            {
-                                                return (StatusCode::NOT_ACCEPTABLE, Json(serde_json::json!("")));
-                                            }
+                                        None =>{}
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::NOT_ACCEPTABLE, Json(serde_json::json!(bulunamadi.to_string())));
+                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
                             }
                     }
                 Kategori::hata_ayiklayici(state.kategori_collection.find_one_and_replace(doc!{"isim":isim}, yeni_kategori, None).await).await
@@ -568,6 +579,10 @@ impl Gunluk
                 println!("{}", tarih_string);
                 
                 //TO-DO tarihi tarih mi diye bak
+                if !tarih_kontrol(tarih_string.clone()).await
+                    {
+                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Tarih Uygun Değil")));
+                    }
 
                 match state.urun_collection.find_one(doc! {"isim": urun_string}, None).await
                     {
@@ -639,6 +654,10 @@ impl Gunluk
                 println!("{}", yeni_stoktan_silinen_string);
                 println!("{}", yeni_tarih_string);
 
+                if !tarih_kontrol(yeni_tarih_string.clone()).await
+                    {
+                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Tarih Uygun Değil")));
+                    }
                 match state.urun_collection.find_one(doc! {"isim": yeni_urun_string}, None).await
                     {
                         Ok(bulundu) =>
@@ -839,6 +858,22 @@ async fn routing(State(state): State<AppState>) -> Router
             .layer(CorsLayer::permissive())
             .with_state(state.clone());
         app
+    }
+async fn tarih_kontrol(tarih_string:String) -> bool
+    {
+        match NaiveDate::parse_from_str(&tarih_string, "%d.%m.%Y")
+            {
+                Ok(date) =>
+                    {
+                        println!("{}", date);
+                        return true;
+                    }
+                Err(err_val) =>
+                    {
+                        println!("{}", err_val);
+                        return false;
+                    }
+            }
     }
 #[tokio::main]
 async fn main()
