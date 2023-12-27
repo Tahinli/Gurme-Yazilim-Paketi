@@ -63,7 +63,7 @@ const outAnimation = keyframes`
 
 function getTodayDate() {
   const today = new Date();
-  today.setDate(today.getDate() -1); // Bugünün tarihine bir gün ekler
+  // today.setDate(today.getDate() -1); // Bugünün tarihine bir gün ekler
   const options = { year: 'numeric', month: '2-digit', day: '2-digit' };
   return today.toLocaleDateString('tr-TR', options);
 }
@@ -294,9 +294,9 @@ useEffect(() => {
         if (
           new Date(convertDate(Selection.tarih)) >= startDate &&
           new Date(convertDate(Selection.tarih)) <= endDate 
-          // &&
-          // Selection.hedeflenen !== 0 &&
-          // Selection.ulasilan !== 0
+          &&
+          Selection.hedeflenen !== 0 &&
+          Selection.ulasilan !== 0
         ) {
           return createData(
             index,
@@ -388,11 +388,11 @@ useEffect(() => {
       gunluk.urun_isim === rowname && gunluk.tarih === rowtarih);
     let datePattern = /^\d{2}\.\d{2}\.\d{4}$/; // gg.aa.yyyy
     if (datePattern.test(edittarih)) {
-      // if (editpersonel_sayisi < 0 || edithedef < 0 || edittamamlanan < 0 || editfire < 0 || editstok < 0 || editsevk < 0) {
-      //   console.log(calisti)
-      //   alert("Değerler 0 veya daha büyük olmalıdır.");
-      //   return;
-      // }
+      if (editpersonel_sayisi < 0 || edithedef < 0 || edittamamlanan < 0 || editfire < 0 || editstok < 0 || editsevk < 0) {
+        console.log(calisti)
+        alert("Değerler 0 veya daha büyük olmalıdır.");
+        return;
+      }
       try {
         await gunlukApi.updateGunluk(`${rowname}`, `${rowtarih}`, {
           yeni_urun: rowname,
@@ -407,7 +407,7 @@ useEffect(() => {
           yeni_tarih: edittarih,
       });
         await updateGunlukler();
-        updateRows();
+        // updateRows();
     } 
     catch (error) {
       console.error("An error occurred while updating:", error);

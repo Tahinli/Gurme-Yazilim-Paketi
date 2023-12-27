@@ -164,6 +164,9 @@ export default function SContainer() {
   const [stoktansilinen, setStoktansilinen] = useState(0);
   const [refresh, setRefresh] = useState(false);
 
+  const [startDate, setStartDate] = useState(convertDate(getTodayDate()));
+  const [endDate, setEndDate] = useState(convertDate(getTodayDate()));
+
   const [value, setValue] = useState([
     dayjs("2022-04-17"),
     dayjs("2022-04-21"),
@@ -322,23 +325,38 @@ useEffect(() => {
       console.error("An error occurred:", error);
     }
     finally{
-      setRefresh(!refresh)//TAM OLARAK ISTEDIGIMI YAPAMADIM DEGERLERI GUNCELLEMESI GEREKIYOR AMA ASENKRONDAN OLMUYOR
-    } //BAŞARDIM
+      setRefresh(!refresh)
+    }
 }
 
 
-  /// ilk rows'u oluşturmak için
+function updateRows() {
+  setRows(
+    Gunlukler.map((Selection, index) => {
+      if (
+        new Date(convertDate(Selection.tarih)) >= startDate &&
+        new Date(convertDate(Selection.tarih)) <= endDate 
+        &&
+        Selection.hedeflenen !== 0 &&
+        Selection.ulasilan !== 0
+      ) {
+        return createData(
+          index,
+          Selection.urun_isim,
+          Selection.tarih,
+          Selection.stok
+        );
+      }
+      return undefined;
+    }).filter(item => item !== undefined)
+  );
+} // undefined değerlerini kaldır
+/// ilk rows'u oluşturmak için
 useEffect(() => {
-  setRows(Array.from({ length: Gunlukler.length }, (_, index) => {
-      const Selection = Gunlukler[index];
-      return createData(index, Selection.urun_isim,
-          Selection.tarih, Selection.stok);
-  }));
-}, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
+  updateRows();
+}, [Gunlukler, startDate, endDate]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
 
 /// rows'u tarihe göre sıralamak için
-const [startDate, setStartDate] = useState(new Date());
-const [endDate, setEndDate] = useState(new Date());
 useEffect(() => {
   const sortedRows = rows.sort((a, b) => {
     const dateA = new Date(a.tarih.split('.').reverse().join('-'));

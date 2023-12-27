@@ -167,6 +167,9 @@ export default function Tontainer() {
   const [weeklysevk, setWeeklysevk] = useState(0);
   const [monthlysevk, setMonthlysevk] = useState(0);
   const [refresh, setRefresh] = useState(false);
+
+const [startDate, setStartDate] = useState(convertDate(getTodayDate()));
+  const [endDate, setEndDate] = useState(convertDate(getTodayDate()));
   
 
 
@@ -268,33 +271,51 @@ console.log(convertDate(getTodayDate()))
   for (let gunluk of Gunlukler) {
     console.log(convertDate(gunluk.tarih))
     if(gunluk.urun_isim === urunadi&&gunluk.tarih===getTodayDate()){
-      daily += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke)-parseInt(gunluk.stoktan_silinen));
+      daily += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke));
     }
     if(gunluk.urun_isim === urunadi&&convertDate(gunluk.tarih)>=haftaninBasi
     &&convertDate(gunluk.tarih) <= haftaninSonu){
-      weekly += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke)-parseInt(gunluk.stoktan_silinen));
+      weekly += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke));
     }
     if(gunluk.urun_isim === urunadi&&convertDate(gunluk.tarih).getMonth()===convertDate(getTodayDate()).getMonth()){
-      monthly += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke)-parseInt(gunluk.stoktan_silinen));
+      monthly += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke));
     }
   }
   setDailysevk(daily);
   setWeeklysevk(weekly);
   setMonthlysevk(monthly);
 }
+
+function updateRows() {
+  setRows(
+    Gunlukler.map((Selection, index) => {
+      console.log('Selection: ', Selection.urun_isim)
+      console.log('Selection.tarih: ', Selection.tarih)
+      console.log('startDate: ', startDate)
+      console.log('endDate: ', endDate)
+      if (
+        new Date(convertDate(Selection.tarih)) >= startDate &&
+        new Date(convertDate(Selection.tarih)) <= endDate 
+        // &&
+        // Selection.hedeflenen !== 0 &&
+        // Selection.ulasilan !== 0
+      ) {
+        return createData(index, Selection.urun_isim,
+          Selection.tarih, Selection.sevk, Selection.stoktan_sevke);
+      }
+      return undefined;
+    }).filter(item => item !== undefined)
+  );
+} // undefined değerlerini kaldır
+
+
   /// ilk rows'u oluşturmak için
   useEffect(() => {
-    console.log('Gunlukler: ', Gunlukler);
-    setRows(Array.from({ length: Gunlukler.length }, (_, index) => {
-        const Selection = Gunlukler[index];
-        return createData(index, Selection.urun_isim,
-            Selection.tarih, Selection.sevk, Selection.stoktan_sevke);
-    }));
-  }, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
+    updateRows();
+  }, [Gunlukler, startDate, endDate, open]);// Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
   
   /// rows'u tarihe göre sıralamak için
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date()); 
+  
   useEffect(() => {
     const sortedRows = rows.sort((a, b) => {
       const dateA = new Date(a.tarih.split('.').reverse().join('-'));
