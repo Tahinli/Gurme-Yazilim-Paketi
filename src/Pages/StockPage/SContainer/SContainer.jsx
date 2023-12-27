@@ -67,8 +67,8 @@ function convertDate(date) {
   return new Date(date.split('.').reverse().join('-'))
 }
 
-function createData(id, urun_isim, tarih, stok) {
-  return { id, urun_isim, tarih, stok };
+function createData(id, urun_isim, stok) {
+  return { id, urun_isim, stok };
 }
 
 const columns = [
@@ -76,12 +76,6 @@ const columns = [
     width: 20,
     label: "Ürünler",
     dataKey: "urun_isim",
-  },
-  {
-    width: 20,
-    label: "Tarih",
-    dataKey: "tarih",
-    numeric: false,
   },
   {
     width: 20,
@@ -151,7 +145,6 @@ function rowContent(_index, row) {
 
 export default function SContainer() {
 
-
   const [Gunlukler, setGunlukler] = useState([]);
   const [ urunadi, setUrunadi ] = useState('');
   const [ kategoriadi, setKategoriadi ] = useState(''); 
@@ -167,10 +160,8 @@ export default function SContainer() {
   const [startDate, setStartDate] = useState(convertDate(getTodayDate()));
   const [endDate, setEndDate] = useState(convertDate(getTodayDate()));
 
-  const [value, setValue] = useState([
-    dayjs("2022-04-17"),
-    dayjs("2022-04-21"),
-  ]);
+  const [tablo , setTablo] = useState([]);
+
 
   const [showInputPart, setShow] = useState(false);
 
@@ -223,7 +214,6 @@ useEffect(() => {
       console.error("An error occurred:", error);
     }
   }
-  
   useEffect(() => {
     updateUrunler();
   }, [kategoriadi]);
@@ -258,9 +248,16 @@ useEffect(() => {
           setStoktansilinen(presentgunluk.stoktan_silinen);
         }
         //bütün logları bulup matematik işlemleri ile toplam stok hesaplar
-      const matchedGunlukler = Gunlukler.filter(gunluk => gunluk.urun_isim === urunadi);
-      const totalStock = matchedGunlukler.reduce((total, gunluk) => total + gunluk.stok - (gunluk.stoktan_sevke + gunluk.stoktan_silinen), 0);
-      setToplamstok(totalStock);
+      // const matchedGunlukler = Gunlukler.filter(gunluk => gunluk.urun_isim === urunadi);
+      // const totalStock = matchedGunlukler.reduce((total, gunluk) => total + gunluk.stok - (gunluk.stoktan_sevke + gunluk.stoktan_silinen), 0);
+      // setToplamstok(totalStock);
+
+      //yeni hesaplama
+      const matchedTablo = tablo.find(item => item.urun === urunadi);
+      if (matchedTablo) {
+        setToplamstok(matchedTablo.toplamstok);
+      }
+
 
     } catch (error) {
       console.error("An error occurred:", error);
@@ -343,7 +340,6 @@ function updateRows() {
         return createData(
           index,
           Selection.urun_isim,
-          Selection.tarih,
           Selection.stok
         );
       }
@@ -358,14 +354,39 @@ useEffect(() => {
 
 /// rows'u tarihe göre sıralamak için
 useEffect(() => {
-  const sortedRows = rows.sort((a, b) => {
-    const dateA = new Date(a.tarih.split('.').reverse().join('-'));
-    const dateB = new Date(b.tarih.split('.').reverse().join('-'));
-    return dateB - dateA;
-  });
-
+  const sortedRows = rows.sort((a, b) => {return b.stok - a.stok;});
   setRows(sortedRows);
 }, [rows]);
+
+useEffect(() => {
+  // Urunler.length uzunluğunda bir dizi oluştur ve her öğeyi { urun: "", toplamstok: 0 } ile doldur
+  const newtablo = Array.from({ length: Urunler.length }, () => ({ urun: "", toplamstok: 0 }));
+  try {
+
+    for (let i = 0; i < Urunler.length; i++) {
+      console.log('Urunler', Urunler)
+      const urun = Urunler[i];
+      console.log('urun', urun)
+      console.log(urun.isim)
+      const matchedGunlukler = Gunlukler.filter(gunluk => gunluk.urun_isim === urun.isim);
+      console.log('matchedGunlukler', matchedGunlukler)
+      const totalStock = matchedGunlukler.reduce((total, gunluk) => total + gunluk.stok - (gunluk.stoktan_sevke + gunluk.stoktan_silinen), 0);
+      console.log('totalStock', totalStock)
+      console.log(newtablo[i])
+      newtablo[i] = { urun: urun.isim, toplamstok: totalStock }; // urun ve toplam stok değerlerini güncelle
+    }
+
+    setTablo(newtablo); // tablo durum değişkenini yeni dizi ile güncelle
+  } catch (error) {
+    console.error("An error occurred:", error);
+  }
+  // urungir durum değişkenini yeni dizi ile güncelle
+  setTablo(newtablo);
+}, [Urunler]); // Urunler değiştiğinde bu useEffect'i tekrar çalıştır
+
+useEffect(() => {
+  console.log(tablo);
+}, [tablo]);
 
 useEffect(() => {
   toplamstokhesapla();
@@ -459,7 +480,7 @@ const [showThrowPart,setThrowPart]= useState(false);
                 value={toplamstok}
                 disabled={true}
                 sx={{ paddingRight: 1.5 }}
-                label="Toplam Stok"
+                label="Stokta Bulunan Miktar"
                 variant="filled"
               />
               <TextField
@@ -468,7 +489,7 @@ const [showThrowPart,setThrowPart]= useState(false);
                 inputProps={{ min: 0 }}
                 sx={{ paddingRight: 1.5 }}
                 value = {stoktansevk}
-                label="Sevk Edilecek Miktar"
+                label="Sevk Edilen Miktar"
                 disabled={toplamstok <= 0}
                 variant="filled"
               />
@@ -515,7 +536,7 @@ const [showThrowPart,setThrowPart]= useState(false);
             <TextField
                 onChange={(e) => setStoktansilinen(e.target.value)}
                 sx={{ paddingRight: 0.5}}
-                label="Stoktan Atılacak Miktar"
+                label="Stoktan Atılan Miktar"
                 variant="filled"
                 type="number"
                 value = {stoktansilinen}
