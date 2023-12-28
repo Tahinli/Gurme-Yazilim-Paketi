@@ -25,18 +25,18 @@ export function CategoryAnalyzeP(){
     return (
         <div >
 
-                <Card style={{position: 'fixed', top: 100, right: 50}}
-                    className={"pie_card"}
-                      color="success"
-                      invertedColors={false}
-                      orientation="vertical"
-                      size="lg"
-                      variant="outlined"
-                      sx={{minimumWidth: '30%', paddingRight: '10px', height: '20%', width: '27.5%',minHeight:'20%'}}
-                >
-                    <TopFiveProduct/>
-                </Card>
 
+            <Card
+                className={"pie_card"}
+                color="success"
+                invertedColors={false}
+                orientation="vertical"
+                size="lg"
+                variant="outlined"
+                sx={{minimumWidth: '30%', paddingRight: '10px', height: '20%', width: '27.5%',minHeight:'20%'}}
+            >
+                <TopFiveProduct/>
+            </Card>
 
 
             <br/>
@@ -51,6 +51,7 @@ export function CategoryAnalyzeP(){
 
 
             <div className="pie_charts">
+
 
                 <Card className={"pie_card"}
                       color="neutral"
