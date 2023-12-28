@@ -223,9 +223,9 @@ export  function PieAnimation() {
         value={itemNb}
         onChange={handleItemNbChange}
         valueLabelDisplay="auto"
-        min={firstpart+1}
+        min={firstpart}
         sx={{width:'70%'}}
-        max={catList.length}
+        max={catList.length-firstpart}
         aria-labelledby="input-item-number"
         />
         <Typography id="input-radius" gutterBottom>
