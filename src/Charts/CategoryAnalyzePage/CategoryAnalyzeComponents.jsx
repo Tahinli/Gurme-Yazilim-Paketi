@@ -92,21 +92,21 @@ function convertDate(date){
 async function filterTopFive()
 {
     const todayLog = logList.filter(gunluk => gunluk.tarih === getTodayDate());
-    let totalVal = 0;
-    let count=0
     let i=0
-
     todayLog.map(async (rLog) => {
-
-        let j=0
-        if (rLog.stok!==0&&rLog.sevk!==0&&rLog.personel_sayisi!==0) {
+        let totalVal = 0;
+    for(let x=0;x<productList.length;x++){
+        if (productList[x].isim===rLog.urun_isim&&rLog.stok!==0&&rLog.sevk!==0&&rLog.personel_sayisi!==0) {
 
             totalVal += rLog.ulasilan / rLog.hedeflenen;
-
         }
+        let j=0
         arrTopProduct[i][j]=totalVal*100
         arrTopProduct[i][j+1]=rLog.urun_isim
         arrTopProduct[i][j+2]=rLog.urun.kategori.isim
+
+    }
+
 
         i++
 
@@ -414,17 +414,17 @@ export function TopFiveProduct(){
         <Table sx={{ '& thead th:nth-child(1)': { width: '50%' } }}>
             <thead>
             <tr>
-                <th>Ürün</th>
-                <th>Verimlilik  </th>
-                <th>Kategori</th>
+                <th style={{width: '25%', textAlign: 'center'}}>Ürün</th>
+                <th style={{width: '25%', textAlign: 'center'}}>Kategori</th>
+                <th style={{width: '25%', textAlign: 'center'}}>Verimlilik</th>
             </tr>
             </thead>
             <tbody>
             {rows.map((row) => (
                 <tr key={row.name}>
-                    <td>{row.name}</td>
-                    <td>{row.kategori}</td>
-                    <td>{row.verimlilik}</td>
+                    <td style={{textAlign: 'center'}}>{row.name}</td>
+                    <td style={{textAlign: 'center'}}>{row.kategori}</td>
+                    <td style={{textAlign: 'center'}}>{row.verimlilik}</td>
 
                 </tr>
             ))}

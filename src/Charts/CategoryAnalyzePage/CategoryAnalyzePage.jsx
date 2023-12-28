@@ -24,21 +24,25 @@ export function CategoryAnalyzeP(){
     }
     return (
         <div >
-            <Card className={"pie_card"}
-                  color="neutral"
-                  invertedColors={false}
-                  orientation="vertical"
-                  size="lg"
-                  variant="soft"
-                  sx={{minimumWidth: '30%',paddingRight:'10px',height:'50%'}}
-            >
-                <TopFiveProduct/>
-            </Card>
+
+                <Card style={{position: 'fixed', top: 100, right: 50}}
+                    className={"pie_card"}
+                      color="success"
+                      invertedColors={false}
+                      orientation="vertical"
+                      size="lg"
+                      variant="outlined"
+                      sx={{minimumWidth: '30%', paddingRight: '10px', height: '20%', width: '27.5%',minHeight:'20%'}}
+                >
+                    <TopFiveProduct/>
+                </Card>
+
+
 
             <br/>
             <div>
 
-                <ControllableStates/>
+            <ControllableStates/>
 
 
             </div>
