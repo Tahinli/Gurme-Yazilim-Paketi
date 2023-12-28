@@ -60,7 +60,7 @@ async function filterByCatRange(date1,date2)
             const productCategory = productList.filter(r=>r.isim===rangeLog.urun_isim);
             if (catList[j] === productCategory[0].kategori.isim) {
                 count++
-                totalVal += rangeLog.stok;
+                totalVal += rangeLog.sevk;
             }
         });
         
@@ -75,7 +75,7 @@ async function filterByCatRange(date1,date2)
           const productCategory = productList.filter(r=>r.isim===rangeLog.urun_isim);
           if (catList[j] === productCategory[0].kategori.isim) {
               count++
-              totalVal += rangeLog.stok;
+              totalVal += rangeLog.sevk;
           }
       });
       
@@ -116,7 +116,7 @@ export  function PieAnimation() {
             }
         };
         fetchData()
-    }, [firstDate,lastDate,itemNb]);
+    }, [startDate,endDate,itemNb]);
 
     function setValAnalyze(bool){
         setAnalyze(bool)
