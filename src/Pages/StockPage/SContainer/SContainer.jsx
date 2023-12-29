@@ -79,7 +79,7 @@ const columns = [
   },
   {
     width: 20,
-    label: "Stok",
+    label: "Mevcut Stok",
     dataKey: "stok",
   }
 ];
@@ -156,6 +156,7 @@ export default function SContainer() {
   const [stoktansevk, setStoktansevk] = useState(0);
   const [stoktansilinen, setStoktansilinen] = useState(0);
   const [refresh, setRefresh] = useState(false);
+  const [refresh2, setRefresh2] = useState(false);
 
   const [startDate, setStartDate] = useState(convertDate(getTodayDate()));
   const [endDate, setEndDate] = useState(convertDate(getTodayDate()));
@@ -200,10 +201,6 @@ export default function SContainer() {
 
     fetchData();
 }, []);
-
-useEffect(() => {
-  console.log(Gunlukler);
-}, [Gunlukler]);
   
 
   async function updateUrunler() {
@@ -251,138 +248,72 @@ useEffect(() => {
       // const matchedGunlukler = Gunlukler.filter(gunluk => gunluk.urun_isim === urunadi);
       // const totalStock = matchedGunlukler.reduce((total, gunluk) => total + gunluk.stok - (gunluk.stoktan_sevke + gunluk.stoktan_silinen), 0);
       // setToplamstok(totalStock);
-
-      //yeni hesaplama
-      const matchedTablo = tablo.find(item => item.urun === urunadi);
-      if (matchedTablo) {
-        setToplamstok(matchedTablo.toplamstok);
-      }
-
+    updateTablo();
+      
 
     } catch (error) {
       console.error("An error occurred:", error);
     }
   }
 
-  async function SevkEt() {
-    if(!urunadi || !kategoriadi) {
-      alert('Lütfen ürün ve kategori seçiniz');
-      return;
+  useEffect(() => {
+    const matchedTablo = tablo.find(item => item.urun === urunadi);
+    if (matchedTablo) {
+      console.log('matchedTablo', matchedTablo.toplamstok)
+      setToplamstok(matchedTablo.toplamstok);
     }
-    try {
-      const matchedGunluk = Gunlukler.find(gunluk => gunluk.urun_isim === urunadi
-        &&gunluk.tarih===dayjs().format('DD.MM.YYYY'));
-        console.log(matchedGunluk)
-      if(matchedGunluk){
-        console.log('matched')         
-          if( ( (parseInt(stoktansevk) - parseInt(matchedGunluk.stoktan_sevke)) + 
-          (parseInt(stoktansilinen) - parseInt(matchedGunluk.stoktan_silinen) ) )
-           > toplamstok) {
-              alert('Sevk edilecek miktar toplam stoktan fazla olamaz');
-              return;
-          }
-        //bugüne ait bir log varsa onu editle
-        console.log(matchedGunluk)
-        await gunlukApi.updateGunluk(`${matchedGunluk.urun_isim}`, `${matchedGunluk.tarih}`, {
-          yeni_urun: matchedGunluk.urun_isim,
-          yeni_personel_sayisi: matchedGunluk.personel_sayisi,
-          yeni_hedeflenen: matchedGunluk.hedeflenen,
-          yeni_ulasilan: matchedGunluk.ulasilan,
-          yeni_atilan: matchedGunluk.atilan,
-          yeni_stok: matchedGunluk.stok,
-          yeni_sevk: matchedGunluk.sevk,
-          yeni_stoktan_sevke: stoktansevk,
-          yeni_stoktan_silinen: stoktansilinen,
-          yeni_tarih: matchedGunluk.tarih,
-      });          
-      }
-      else{//atma ve sevk işlemlerinin stoğu geçmediğinin kontrolü
-        if( ( parseInt(stoktansevk) + parseInt(stoktansilinen) ) > parseInt(toplamstok) ) {
-          alert('Sevk edilecek miktar toplam stoktan fazla olamaz');
-          return;
-        }
-        //bugüne ait bir log yoksa yeni bir log oluştur
-        await gunlukApi.addGunluk(`${urunadi}`,
-        {
-          personel_sayisi: 0,
-          hedeflenen: 0,
-          ulasilan: 0,
-          atilan: 0,
-          stok: 0,
-          sevk: 0,
-          stokta_sevke: stoktansevk,
-          stoktan_silinen: stoktansilinen,
-          tarih: getTodayDate(),
-        });
-      }
-      await updateGunlukler();
-      setMassage(true);
-    }
-    catch (error) {
-      console.error("An error occurred:", error);
-    }
-    finally{
-      setRefresh(!refresh)
-    }
-}
-
+  }, [tablo]); // `tablo` durum değişkeni değiştiğinde bu etki çalışır
 
 function updateRows() {
-  setRows(
-    Gunlukler.map((Selection, index) => {
-      if (
-        new Date(convertDate(Selection.tarih)) >= startDate &&
-        new Date(convertDate(Selection.tarih)) <= endDate 
-        &&
-        Selection.hedeflenen !== 0 &&
-        Selection.ulasilan !== 0
-      ) {
-        return createData(
-          index,
-          Selection.urun_isim,
-          Selection.stok
-        );
-      }
-      return undefined;
-    }).filter(item => item !== undefined)
-  );
-} // undefined değerlerini kaldır
+  const newRows = tablo.map((Selection, index) => {
+    return createData(
+      index,
+      Selection.urun,
+      Selection.toplamstok
+    );
+  });
+
+  // newRows'u sırala
+  const sortedRows = newRows.sort((a, b) => b.stok - a.stok);
+
+  setRows(sortedRows);
+}
 /// ilk rows'u oluşturmak için
 useEffect(() => {
   updateRows();
-}, [Gunlukler, startDate, endDate]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
+}, [Gunlukler, startDate, endDate,tablo]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
 
 /// rows'u tarihe göre sıralamak için
-useEffect(() => {
-  const sortedRows = rows.sort((a, b) => {return b.stok - a.stok;});
-  setRows(sortedRows);
-}, [rows]);
+// useEffect(() => {
+//   const sortedRows = rows.sort((a, b) => {return b.stok - a.stok;});
+//   setRows(sortedRows);
+// }, [rows]);
 
-useEffect(() => {
-  // Urunler.length uzunluğunda bir dizi oluştur ve her öğeyi { urun: "", toplamstok: 0 } ile doldur
+function updateTablo() {
   const newtablo = Array.from({ length: Urunler.length }, () => ({ urun: "", toplamstok: 0 }));
   try {
-
-    for (let i = 0; i < Urunler.length; i++) {
       console.log('Urunler', Urunler)
+    for (let i = 0; i < Urunler.length; i++) { 
       const urun = Urunler[i];
-      console.log('urun', urun)
-      console.log(urun.isim)
       const matchedGunlukler = Gunlukler.filter(gunluk => gunluk.urun_isim === urun.isim);
-      console.log('matchedGunlukler', matchedGunlukler)
       const totalStock = matchedGunlukler.reduce((total, gunluk) => total + gunluk.stok - (gunluk.stoktan_sevke + gunluk.stoktan_silinen), 0);
-      console.log('totalStock', totalStock)
-      console.log(newtablo[i])
       newtablo[i] = { urun: urun.isim, toplamstok: totalStock }; // urun ve toplam stok değerlerini güncelle
     }
-
-    setTablo(newtablo); // tablo durum değişkenini yeni dizi ile güncelle
   } catch (error) {
     console.error("An error occurred:", error);
   }
   // urungir durum değişkenini yeni dizi ile güncelle
   setTablo(newtablo);
-}, [Urunler]); // Urunler değiştiğinde bu useEffect'i tekrar çalıştır
+}
+
+useEffect(() => {
+  // Urunler.length uzunluğunda bir dizi oluştur ve her öğeyi { urun: "", toplamstok: 0 } ile doldur
+  updateTablo();
+}, [Urunler,refresh2]); // Urunler değiştiğinde bu useEffect'i tekrar çalıştır
+
+useEffect(() => {
+  updateTablo();
+}, []); // Gunlukler değiştiğinde bu useEffect'i tekrar çalıştır
 
 useEffect(() => {
   console.log(tablo);
@@ -392,9 +323,73 @@ useEffect(() => {
   toplamstokhesapla();
 }, [urunadi,refresh]);
 
-// useEffect(() => {
-//   console.log(toplamstok);
-// }, [toplamstok]);
+async function SevkEt() {
+  if(!urunadi || !kategoriadi) {
+    alert('Lütfen ürün ve kategori seçiniz');
+    return;
+  }
+  try {
+    const matchedGunluk = Gunlukler.find(gunluk => gunluk.urun_isim === urunadi
+      &&gunluk.tarih===dayjs().format('DD.MM.YYYY'));
+      console.log(matchedGunluk)
+    if(matchedGunluk){
+      console.log('matched')         
+        if( ( (parseInt(stoktansevk) - parseInt(matchedGunluk.stoktan_sevke)) + 
+        (parseInt(stoktansilinen) - parseInt(matchedGunluk.stoktan_silinen) ) )
+         > toplamstok) {
+            alert('Sevk edilecek miktar toplam stoktan fazla olamaz');
+            return;
+        }
+      //bugüne ait bir log varsa onu editle
+      console.log(matchedGunluk)
+      await gunlukApi.updateGunluk(`${matchedGunluk.urun_isim}`, `${matchedGunluk.tarih}`, {
+        yeni_urun: matchedGunluk.urun_isim,
+        yeni_personel_sayisi: matchedGunluk.personel_sayisi,
+        yeni_hedeflenen: matchedGunluk.hedeflenen,
+        yeni_ulasilan: matchedGunluk.ulasilan,
+        yeni_atilan: matchedGunluk.atilan,
+        yeni_stok: matchedGunluk.stok,
+        yeni_sevk: matchedGunluk.sevk,
+        yeni_stoktan_sevke: stoktansevk,
+        yeni_stoktan_silinen: stoktansilinen,
+        yeni_tarih: matchedGunluk.tarih,
+    });          
+    }
+    else{//atma ve sevk işlemlerinin stoğu geçmediğinin kontrolü
+      if( ( parseInt(stoktansevk) + parseInt(stoktansilinen) ) > parseInt(toplamstok) ) {
+        alert('Sevk edilecek miktar toplam stoktan fazla olamaz');
+        return;
+      }
+      //bugüne ait bir log yoksa yeni bir log oluştur
+      await gunlukApi.addGunluk(`${urunadi}`,
+      {
+        personel_sayisi: 0,
+        hedeflenen: 0,
+        ulasilan: 0,
+        atilan: 0,
+        stok: 0,
+        sevk: 0,
+        stokta_sevke: stoktansevk,
+        stoktan_silinen: stoktansilinen,
+        tarih: getTodayDate(),
+      });
+    }
+    await updateGunlukler();
+    setMassage(true);
+  }
+  catch (error) {
+    console.error("An error occurred:", error);
+  }
+  finally {
+    updateTablo();
+    // const matchedTablo = tablo.find(item => item.urun === urunadi);
+    // if (matchedTablo) {
+    //   console.log('matchedTablo', matchedTablo.toplamstok)
+    //   setToplamstok(matchedTablo.toplamstok);
+    // }
+    setRefresh(!refresh);
+  }
+}
 
 const [showThrowPart,setThrowPart]= useState(false);
 
@@ -564,40 +559,6 @@ const [showThrowPart,setThrowPart]= useState(false);
        
 {/* DATE TİME PİCKER*/}
 <div>
-             <Card className="date_card1"
-                      color='danger'
-                      orientation="horizontal"
-                      size="lg"
-                      variant='outlined'
-                      sx={{marginTop:6}}
-             >
-                <div className='div_div1'>
-                <EditCalendarIcon size='small'/>
-                  Filtrele:
-                  <div className="date_picker1">
-                    
-                      <DatePicker className="date_1"
-                          selected={startDate}
-                          onChange={(date) => setStartDate(date)}
-                          selectsStart
-                          startDate={startDate}
-                          endDate={endDate}
-                          dateFormat="dd.MM.yyyy"
-                          sx={{zIndex:1000}}
-                      />
-                      <DatePicker className="date_2"
-                          selected={endDate}
-                          onChange={(date) => setEndDate(date)}
-                          selectsEnd
-                          startDate={startDate}
-                          endDate={endDate}
-                          minDate={startDate}
-                          dateFormat="dd.MM.yyyy"
-                          sx={{zIndex:1000}}
-                      />
-                    </div>
-                  </div>   
-                </Card>
             </div>
       </div>
 
