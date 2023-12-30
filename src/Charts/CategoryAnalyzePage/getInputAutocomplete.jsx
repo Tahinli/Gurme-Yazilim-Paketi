@@ -61,13 +61,13 @@ export default function ControllableStates({ onValue2Change }) {
 
 
     const goto_product= () => {
-        { navigate(url) }
-        window.location.reload();
+        window.location.replace(url);
+
     };
 //TÜRKÇE KARAKTER DEĞİŞİMİ
     const pName = (text) => {
         if(text !== null)
-            return text.replaceAll('Ğ','g')
+            return text.split(' ').join('').replaceAll('Ğ','g')
                 .replaceAll('Ü','u')
                 .replaceAll('Ş','s')
                 .replaceAll('I','i')

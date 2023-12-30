@@ -37,7 +37,7 @@ const Navbar = () => {
         withCredentials: true,
       }
     );
-    navigate("/");
+    window.location.replace("/");
     await verifyUser();
   };
   const verifyUser = async () => {

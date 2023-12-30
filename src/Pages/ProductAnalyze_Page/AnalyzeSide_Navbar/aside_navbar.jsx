@@ -91,7 +91,10 @@ export default function SideNavbar() {
 
   const navigate = useNavigate();
   const handleClick1 = () => {
-    navigate("/");
+    window.location.replace(
+        "/"
+    );
+
   };
   const handleClick2 = () => {
     navigate("/data");

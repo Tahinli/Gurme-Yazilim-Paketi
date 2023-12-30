@@ -5,23 +5,40 @@
     min-height: 100vh;
     position: relative;
   }
+  .Transportation_containerbody::before{
+    content: "";
+    position: absolute;
+    z-index:-1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: url("src/assets/img/stock.jpg");
+    background-position: 100% 100%;
+    
+    opacity: 0.5; /* Görünürlüğü ayarlamak için değeri değiştirin (0.0 ile 1.0 arasında) */
+
+  }
   .input_card2 {
     transition: "all 1s ease-out";
-    margin-bottom: 3rem;
-    margin-left: 5rem;
-    padding-top: 7rem;
-    width: 40%;
-    height: 250px;
+     margin-bottom: 3rem;
+     margin-left: 5rem;
+     padding-top: 7rem;
+     width: 600px;
+      height: 250px;
+  }
+  .input_sevk2 {
+    display: flex;
   }
   .input_card22 {
     transition: "all 1s ease-out";
-    margin-bottom: 3rem;
-    margin-left: 5rem;
-    padding-top: 7rem;
-    width: 80%;
-    height: 750px;
-    animation-name: test;
-    animation-duration: 1s;
+  margin-bottom: 3rem;
+  margin-left: 5rem;
+  padding-top: 7rem;
+  width: 95.5%;
+  height: 750px;
+  animation-name: test;
+  animation-duration: 1s;
   }
   .autocomplete2 {
     display: flex;
@@ -50,11 +67,12 @@
   }
   
   .date_picker2 {
-    width: 100%;
-    margin-top: -5rem;
-    margin-bottom: 3rem;
-    margin-left: -0.4rem;
-    padding-top: 7rem;
+    display: flex;
+    width: 80%;
+     min-width: 300px;
+  }
+  .div_div2{
+    font-size: 20px;
   }
   
   .add_table2 {
@@ -63,47 +81,43 @@
   }
   .close_btn2 {
     margin-top: 1rem;
+    margin-left: 5rem;
     color: red;
   }
 
   
   .input_header2 {
     display: flex;
+    flex-direction: column;
+    margin-left: 10rem;
   }
   
-  .input_header2 h4 {
-    padding-left: 1rem;
-  }
+
   
   .add_btn2 {
     margin-left: 1rem;
+    font-weight: bold;
   }
   
   .date_card2 {
+    display: flex;
+    margin-left: 4.5rem;
     margin-bottom: 3rem;
-    margin-left: 5rem;
-    padding-top: 7rem;
     width: 600px;
     height: 250px;
+    align-items: center;
+    justify-content: center;
   }
   
-  .pie_chart2 {
-    margin-top: 120px !important;
-    margin-left: 200px !important;
-    width: 1200px !important;
-    height: 1000px !important;
-  }
-  .input_sevk2 {
-    display: flex;
-  }
-  .date_11{
-    margin-top: 70px;
-    margin-left: 5rem;
+
+ 
+  .date_3{
+ 
     height: 40px;
   
   }
-  .date_22{
-    margin-top: 70px;
+  .date_4{
+   
     height: 40px;
   }
   .list_btn2{
@@ -111,4 +125,9 @@
   }
   .sevkislem_2{
     font-size: 18px;
+    color:rgb(255, 169, 56);
+  }
+  .sevk_analyzebtn{
+    width: 70px;
+    height: 25px;
   }

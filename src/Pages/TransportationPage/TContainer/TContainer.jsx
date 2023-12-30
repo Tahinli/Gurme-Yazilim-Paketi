@@ -24,11 +24,11 @@ import Card from '@mui/joy/Card';
 import CancelIcon from '@mui/icons-material/Cancel';
 import DeleteForeverIcon from '@mui/icons-material/DeleteForever';
 import Snackbar from '@mui/joy/Snackbar';
-import { keyframes } from '@mui/system';
+import { fontSize, keyframes } from '@mui/system';
 import PlaylistAddCheckCircleRoundedIcon from '@mui/icons-material/PlaylistAddCheckCircleRounded';
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-
+import EditCalendarIcon from '@mui/icons-material/EditCalendar';
 import { PieAnimation } from "./stockpiechart2";
 import { useEffect } from 'react';
 import kategoriApi from '../../../api/kategori-api';
@@ -67,8 +67,8 @@ function convertDate(date){
   return new Date(date.split('.').reverse().join('-'))
 }
 
-function createData(id, urun_isim, tarih, sevk) {
-  return { id, urun_isim, tarih, sevk };
+function createData(id, urun_isim, tarih, sevk, stoktansevk) {
+  return { id, urun_isim, tarih, sevk , stoktansevk};
 }
 
 const columns = [
@@ -87,6 +87,11 @@ const columns = [
     width: 20,
     label: "Sevk",
     dataKey: "sevk",
+  },
+  {
+    width: 20,
+    label: "Stoktan Sevk",
+    dataKey: "stoktansevk",
   }
 ];
 
@@ -149,7 +154,7 @@ function rowContent(_index, row) {
   );
 }
 
-export default function SContainer() {
+export default function Tontainer() {
 
   const [Gunlukler, setGunlukler] = useState([]);
   const [ urunadi, setUrunadi ] = useState('');
@@ -158,7 +163,14 @@ export default function SContainer() {
   const [kategorigir, setKategorigir] = useState([]);
   const [rows, setRows] = useState([]);
   const [Urunler, setUrunler] = useState([]);
-  const [toplamstok, setToplamstok] = useState(0);
+  const [dailysevk, setDailysevk] = useState(0);
+  const [weeklysevk, setWeeklysevk] = useState(0);
+  const [monthlysevk, setMonthlysevk] = useState(0);
+  const [refresh, setRefresh] = useState(false);
+
+const [startDate, setStartDate] = useState(convertDate(getTodayDate()));
+  const [endDate, setEndDate] = useState(convertDate(getTodayDate()));
+  
 
 
   const [value, setValue] = useState([
@@ -199,7 +211,6 @@ export default function SContainer() {
     const fetchData = async () => {
         await updateGunlukler();
     };
-
     fetchData();
 }, []);
 
@@ -217,7 +228,6 @@ useEffect(() => {
 }, [kategoriadi]);
 
 async function updatekategorigir() {
-  console.log('updatekategorigir')
   try {
     const newKategorigir = (await kategoriApi.getKategoriler()).map((kategori) => kategori.isim);
     setKategorigir(newKategorigir);
@@ -227,7 +237,6 @@ async function updatekategorigir() {
 }
 
 function updateurungir() {
-  console.log('updateurungir')
   const newUrungir = [];
   for (let urun of Urunler) {
     if(urun.kategori_isim === kategoriadi)
@@ -236,18 +245,77 @@ function updateurungir() {
   setUrungir(newUrungir);
 }
 
+async function sevklerihesapla() {
+  let daily = 0;
+  let weekly = 0;
+  let monthly = 0;
+console.log('urunadi: ', urunadi);
+ // gunluk.tarih'in haftanın hangi günü olduğunu bul
+let haftaningunu = convertDate(getTodayDate()).getDay();
+console.log('gun: ', haftaningunu);
+
+// Haftanın başlangıcını bul (Pazartesi)
+let haftaninBasi = new Date(convertDate(getTodayDate()));
+haftaninBasi.setDate(haftaninBasi.getDate() - haftaningunu + (haftaningunu === 0 ? -6 : 1));
+console.log('haftaninBasi: ', haftaninBasi);
+
+// Haftanın sonunu bul (Pazar)
+let haftaninSonu = new Date(haftaninBasi);
+haftaninSonu.setDate(haftaninSonu.getDate() + 6);
+console.log('haftaninSonu: ', haftaninSonu);
+
+console.log('Bu ay:', convertDate(getTodayDate()).getMonth());
+
+console.log(convertDate(getTodayDate()))
+
+  for (let gunluk of Gunlukler) {
+    console.log(convertDate(gunluk.tarih))
+    if(gunluk.urun_isim === urunadi&&gunluk.tarih===getTodayDate()){
+      daily += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke));
+    }
+    if(gunluk.urun_isim === urunadi&&convertDate(gunluk.tarih)>=haftaninBasi
+    &&convertDate(gunluk.tarih) <= haftaninSonu){
+      weekly += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke));
+    }
+    if(gunluk.urun_isim === urunadi&&convertDate(gunluk.tarih).getMonth()===convertDate(getTodayDate()).getMonth()){
+      monthly += (parseInt(gunluk.sevk)+parseInt(gunluk.stoktan_sevke));
+    }
+  }
+  setDailysevk(daily);
+  setWeeklysevk(weekly);
+  setMonthlysevk(monthly);
+}
+
+function updateRows() {
+  setRows(
+    Gunlukler.map((Selection, index) => {
+      console.log('Selection: ', Selection.urun_isim)
+      console.log('Selection.tarih: ', Selection.tarih)
+      console.log('startDate: ', startDate)
+      console.log('endDate: ', endDate)
+      if (
+        new Date(convertDate(Selection.tarih)) >= startDate &&
+        new Date(convertDate(Selection.tarih)) <= endDate 
+        // &&
+        // Selection.hedeflenen !== 0 &&
+        // Selection.ulasilan !== 0
+      ) {
+        return createData(index, Selection.urun_isim,
+          Selection.tarih, Selection.sevk, Selection.stoktan_sevke);
+      }
+      return undefined;
+    }).filter(item => item !== undefined)
+  );
+} // undefined değerlerini kaldır
+
+
   /// ilk rows'u oluşturmak için
   useEffect(() => {
-    setRows(Array.from({ length: Gunlukler.length }, (_, index) => {
-        const Selection = Gunlukler[index];
-        return createData(index, Selection.urun_isim,
-            Selection.tarih, Selection.sevk);
-    }));
-  }, [Gunlukler]); // Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
+    updateRows();
+  }, [Gunlukler, startDate, endDate, open]);// Gunlukler dizisi değiştiğinde useEffect hook'u çalışır
   
   /// rows'u tarihe göre sıralamak için
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date()); 
+  
   useEffect(() => {
     const sortedRows = rows.sort((a, b) => {
       const dateA = new Date(a.tarih.split('.').reverse().join('-'));
@@ -256,6 +324,10 @@ function updateurungir() {
     });
     setRows(sortedRows);
   }, [rows]);
+
+  useEffect(() => {
+    sevklerihesapla();
+  }, [urunadi,refresh]);
 
   // useEffect(() => {
   //   console.log('urunadi: ', urunadi);
@@ -269,23 +341,16 @@ function updateurungir() {
     <div className='Transportation_containerbody'>
       {/* INPUT TEXT_FİELDS1*/}
       {showInputPart && (
-        <Card
-          className="input_card22"
-          color="success"
-          orientation="horizontal"
-          size="lg"
-          variant="outlined"
-        >
-          <div className="input_header2">
-            <CancelIcon className="close_btn2" onClick={close_input_part} />
-            <h4  className='sevkislem_2' style={{ maxHeight: "70px" }}>SEVK ANALİZİ</h4>
-            <br />
-            <div className="pie_chart2">
-              <PieAnimation />
-            </div>
-          </div>
-        </Card>
-      )}
+        
+        <div>
+            <CancelIcon className="close_btn1" onClick={close_input_part} />
+              <div>
+                <PieAnimation />
+              </div>
+        </div>
+    )}
+
+
       {/* INPUT TEXT_FİELDS*/}
       <div className="input_sevk2">
         <Card
@@ -294,39 +359,41 @@ function updateurungir() {
           orientation="horizontal"
           size="lg"
           variant="outlined"
+          sx={{marginTop:6}}
         >
           <div>
-            <div className="input_header2">
-              <h4 className='sevkislem_2'>SEVK İŞLEMLERİ</h4>
+            <div className="input_header12">
+              <h4>SEVK İŞLEMLERİ</h4>
             </div>
 
             {/* AUTOCOMPLETE*/}
-            <div className="autocomplete1">
-              <Autocomplete
-                onChange={(event, value) => {
-                setKategoriadi(value);
-                }}
-                className="autocomplete1"
+            <div className="autocomplete2">
+              <Autocomplete value={kategoriadi} onChange={(event, value) => {
+                  setKategoriadi(value);
+                  setUrunadi('');
+                  }}
+                className="autocomplete2"
                 disablePortal
                 options={kategorigir}
+                isOptionEqualToValue={(option, value) => option === value || value === ''}
                 renderInput={(params) => (
                   <TextField onFocus={async () => await updatekategorigir()}
-                    className="auto_cmplete1"
+                    className="auto_cmplete2"
                     {...params}
                     label="Ürün Kategorisi"
                   />
                 )}
               />
               <Autocomplete
-                onChange={async (event, value) => {
-                  setUrunadi(value);
-                }}
-                className="autocomplete1"
+                value = {urunadi} 
+                onChange={(event, value) => setUrunadi(value)}
+                className="autocomplete2"
                 disablePortal
                 options={urungir}
+                isOptionEqualToValue={(option, value) => option === value || value === ''}
                 renderInput={(params) => (
                   <TextField onFocus={() => updateurungir()}
-                    className="auto_cmplete1"
+                    className="auto_cmplete2"
                     {...params}
                     label="Ürünler"
                   />
@@ -337,21 +404,27 @@ function updateurungir() {
             <div className="input_part2">
               <TextField
                 disabled={true}
-                sx={{ paddingRight: 1.5 }}
+                value = {dailysevk}
+                sx={{ marginRight: 1.5 ,backgroundColor:'#eaeaea'}}
                 label="Günlük Toplam Sevk"
-                variant="filled"
+                variant="outlined"
+                inputProps={{style: {fontWeight: 'bold', fontSize: 18, color: 'black'}}}   
               />
               <TextField
                 disabled={true}
-                sx={{ paddingRight: 1.5 }}
+                value = {weeklysevk}
+                sx={{marginRight: 1.5 ,backgroundColor:'#eaeaea'}}
                 label="Haftalık Toplam Sevk"
-                variant="filled"
+                variant="outlined"
+                inputProps={{style: {fontWeight: 'bold', fontSize: 18, color: 'black'}}}
               />
                <TextField
                 disabled={true}
-                sx={{ paddingRight: 1.5 }}
+                value = {monthlysevk}
+                sx={{ marginRight: 1.5 ,backgroundColor:'#eaeaea'}}
                 label="Aylık Toplam Sevk"
-                variant="filled"
+                variant="outlined"
+                inputProps={{style: {fontWeight: 'bold', fontSize: 18, color: 'black'}}}
                 
               />
 
@@ -385,17 +458,20 @@ function updateurungir() {
               
 {/* DATE TİME PİCKER*/}
 <div>
-             <Card className="date_card1"
+             <Card className="date_card2"
                       color='danger'
                       orientation="horizontal"
                       size="lg"
                       variant='outlined'
+                      sx={{marginTop:6}}
              >
-                <div className='div_div1'>
+                <div className='div_div2'>
+                <EditCalendarIcon size='small'/>
+                  Filtrele:
                         
-                  <div className="date_picker1">
+                  <div className="date_picker2">
                     
-                      <DatePicker className="date_11"
+                      <DatePicker className="date_3"
                           selected={startDate}
                           onChange={(date) => setStartDate(date)}
                           selectsStart
@@ -404,7 +480,7 @@ function updateurungir() {
                           dateFormat="dd.MM.yyyy"
                           sx={{zIndex:1000}}
                       />
-                      <DatePicker className="date_22"
+                      <DatePicker className="date_4"
                           selected={endDate}
                           onChange={(date) => setEndDate(date)}
                           selectsEnd
@@ -414,15 +490,7 @@ function updateurungir() {
                           dateFormat="dd.MM.yyyy"
                           sx={{zIndex:1000}}
                       />
-                       <Button
-                className="list_btn2"
-                color="error"
-                variant="contained"
-                aria-label="add"
-                sx={{ marginTop: 9}}
-              >
-                LİSTELE
-              </Button>
+                       
                     </div>
                   </div>   
                 </Card>
@@ -430,7 +498,7 @@ function updateurungir() {
       </div>
 
       <div className="add_table2">
-        <Stack className="add1" sx={{ backgroundColor: "#28342b" }}></Stack>
+        <Stack className="add2" sx={{ backgroundColor: "#28342b" }}></Stack>
 
         <Paper className="table2">
           <TableVirtuoso

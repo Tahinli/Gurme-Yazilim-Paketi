@@ -14,22 +14,25 @@ import kategoriApi from '../../../api/kategori-api.js';
 import gunlukApi from '../../../api/gunluk-api.js';
 import { padding } from '@mui/system';
 import { catList,logList,productList } from '../../../Charts/CategoryAnalyzePage/CategoryAnalyzeComponents.jsx';
+import Card from "@mui/joy/Card";
 
-const palette = ['red', 'blue', 'green','yellow','pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
-const palette1 = ['pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
+const palette = ['#FF6347', '#C24641', '#2F0909','#7E354D','#FC6C85','#733635','#7D0541','silver','#7E587E','#6F2DA8','#4E5180','#E9CFEC', 'magenta', 'lime', 'olive', 'navy'];
+//const palette1 = ['pink','brown','purple','silver','gray','gold','dark blue','cyan', 'magenta', 'lime', 'olive', 'navy'];
 
 var firstDate,lastDate
 let f1,f2
+const firstpart=Math.ceil(catList.length*(1/4));
+
 function setDate(fD,lD){
     f1=fD
     f2=lD
 }
 
-var rangeData1 = catList.slice(0,4).map((label) => ({
+var rangeData1 = catList.slice(0,firstpart).map((label) => ({
     value: 0,
     label: label
 }));
-var rangeData2 = catList.slice(4,catList.length+1).map((label) => ({
+var rangeData2 = catList.slice(firstpart,catList.length).map((label) => ({
   value: 0,
     label: label
 }));
@@ -51,7 +54,7 @@ await filterByCatRange(f1,f2)
 async function filterByCatRange(date1,date2)
 { 
     const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
-    for (let j = 0; j < 4; j++) {
+    for (let j = 0; j < firstpart; j++) {
         let totalVal = 0;
         let count=0
         rangeLog.map(async (rangeLog) => {
@@ -61,12 +64,17 @@ async function filterByCatRange(date1,date2)
                 totalVal += rangeLog.stok;
             }
         });
+        try{
+           rangeData1.find(predicate => predicate.label === catList[j]).value =totalVal
+        }
+        catch (e) {
+          console.log(e)
+        }
         
-        rangeData1.find(predicate => predicate.label === catList[j]).value =totalVal
    
         
     }
-    for (let j = 4; j < catList.length; j++) {
+    for (let j = firstpart; j < catList.length; j++) {
       let totalVal = 0;
       let count=0
       rangeLog.map(async (rangeLog) => {
@@ -146,9 +154,20 @@ export  function PieAnimation() {
 
   return (
     <div>
-    <div>
+    <div style={{display:'flex' , flexDirection:'column', color:'black'}}>
+               <Card  className={"Date_part"}
+                      style={{width: '450px',height: '20%'}}
+                      sx={{alignItems:'center',marginLeft:10}}
+                      color="neutral"
+                      invertedColors={false}
+                      orientation="vertical"
+                      size="lg"
+                      variant="solid"
+                >
+              
+              <h4 className="stokislem_1">STOK ANALİZİ</h4>
             Filtrele:
-            <div style={{display:'flex'}}>
+            <div className={"dateArea"} style={{display:'flex'}}>
                 <DatePicker
                     selected={startDate}
                     onChange={(date) => setStartDate(date)}
@@ -167,60 +186,69 @@ export  function PieAnimation() {
                     dateFormat='dd.MM.yyyy'
                 />
             </div>
-            <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning">ANALİZ</Button>
+            <Button onClick={() => setValAnalyze(true)} variant="contained" color="warning" className='stock_analyzebtn'>ANALİZ</Button>
+            </Card>
     </div>
+    
     <div>
-        {analyze && 
-                         
-        <Box sx={{ width: '100%' }}>
-<PieChart
-height={320}
-colors={palette}
-series={[
-  { data: data1, outerRadius: radius },
-  {
-    data: data2.slice(0, itemNb),
-    innerRadius: radius,
-    //arcLabel: (params) => params.label ?? '',
-  },
-]}
-skipAnimation={skipAnimation}
-/>
-<FormControlLabel
-checked={skipAnimation}
-control={
-  <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />
-}
-label="Animasyon"
-labelPlacement="end"
-/>
-<Typography id="input-item-number" gutterBottom>
-Ürün Sayısı
-</Typography>
-<Slider
-value={itemNb}
-onChange={handleItemNbChange}
-valueLabelDisplay="auto"
-min={1}
-max={catList.length-5}
-aria-labelledby="input-item-number"
-/>
-<Typography id="input-radius" gutterBottom>
-Merkezin Büyüküğü
-</Typography>
-<Slider
-value={radius}
-onChange={handleRadius}
-valueLabelDisplay="auto"
-min={15}
-max={100}
-aria-labelledby="input-radius"
-/>
-</Box>
-
-              
-
-        }</div>
+        {analyze &&         
+        <Card className="input_card11"
+        color="warning"
+        orientation="horizontal"
+        size="lg"
+        variant="soft"
+        sx={{display:'flex', flexDirection:'column'}}
+        >
+        <PieChart
+          height={300}
+          colors={palette}
+          series={[
+            { data: data1, outerRadius: radius },
+            {
+              data: data2.slice(0, itemNb),
+              innerRadius: radius,
+         
+            },
+          ]}
+          skipAnimation={skipAnimation}
+        />
+    
+        
+        <FormControlLabel
+        checked={skipAnimation}
+        control={
+          <Checkbox onChange={(event) => setSkipAnimation(event.target.checked)} />
+        }
+        label="Animasyon"
+        labelPlacement="end"
+        />
+        <Typography id="input-item-number" gutterBottom>
+        Ürün Sayısı
+        </Typography>
+        <Slider
+        value={itemNb}
+        onChange={handleItemNbChange}
+        valueLabelDisplay="auto"
+        min={firstpart}
+        sx={{width:'70%'}}
+        max={catList.length-firstpart}
+        aria-labelledby="input-item-number"
+        />
+        <Typography id="input-radius" gutterBottom>
+        Merkezin Büyüküğü
+        </Typography>
+        <Slider
+        value={radius}
+        onChange={handleRadius}
+        valueLabelDisplay="auto"
+        min={15}
+        max={100}
+        sx={{width:'50%'}}
+        aria-labelledby="input-radius"
+        />
+        </Card>
+       }
+        </div>
         </div>
   );
 }

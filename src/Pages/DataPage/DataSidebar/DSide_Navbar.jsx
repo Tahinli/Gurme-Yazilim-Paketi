@@ -90,7 +90,10 @@ export default function DSide_Navbar() {
 
   const navigate = useNavigate();
   const handleClick1 = () => {
-    navigate("/");
+    window.location.replace(
+        "/"
+    );
+
   };
   const handleClick2 = () => {
     navigate("/data");

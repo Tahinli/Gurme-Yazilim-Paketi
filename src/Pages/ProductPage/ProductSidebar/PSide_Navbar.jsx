@@ -90,7 +90,9 @@ export default function PSide_Navbar() {
 
   const navigate = useNavigate();
   const handleClick1 = () => {
-    navigate("/");
+    window.location.replace(
+        "/"
+    );
   };
   const handleClick2 = () => {
     navigate("/data");

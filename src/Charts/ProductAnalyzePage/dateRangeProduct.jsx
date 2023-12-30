@@ -32,9 +32,10 @@ let proVal
 //URLDEKİ DEĞERLERİ PARÇAYA AYIRDIKTAN SONRA SON DEĞERİN ATAMISINI YAPTIM DİLENİRSE DAHA FARKLI BİR BİÇİMDE MODİFİYE EDİLEBİLİR
 
 let productName=productNameVar[4]
+console.log(productName)
 //TÜRKÇE KARAKTERLERİ DÖNÜŞTÜRDÜM
 for(let i=0;i<proList.length;i++){
-    proVal=proList[i].replaceAll('Ğ','g')
+    proVal=proList[i].split(' ').join('').replaceAll('Ğ','g')
         .replaceAll('Ü','u')
         .replaceAll('Ş','s')
         .replaceAll('I','i')
@@ -64,17 +65,17 @@ function convertDate(date){
 
 async function filterByProRange(date1,date2)
 {
-    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
+    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2)&&gunluk.hedeflenen!==0&&(gunluk.stok!==0||gunluk.sevk!==0)&&gunluk.personel_sayisi!==0)
     let totalVal = 0;
     let count=0
-    await Promise.all(rangeLog.map(async (rangeLog) => {
-        const productCategory = await urunApi.getUrunByName(rangeLog.urun_isim);
+    rangeLog.map(async (rLog) => {
+        const productCategory = productList.filter(r=>r.isim===rLog.urun_isim);
 
-        if (proVal=== productCategory.isim) {
+        if (proVal=== productCategory[0].isim) {
             count++
-            totalVal += rangeLog.ulasilan / rangeLog.hedeflenen;
+            totalVal += rLog.ulasilan / rLog.hedeflenen;
         }
-    }));
+    });
     totalVal=(totalVal/count)*100;
     let fail=100-totalVal
     if(fail<0){
@@ -101,7 +102,7 @@ export  function DateRangeProduct() {
 
     setTimeout(function() {
         isRefreshed(false)
-    }, 5000);
+    }, 1000);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -124,9 +125,7 @@ export  function DateRangeProduct() {
     const close_datepicker = () => {
         setAnalyze(false);
     };
-    useEffect(() => {
-        console.log('Gunlukler :>> ', logList);
-    }, [logList]);
+
 
     return (
             <div>
