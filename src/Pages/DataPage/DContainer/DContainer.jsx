@@ -336,10 +336,40 @@ useEffect(() => {
   const animationDuration = 600;
   const [massage, setMassage] = useState(false);
 
-
-  const handleClick = async () => {
-    //vvvvvvvvvvvvvvvv   GUNLUK EKLEME   vvvvvvvvvvvvvvvvvvvvvvvvvvv
-    //if ile bos olup olmadigini kontrol et
+//vvvvvvvvvvvvvvvv   GUNLUK EKLEME   vvvvvvvvvvvvvvvvvvvvvvvvvvv
+const handleAdd = async () => {
+    //Eger tarihe ait '0 0 0 0 0 0 x y' (SEVK IŞLEMI) varsa ekleme yerine onu düzenler
+    const matchedGunluk = Gunlukler.find(gunluk => 
+      gunluk.urun_isim === urunadi && gunluk.tarih === getTodayDate());
+      console.log(matchedGunluk)
+      console.log(urunadi, getTodayDate())
+  if(matchedGunluk && matchedGunluk.hedeflenen===0 && matchedGunluk.ulasilan===0&&
+    matchedGunluk.atilan===0 && matchedGunluk.personel_sayisi===0
+    &&matchedGunluk.sevk===0 && matchedGunluk.stok===0) {
+        try {
+          await gunlukApi.updateGunluk(`${urunadi}`, `${getTodayDate()}`, {
+            yeni_urun: urunadi,
+            yeni_personel_sayisi: personel_sayisi,
+            yeni_hedeflenen: hedef,
+            yeni_ulasilan: tamamlanan,
+            yeni_atilan: fire,
+            yeni_stok: stok,
+            yeni_sevk: sevk,
+            yeni_stoktan_sevke: matchedGunluk.stoktan_sevke,
+            yeni_stoktan_silinen: matchedGunluk.stoktan_silinen,
+            yeni_tarih: getTodayDate(),
+        });
+          await updateGunlukler();
+          // updateRows();
+      } 
+      catch (error) {
+        console.error("An error occurred while updating:", error);
+      }
+      finally {
+        handleClickClose();
+      }
+    }
+  else { //if ile bos olup olmadigini kontrol et
     if (!(urunadi === null || urunadi === undefined || urunadi === ''
       &&
       kategoriadi === null || kategoriadi === undefined || kategoriadi === '')
@@ -370,6 +400,7 @@ useEffect(() => {
       }
     };
   }
+}
   ////////////////////////// GUNLUK SILME /////////////////////////////
   const handleDelete = async (row) => {
     try {
@@ -677,7 +708,7 @@ useEffect(() => {
 <div className='buttons_input'>
   <Stack  className="field_btn">
         <Button  color="success" variant='contained' aria-label="add" 
-        sx={{marginTop:1}} onClick={() => handleClick()} endIcon={<LoupeIcon />}
+        sx={{marginTop:1}} onClick={() => handleAdd()} endIcon={<LoupeIcon />}
         >
           KAYDET
         </Button>
