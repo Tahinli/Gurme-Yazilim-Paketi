@@ -30,7 +30,7 @@ function convertDate(date){
 //DATE VERİLDİKTEN SONRA DEĞERLER BURADA FİLTRELENİP GÜNCELLENİYOR
 async function filterByCatRange(date1,date2)
 {
-    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
+    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2)&&gunluk.sevk!==0&&gunluk.stok!==0&&gunluk.personel_sayisi!==0)
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0

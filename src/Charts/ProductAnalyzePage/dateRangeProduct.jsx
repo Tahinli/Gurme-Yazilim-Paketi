@@ -65,13 +65,13 @@ function convertDate(date){
 
 async function filterByProRange(date1,date2)
 {
-    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
+    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2)&&gunluk.sevk!==0&&gunluk.stok!==0&&gunluk.personel_sayisi!==0)
     let totalVal = 0;
     let count=0
     rangeLog.map(async (rLog) => {
         const productCategory = productList.filter(r=>r.isim===rLog.urun_isim);
 
-        if (proVal=== productCategory[0].isim&&rangeLog.stok!==0&&rangeLog.sevk!==0&&rangeLog.personel_sayisi!==0) {
+        if (proVal=== productCategory[0].isim) {
             count++
             totalVal += rLog.ulasilan / rLog.hedeflenen;
         }

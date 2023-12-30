@@ -128,13 +128,13 @@ async function filterTopFive()
 
 async function filterByCatDaily() {
 
-    const todayLog = logList.filter(gunluk => gunluk.tarih === getTodayDate());
+    const todayLog = logList.filter(gunluk => gunluk.tarih === getTodayDate()&&gunluk.sevk!==0&&gunluk.stok!==0&&gunluk.personel_sayisi!==0);
 
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
         for(let i=0;i<todayLog.length;i++){
-            if (catList[j] === todayLog[i].urun.kategori.isim&&todayLog[i].personel_sayisi!==0&&todayLog[i].stok!==0&&todayLog[i].sevk!==0){
+            if (catList[j] === todayLog[i].urun.kategori.isim){
                 count++
                 totalVal += todayLog[i].ulasilan / todayLog[i].hedeflenen;
             }
@@ -157,13 +157,13 @@ async function filterByCatMonth()
     date2.setMonth(date2.getMonth()+1)
     date2.setDate(date2.getDate()-1)
     date2.setHours(3,0)
-    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2))
+    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2)&&gunluk.sevk!==0&&gunluk.stok!==0&&gunluk.personel_sayisi!==0)
 
     for (let j = 0; j < catList.length; j++) {
         let totalVal = 0;
         let count=0
         for(let i=0;i<rangeLog.length;i++){
-            if (catList[j] === rangeLog[i].urun.kategori.isim&&rangeLog[i].personel_sayisi!==0&&rangeLog[i].stok!==0&&rangeLog[i].sevk!==0) {
+            if (catList[j] === rangeLog[i].urun.kategori.isim) {
                 count++
                 totalVal += rangeLog[i].ulasilan / rangeLog[i].hedeflenen;
             }
@@ -181,12 +181,12 @@ async function monthlyBarChart(){
     for(let i=0;i<30;i++){
         date1.setDate(tempDate.getDate()-i)
         let lastDay=date1.toLocaleString('tr-TR', { year: 'numeric', month: '2-digit', day: '2-digit' })
-        const rangeLog = logList.filter(gunluk =>gunluk.tarih=== lastDay);
+        const rangeLog = logList.filter(gunluk =>gunluk.tarih=== lastDay&&gunluk.sevk!==0&&gunluk.stok!==0&&gunluk.personel_sayisi!==0);
         for (let j = 0; j < catList.length; j++) {
             let tempVal=0
             let count=0
             for(let i=0;i<rangeLog.length;i++){
-                if (catList[j] === rangeLog[i].urun.kategori.isim&&rangeLog[i].personel_sayisi!==0&&rangeLog[i].stok!==0&&rangeLog[i].sevk!==0) {
+                if (catList[j] === rangeLog[i].urun.kategori.isim) {
                     count++
                     tempVal += rangeLog[i].ulasilan / rangeLog[i].hedeflenen;
                 }
