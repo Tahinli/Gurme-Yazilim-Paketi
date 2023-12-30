@@ -248,7 +248,7 @@ impl Kategori
                     }
                 Kategori::hata_ayiklayici(state.kategori_collection.find_one_and_delete(doc! {"isim":isim}, None).await).await
             }
-        async fn duzenle(Path((isim, yeni_isim, yeni_ust_kategori)):Path<(String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
+        async fn duzenle(Path((isim, yeni_isim, yeni_ust_kategori)):Path<(String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", isim);
                 println!("{}", yeni_isim);
@@ -283,7 +283,42 @@ impl Kategori
                                 return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
                             }
                     }
-                Kategori::hata_ayiklayici(state.kategori_collection.find_one_and_replace(doc!{"isim":isim}, yeni_kategori, None).await).await
+                let sonuc = Kategori::hata_ayiklayici(state.kategori_collection.find_one_and_replace(doc!{"isim":isim.clone()}, yeni_kategori.clone(), None).await).await;
+                if sonuc.0 == StatusCode::OK
+                    {
+                        match state.kategori_collection.find(doc! {"ust_kategori_isim":isim.clone()}, None).await
+                            {
+                                Ok(mut bulundu) =>
+                                    {
+                                        while bulundu.advance().await.unwrap() 
+                                            {
+                                                match bulundu.deserialize_current()
+                                                    {
+                                                        Ok(alt_kategori) =>
+                                                            {
+                                                                let guncellenmis_alt_kategori = Kategori
+                                                                    {
+                                                                        isim:alt_kategori.isim.clone(),
+                                                                        ust_kategori:Some(Box::new(yeni_kategori.clone())),
+                                                                        ust_kategori_isim:yeni_kategori.isim.clone(),
+                                                                    };
+                                                                let _kullanmayacagim = Kategori::hata_ayiklayici(state.kategori_collection.find_one_and_replace(doc! {"isim":alt_kategori.isim}, guncellenmis_alt_kategori, None).await).await;
+                                                            }
+                                                        Err(hata) =>
+                                                            {
+                                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata.to_string())));
+                                                            }
+                                                    }
+                                            }
+                                        return (StatusCode::OK, Json(serde_json::json!("iyisin")));
+                                    }
+                                Err(bulunamadi) =>
+                                    {
+                                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
+                                    }
+                            }
+                    }
+                return (StatusCode::IM_A_TEAPOT, sonuc.1);
             }
         async fn hepsi(State(state): State<AppState>) -> (StatusCode, Json<Value>)
             {
