@@ -65,7 +65,7 @@ function convertDate(date){
 
 async function filterByProRange(date1,date2)
 {
-    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2)&&gunluk.sevk!==0&&gunluk.stok!==0&&gunluk.personel_sayisi!==0)
+    const rangeLog=logList.filter(gunluk=>(convertDate(gunluk.tarih)>=date1&&convertDate(gunluk.tarih)<=date2)&&gunluk.hedeflenen!==0&&(gunluk.stok!==0||gunluk.sevk!==0)&&gunluk.personel_sayisi!==0)
     let totalVal = 0;
     let count=0
     rangeLog.map(async (rLog) => {
