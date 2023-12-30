@@ -286,28 +286,19 @@ impl Kategori
                 let sonuc = Kategori::hata_ayiklayici(state.kategori_collection.find_one_and_replace(doc!{"isim":isim.clone()}, yeni_kategori.clone(), None).await).await;
                 if sonuc.0 == StatusCode::OK
                     {
-                        match state.kategori_collection.find(doc! {"ust_kategori_isim":isim.clone()}, None).await
+                        match state.urun_collection.find(doc! {"kategori_isim":isim.clone()}, None).await
                             {
                                 Ok(mut bulundu) =>
                                     {
-                                        while bulundu.advance().await.unwrap() 
+                                        while bulundu.advance().await.unwrap()
                                             {
                                                 match bulundu.deserialize_current()
                                                     {
-                                                        Ok(alt_kategori) =>
+                                                        Ok(urun_eski) =>
                                                             {
-                                                                let guncellenmis_alt_kategori = Kategori
-                                                                    {
-                                                                        isim:alt_kategori.isim.clone(),
-                                                                        ust_kategori:Some(Box::new(yeni_kategori.clone())),
-                                                                        ust_kategori_isim:yeni_kategori.isim.clone(),
-                                                                    };
-                                                                let _kullanmayacagim = Kategori::hata_ayiklayici(state.kategori_collection.find_one_and_replace(doc! {"isim":alt_kategori.isim}, guncellenmis_alt_kategori, None).await).await;
+                                                                Urun::duzenle(Path((urun_eski.isim.clone(), urun_eski.isim.clone(), yeni_kategori.isim.clone())), axum::extract::State(state.clone())).await;
                                                             }
-                                                        Err(hata) =>
-                                                            {
-                                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata.to_string())));
-                                                            }
+                                                        Err(_) =>{}
                                                     }
                                             }
                                         return (StatusCode::OK, Json(serde_json::json!("iyisin")));
