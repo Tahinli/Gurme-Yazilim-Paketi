@@ -40,17 +40,17 @@ impl Kullanici
                                     {
                                         Some(deger) =>
                                             {
-                                                return (StatusCode::OK, Json(serde_json::json!(deger)));
+                                                (StatusCode::OK, Json(serde_json::json!(deger)))
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
+                                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")))
                                             }
                                     }
                             }
                         Err(hata_degeri) =>
                             {
-                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
             }
@@ -171,17 +171,17 @@ impl Kategori
                                     {
                                         Some(deger) =>
                                             {
-                                                return (StatusCode::OK, Json(serde_json::json!(deger)));
+                                                (StatusCode::OK, Json(serde_json::json!(deger)))
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
+                                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")))
                                             }
                                     }
                             }
                         Err(hata_degeri) =>
                             {
-                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
             }
@@ -201,7 +201,7 @@ impl Kategori
                         ust_kategori:None,
                         ust_kategori_isim:"".to_string(),
                     };
-                if kategori.isim =="null".to_string()
+                if kategori.isim ==*"null"
                     {
                         return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Kategori ismi null olamaz")));
                     }
@@ -259,7 +259,7 @@ impl Kategori
                         ust_kategori:None,
                         ust_kategori_isim:"".to_string(),
                     };
-                if yeni_kategori.isim =="null".to_string()
+                if yeni_kategori.isim ==*"null"
                     {
                         return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Kategori ismi null olamaz")));
                     }
@@ -300,7 +300,7 @@ impl Kategori
                                     }
                             }
                     }
-                return (StatusCode::IM_A_TEAPOT, sonuc.1);
+                (StatusCode::IM_A_TEAPOT, sonuc.1)
             }
         async fn hepsi(State(state): State<AppState>) -> (StatusCode, Json<Value>)
             {
@@ -365,17 +365,17 @@ impl Urun
                                     {
                                         Some(deger) =>
                                             {
-                                                return (StatusCode::OK, Json(serde_json::json!(deger)));
+                                                (StatusCode::OK, Json(serde_json::json!(deger)))
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
+                                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")))
                                             }
                                     }
                             }
                         Err(hata_degeri) =>
                             {
-                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
             }
@@ -407,24 +407,24 @@ impl Urun
                                                     {
                                                         Ok(sonuc_degeri) =>
                                                             {
-                                                                return (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)));
+                                                                (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)))
                                                             }
                                                         Err(hata_degeri) =>
                                                             {
-                                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
+                                                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                                                             }
                                                         
                                                     }
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
+                                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")))
                                             }
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())))
                             }
                     }
             }
@@ -455,17 +455,17 @@ impl Urun
                                                         kategori:kategori.clone(),
                                                         kategori_isim:kategori.isim,
                                                     };                                                
-                                                return Urun::hata_ayiklayici(state.urun_collection.find_one_and_replace(doc! {"isim":isim}, yeni_urun, None).await).await;
+                                                Urun::hata_ayiklayici(state.urun_collection.find_one_and_replace(doc! {"isim":isim}, yeni_urun, None).await).await
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
+                                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")))
                                             }
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())))
                             }
                     }
             }
@@ -540,17 +540,17 @@ impl Gunluk
                                     {
                                         Some(deger) =>
                                             {
-                                                return (StatusCode::OK, Json(serde_json::json!(deger)));
+                                                (StatusCode::OK, Json(serde_json::json!(deger)))
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
+                                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")))
                                             }
                                     }
                             }
                         Err(hata_degeri) =>
                             {
-                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                             }
                     }
             }
@@ -567,17 +567,17 @@ impl Gunluk
                                     {
                                         Some(urun) =>
                                             {
-                                                return Gunluk::hata_ayiklayici(state.gunluk_collection.find_one(doc! {"tarih":tarih_string, "urun_isim":urun.isim}, None).await).await;
+                                                Gunluk::hata_ayiklayici(state.gunluk_collection.find_one(doc! {"tarih":tarih_string, "urun_isim":urun.isim}, None).await).await
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
+                                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")))
                                             }
                                     }                                
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())))
                             }
                     }
                 
@@ -627,23 +627,23 @@ impl Gunluk
                                                     {
                                                         Ok(sonuc_degeri) =>
                                                             {
-                                                                return (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)));
+                                                                (StatusCode::OK, Json(serde_json::json!(sonuc_degeri)))
                                                             }
                                                         Err(hata_degeri) =>
                                                             {
-                                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())));
+                                                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(hata_degeri.to_string())))
                                                             }
                                                     }
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
+                                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")))
                                             }
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())))
                             }
                     }
                 
@@ -654,7 +654,7 @@ impl Gunluk
                 println!("{}", tarih_string);
 
                 //TO-DO ya ürün yoksa ?
-                return Gunluk::hata_ayiklayici(state.gunluk_collection.find_one_and_delete(doc! {"urun_isim":urun_string, "tarih":tarih_string}, None).await).await;
+                Gunluk::hata_ayiklayici(state.gunluk_collection.find_one_and_delete(doc! {"urun_isim":urun_string, "tarih":tarih_string}, None).await).await
             }
         async fn duzenle(Path((urun_string, tarih_string, yeni_urun_string, yeni_personel_sayisi_string, yeni_hedeflenen_string, yeni_ulasilan_string, yeni_atilan_string, yeni_stok_string, yeni_sevk_string, yeni_stoktan_sevke_string, yeni_stoktan_silinen_string, yeni_tarih_string)):GunlukDuzenleString, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
@@ -697,17 +697,17 @@ impl Gunluk
                                                         stoktan_silinen:yeni_stoktan_silinen_string.parse().unwrap(),
                                                         tarih:yeni_tarih_string,
                                                     };
-                                                return Gunluk::hata_ayiklayici(state.gunluk_collection.find_one_and_replace(doc! {"urun_isim":urun_string, "tarih":tarih_string}, yeni_gunluk, None).await).await;
+                                                Gunluk::hata_ayiklayici(state.gunluk_collection.find_one_and_replace(doc! {"urun_isim":urun_string, "tarih":tarih_string}, yeni_gunluk, None).await).await
                                             }
                                         None =>
                                             {
-                                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")));
+                                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("")))
                                             }
                                     }
                             }
                         Err(bulunamadi) =>
                             {
-                                return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())));
+                                (StatusCode::IM_A_TEAPOT, Json(serde_json::json!(bulunamadi.to_string())))
                             }
                     }
             }
@@ -866,15 +866,15 @@ async fn routing(State(state): State<AppState>) -> Router
         .route("/hepsi", get(Gunluk::hepsi))
         .route("/dusur", get(Gunluk::dusur));
 
-        let app = Router::new()
+        
+        Router::new()
             .route("/", get(alive_handler))
             .nest("/kullanici", kullanici_routers)
             .nest("/kategori", kategori_routers)
             .nest("/urun", urun_routers)
             .nest("/gunluk", gunluk_routers)
             .layer(CorsLayer::permissive())
-            .with_state(state.clone());
-        app
+            .with_state(state.clone())
     }
 async fn tarih_kontrol(tarih_string:String) -> bool
     {
@@ -883,12 +883,12 @@ async fn tarih_kontrol(tarih_string:String) -> bool
                 Ok(date) =>
                     {
                         println!("{}", date);
-                        return true;
+                        true
                     }
                 Err(err_val) =>
                     {
                         println!("{}", err_val);
-                        return false;
+                        false
                     }
             }
     }
