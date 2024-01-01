@@ -308,6 +308,7 @@ export default function PContainer() {
   const addurun = async () => {
     console.log('calisti')
     console.log(kategoriadi)
+    console.log(kategoriler)
     console.log(urunadi)
     //vvvvvvvvvvvvvv URUN EKLE vvvvvvvvvvvvvvv
       if (kategoriadi&&kategoriler.includes(kategoriadi)&&urunadi&&urunadi!='') 
@@ -343,6 +344,7 @@ export default function PContainer() {
         ust_kategorisi: null,
         });
         setMassage(true);
+        await updateKategoriler();
       }
       
         
