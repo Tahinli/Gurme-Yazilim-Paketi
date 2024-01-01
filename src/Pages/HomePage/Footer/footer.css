@@ -1,0 +1,36 @@
+.footer {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-width: 520px;
+  height: 80px auto;
+  background-color: #305630;
+  color: #e7dcdc;
+  align-items: center;
+  justify-content: space-around;
+}
+
+.footer ul {
+  display: flex;
+  margin-top:1.5rem;
+  justify-content: space-between;
+  list-style-type: none;
+}
+.footer p {
+  color: #000000;
+}
+.footer ul li a {
+  color: rgb(189, 185, 185);
+}
+
+.footer ul li a:hover {
+  border-radius: 4px;
+  color: #ffffff;
+}
+.footer_img {
+  border-radius: 100%;
+}
+.ProductAnalyze_containerbody{
+  min-height: 100vh;
+  position: relative;
+}

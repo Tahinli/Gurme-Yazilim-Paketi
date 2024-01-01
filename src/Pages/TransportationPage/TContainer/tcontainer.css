@@ -1,0 +1,133 @@
+* {
+    font-size: 15px;
+  }
+  .Transportation_containerbody{
+    min-height: 100vh;
+    position: relative;
+  }
+  .Transportation_containerbody::before{
+    content: "";
+    position: absolute;
+    z-index:-1;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-image: url("src/assets/img/stock.jpg");
+    background-position: 100% 100%;
+    
+    opacity: 0.5; /* Görünürlüğü ayarlamak için değeri değiştirin (0.0 ile 1.0 arasında) */
+
+  }
+  .input_card2 {
+    transition: "all 1s ease-out";
+     margin-bottom: 3rem;
+     margin-left: 5rem;
+     padding-top: 7rem;
+     width: 600px;
+      height: 250px;
+  }
+  .input_sevk2 {
+    display: flex;
+  }
+  .input_card22 {
+    transition: "all 1s ease-out";
+  margin-bottom: 3rem;
+  margin-left: 5rem;
+  padding-top: 7rem;
+  width: 95.5%;
+  height: 750px;
+  animation-name: test;
+  animation-duration: 1s;
+  }
+  .autocomplete2 {
+    display: flex;
+    width: 60%;
+    margin-bottom: 1rem;
+    margin-right: 1rem;
+  }
+  .table2 {
+    height: 470px;
+    width: 70%;
+  }
+ 
+  
+  .input_part2 {
+    width: 100%;
+    display: flex;
+    padding-bottom: 7rem;
+    transition: "all 1s ease-out";
+  }
+  
+  .field_btn2 {
+    padding-left: 0.75rem;
+    padding-top: 0.85rem;
+    margin-left: -0.5rem;
+    width: 15%;
+  }
+  
+  .date_picker2 {
+    display: flex;
+    width: 80%;
+     min-width: 300px;
+  }
+  .div_div2{
+    font-size: 20px;
+  }
+  
+  .add_table2 {
+    display: flex;
+    margin-left: 5rem;
+  }
+  .close_btn2 {
+    margin-top: 1rem;
+    margin-left: 5rem;
+    color: red;
+  }
+
+  
+  .input_header2 {
+    display: flex;
+    flex-direction: column;
+    margin-left: 10rem;
+  }
+  
+
+  
+  .add_btn2 {
+    margin-left: 1rem;
+    font-weight: bold;
+  }
+  
+  .date_card2 {
+    display: flex;
+    margin-left: 4.5rem;
+    margin-bottom: 3rem;
+    width: 600px;
+    height: 250px;
+    align-items: center;
+    justify-content: center;
+  }
+  
+
+ 
+  .date_3{
+ 
+    height: 40px;
+  
+  }
+  .date_4{
+   
+    height: 40px;
+  }
+  .list_btn2{
+    height: 40px;
+  }
+  .sevkislem_2{
+    font-size: 18px;
+    color:rgb(255, 169, 56);
+  }
+  .sevk_analyzebtn{
+    width: 70px;
+    height: 25px;
+  }

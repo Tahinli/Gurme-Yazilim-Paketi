@@ -1,0 +1,96 @@
+*{
+    font-size: 15px;
+}
+.Data_containerbody{
+    min-height: 100vh;
+    background-image: url("src/assets/img/genel.png");
+    background-position: 92.8% 15%;
+    background-attachment: fixed;
+    background-repeat:repeat-y;
+    background-color: rgb(48, 47, 47);
+    padding-top: 3rem;
+}
+.input_card{
+    transition: 'all 1s ease-out';
+    margin-bottom: 3rem;
+    margin-left: 5rem;
+    width: 91.5%;
+}
+.autocomplete{
+    display: flex;
+    width: 460px;
+    margin-bottom: 1rem;
+    margin-right: 1rem;  
+}
+.table{
+    height: 600px;;
+    width: 95%;
+    margin-bottom: 2rem;
+}
+
+.add{
+    padding-right: 0.5rem;
+    margin-right: 0rem;
+}
+
+.input_part{
+    display: flex;
+    padding-bottom: 7rem;   
+    transition: 'all 1s ease-out';
+}
+
+.field_btn{
+    padding-left: 0.75rem;
+    padding-top: 0.85rem;
+    margin-left: -0.5rem;
+    width:50%;
+}
+.buttons_input{
+    display: inline-flex;
+}
+
+.date_picker{
+   display: flex;
+   width: 80%;
+   min-width: 300px;
+}
+
+.add_table{
+    display: flex;
+    margin-left: 5rem;
+}
+.close_btn{
+    margin-top: 1rem;
+}
+.close_btn:hover{
+    color: red;
+}
+
+.input_header{
+    display: flex;
+}
+
+.input_header h4{
+    padding-left: 1rem;
+}
+
+.add_btn{
+    margin-left: 1rem;
+}
+
+.date_card{
+    display: flex;
+    margin-bottom: 3rem;
+    margin-left: 5rem;
+    width: 430px;
+    height: 100px;
+    position: relative;
+    animation-name: test;
+    animation-duration: 1s;
+}
+
+
+@keyframes test{
+    from{top: -60px}
+    to{top:0px}
+}

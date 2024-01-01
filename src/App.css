@@ -1,0 +1,490 @@
+@media screen and (max-width: 560px) {
+  .imglogo {
+    width: 20% !important;
+  }
+
+  .loginDiv {
+    min-width: 400px !important;
+    width: 100% !important;
+  }
+  .mainDiv {
+    padding: 0 0px;
+  }
+  .submitButton {
+    width: 80% !important;
+  }
+  .textfield {
+    padding: 0 30px !important;
+    padding-bottom: 20px !important;
+  }
+  .textf {
+    width: 100% !important;
+  }
+}
+@media screen and (max-width: 400px) {
+  .loginDiv {
+    min-width: 320px !important;
+  }
+}
+@media screen and (max-width: 1200px) {
+  .imglogo2 {
+    width: 15% !important;
+  }
+
+  .loginDiv2 {
+    width: 100% !important;
+    height: 900px !important;
+  }
+  .buttonDiv2 {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .submitButton2 {
+    width: 80% !important;
+    margin-left: 0px !important;
+    margin-bottom: 20px !important;
+  }
+  .textfield2 {
+    padding-bottom: 20px !important;
+  }
+  .textfield1 {
+    padding-top: 60px !important;
+  }
+  .textf2 {
+    width: 40% !important;
+  }
+  .tabletz {
+    width: 100% !important;
+    padding-left: 0px !important;
+  }
+}
+@media screen and (max-width: 900px) {
+  .imglogo2 {
+    width: 30% !important;
+  }
+
+  .loginDiv2 {
+    width: 100% !important;
+    height: 400px !important;
+  }
+  .buttonDiv2 {
+    flex-direction: column !important;
+    align-items: center !important;
+  }
+  .submitButton2 {
+    width: 80% !important;
+    margin-left: 0px !important;
+    margin-bottom: 20px !important;
+  }
+  .textfield2 {
+    padding-bottom: 20px !important;
+  }
+  .textfield1 {
+    padding-top: 60px !important;
+  }
+  .textf2 {
+    width: 40% !important;
+  }
+  .tabletz {
+    display: none;
+
+  }
+}
+body {
+  margin: 0px !important;
+  padding: 0px !important;
+  overflow: visible !important;
+}
+
+
+
+/*OTHER PAGES*/
+@media screen and (max-width:1700px){
+.buttons_input{
+  display: flex;
+}
+.table_btns{
+  flex-direction: column;
+}
+.p_inputcard{
+  margin-left: 10rem !important;
+  max-width: 100% !important;
+  min-width: 500px !important;
+}
+.p_box{
+  margin-left: 10rem !important;
+}
+.p_h1{
+  padding-left: 10rem !important;
+}
+}
+
+@media screen and (max-width:1500px){
+  .dateArea{
+    flex-direction: column;
+  }
+  .Filter_part{
+    width:30% !important;
+    min-width: 265px;
+  }
+
+  /*DATAPAGE*/
+ .input_part{
+  flex-direction: column;
+  width: 100%;
+}
+.p_inputcard{
+  margin-left: 8rem !important;
+}
+.p_box{
+  margin-left: 8rem !important;
+}
+.p_h1{
+  padding-left: 8rem !important;
+}
+}
+
+@media screen and (max-width:1200px){
+  .pie_charts{
+    flex-direction: column;
+    width: 330% !important;
+  }
+  .pie_card{
+    margin-bottom: 2rem;
+  }
+  .detailed_productbtn{
+    width:300%
+  }
+  /*NAVBAR*/
+  .navbar h1{
+    font-size: 20px;
+    margin-left: 5.3rem;
+    text-align: start;
+  }
+  .logo{
+    min-width: 33%;
+  }
+  /*//////*/
+  .date_card{
+    max-width:90% !important;
+  }
+  .selected_analyze{
+    width: 98.8% !important;
+   }
+   
+  /*EDİT_PART*/
+  .edit_card{
+    flex-direction: column !important;
+  }
+  .edit_dialog p{
+    padding-left:2rem !important;
+    font-size: 18px !important;
+    width: 350px;
+  }
+  .edit_dialog{
+    padding: 0rem !important;
+  }
+  .p_inputcard{
+    margin-left: 0rem !important;
+  }
+  .p_box{
+    margin-left: 6rem !important;
+    max-width: 78% !important;
+  }
+  .p_h1{
+    padding-left: 6rem !important;
+  }
+}
+
+@media screen and (max-width:768px){
+  .autocomplete{
+    flex-direction: column;
+    width:215px !important;
+  }
+ 
+  .input_card{
+    width:80% !important;
+  }
+  .div_div{
+    flex-direction:column;
+    justify-content: center;
+    align-items: center;
+  }
+  .date_picker{
+    flex-direction: column;
+  }
+  .date_card{
+    flex-direction: column;
+    width: 37% !important;
+    min-width: 240px;
+    height: 130px !important;
+  }
+ .add_table{
+  flex-direction: column-reverse;
+ }
+ .data_tablebtns{
+  display: flex;
+  margin-left: -1rem !important;
+ }
+ .p_inputcard{
+  min-width: 360px !important;
+  margin-left: 2.5rem !important;
+}
+.pie_charts{
+  width: 290% !important;
+} 
+.Date_part{
+    width: 275px !important;
+}
+}
+
+@media screen and (max-width:500px){
+  .pie_charts{
+    width: 330%;
+  }
+  .pie_card{
+    padding-bottom: 2rem;
+  }
+
+  /*NAVBAR*/
+  .navbar h1{
+    font-size: 20px;
+    margin-left: 5.3rem;
+    text-align: start;
+  }
+  .logo{
+    min-width: 33%;
+  }
+  .autocomplete{
+    flex-direction: column;
+    width:215px !important;
+  }
+  .input_card{
+    max-width: 500px !important;
+  }
+  .autocomplete{
+    flex-direction: column;
+    width:215px !important;
+  }
+  .p_inputcard{
+    margin-left: 2.5rem !important;
+  }
+  .p_box{
+    margin-left:5rem !important;
+  }
+  .p_h1{
+    padding-left:5rem !important;
+  }
+}
+
+@media screen and (max-width:400px){
+  .pie_charts{
+    width: 900px !important;
+  }
+  .detailed_chart{
+    width:280px !important;
+  }
+  /*NAVBAR*/
+  .navbar h1{
+    font-size: 18px !important;
+  }
+  .logo{
+    max-width: 10% !important;
+    margin-left: 2rem;
+  }
+  .autocomplete{
+    flex-direction: column;
+    width:215px !important;
+  }
+  .input_card{
+    max-width: 500px !important;
+  }
+  .autocomplete{
+    flex-direction: column;
+    width:215px !important;
+  }
+  .footer ul{
+    width:250px !important;
+    padding-left: 2rem;
+  }
+  .footer p{
+    width: 390px;
+  }
+  .selected_analyze{
+    width: 30% !important;
+   }
+}
+
+
+ /*STOCKPAGE*/
+
+ 
+ @media screen and (max-width:1700px){
+  .input_card11{
+     width:90% !important;
+  }
+
+ }
+
+ @media screen and (max-width:1500px){
+  .input_sevk1{
+    flex-direction: column;
+  }
+  .date_card1{
+    margin-left: 5rem !important;
+   }
+ }
+
+
+ @media screen and (max-width:1200px){
+ .pie_chart5{
+    max-width: 500px !important;
+  }
+  .pie_chartpart{
+    min-width: 1000px !important;
+  }
+
+  }
+
+@media screen and (max-width:768px){
+  .autocomplete1{
+     flex-direction:column ;
+     width:180px !important;
+   }
+   .input_part1{
+    width: 95% !important;
+  }
+   .input_card1{
+     width: 70% !important;
+     height: 410px !important;
+   }
+   .input_card11{
+    width: 85% !important;
+    min-width: 270px;
+   }
+   .date_card1{
+    width: 70% !important;
+   }
+}
+
+@media screen and (max-width:600px){
+  .input_part1{
+    flex-direction: column;
+  }
+  .input_card1{
+    height: 530px !important;
+  }
+  .div_div1{
+    padding-left: 6.8rem;
+  }
+  .date_picker1{
+    flex-direction: column;
+   }
+   .throw_partdiv{
+    margin-top:-1rem !important;
+    margin-left: 0.2rem;
+
+   }
+}
+
+@media screen and (max-width:500px){
+  .add_table1{
+    width: 385px !important;
+    flex-direction:row-reverse;
+    margin-left: 0 !important;
+    margin-right: 8rem !important;
+  }
+}
+
+
+
+/*TRANSPORTATİONPAGE*/
+
+ 
+@media screen and (max-width:1700px){
+  .input_card22{
+     width:90% !important;
+  }
+
+ }
+
+ @media screen and (max-width:1500px){
+  .input_sevk2{
+    flex-direction: column;
+  }
+  .date_card2{
+    margin-left: 5rem !important;
+   }
+ }
+
+
+ @media screen and (max-width:1200px){
+ .pie_chart5{
+    max-width: 500px !important;
+  }
+  .pie_chartpart{
+    min-width: 1000px !important;
+  }
+
+  }
+
+@media screen and (max-width:768px){
+  .autocomplete2{
+     flex-direction:column ;
+     width:180px !important;
+   }
+   .input_part2{
+    width: 95% !important;
+  }
+   .input_card2{
+     width: 70% !important;
+     height: 370px !important;
+   }
+   .input_card22{
+    width: 85% !important;
+    min-width: 270px;
+   }
+   .date_card2{
+    width: 70% !important;
+   }
+}
+
+@media screen and (max-width:600px){
+  .input_part2{
+    flex-direction: column;
+  }
+  .input_card2{
+    height: 450px !important;
+  }
+  .div_div2{
+    padding-left: 6.8rem;
+  }
+  .date_picker2{
+    flex-direction: column;
+   }
+}
+
+@media screen and (max-width:500px){
+  .add_table2{
+    width: 385px !important;
+    flex-direction:row-reverse;
+    margin-left: 0 !important;
+    margin-right: 8rem !important;
+  }
+}
+
+
+
+@media screen and (max-width:400px){
+  .Date_part{
+    width:225px !important;
+  }
+  .input_card22{
+    max-width: 50px !important;
+    margin-left: 3.7rem !important; 
+  }
+  .add_table2{
+    width: 330px !important;
+    margin-left: 0.8rem !important;
+  }
+}

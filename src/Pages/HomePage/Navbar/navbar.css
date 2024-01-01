@@ -1,0 +1,61 @@
+* {
+  margin-right: 0rem;
+  padding: 0;
+  box-sizing: border-box;
+}
+a {
+  text-decoration: none;
+}
+
+.navbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 60px auto;
+  max-height: 65px;
+  width: 100% auto;
+  min-width: 400px;
+  background-color: #1b722f;
+  color: white;
+  
+}
+.navbar h1 {
+  font-size: 25px;
+  color: #f7eee6;
+}
+
+a.Ana,
+a:hover {
+  background-color: rgb(57, 88, 62);
+  transition: 0.5s;
+}
+.logo {
+  width: 48%;
+  min-width: 37%;
+  border-radius: 50%;
+  height: 100px;
+  margin-top: 0.5rem;
+}
+
+.login_symbol:hover {
+  background-color: rgb(104, 193, 96);
+  transform: scale(1.2,1.2);
+}
+.login_button:hover{
+  transform: scale(1.05,1.05);
+}
+.navbar_rightbox{
+  display: flex;
+  align-items: center;
+  justify-content: space-evenly;
+  width: 100%;
+  min-width: 320px;
+  padding-left: 3rem;
+}
+.login_button{
+height: 40px;
+}
+element.style{
+padding-right: 0rem !important;
+overflow: visible;
+}

@@ -1,0 +1,44 @@
+.p_box{
+    width: 88% !important;
+    height: 640px auto;
+    color: black;
+    margin-left: 9.5rem;
+}
+.p_h1{
+    padding-top: 4rem; 
+    font-size: x-large;
+    padding-left: 9.5rem;
+    color: white;
+}
+.p_inputcard{
+    transition: 'all 1s ease-out';
+    margin-bottom: 3rem;
+    width: 30%;
+    height: 430px;
+    margin-top: 3.4rem;
+}
+.save_btn{
+    width: 45%;
+}
+.p_cardcontent{
+    margin-top: 2rem;
+    margin-left: 1rem;
+}
+.p_header{
+    align-self: flex-start;
+}
+.product_body{
+    min-height: 100vh;
+    background-image: url("src/assets/img/cemens-gurme-kayseri3.jpg");
+    background-position: 50% 50%;
+    background-attachment: fixed;
+    background-repeat:no-repeat;
+    background-size: contain;
+    background-color: rgb(48, 47, 47);
+    padding-bottom: 3rem;
+}
+.pp_input{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
