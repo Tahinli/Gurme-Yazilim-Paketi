@@ -8,6 +8,10 @@ use chrono::NaiveDate;
 const DB_NAME:&str = "gurme";
 const CONNECTION_STRING:&str = "mongodb://172.17.0.2:27017";
 const BIND_STRING:&str = "127.0.0.1:2001";
+
+type GunlukEkleString = Path<(String, String, String, String, String, String, String, String, String, String)>;
+type GunlukDuzenleString = Path<(String, String, String, String, String, String, String, String, String, String, String, String)>;
+
 #[derive(Debug, Clone)]
 struct AppState
     {
@@ -204,16 +208,11 @@ impl Kategori
                 match state.kategori_collection.find_one(doc! {"isim": ust_kategori}, None).await
                     {
                         Ok(bulundu) =>
-                            {
-                                
-                                match bulundu 
+                            { 
+                                if let Some(ust_kategori) = bulundu
                                     {
-                                        Some(ust_kategori) =>
-                                            {
-                                                kategori.ust_kategori = Some(Box::new(ust_kategori.clone()));
-                                                kategori.ust_kategori_isim = ust_kategori.isim;
-                                            }
-                                        None =>{}
+                                        kategori.ust_kategori = Some(Box::new(ust_kategori.clone()));
+                                        kategori.ust_kategori_isim = ust_kategori.isim;
                                     }
                             }
                         Err(bulunamadi) =>
@@ -268,14 +267,10 @@ impl Kategori
                     {
                         Ok(bulundu) =>
                             {
-                                match bulundu
+                                if let Some(ust_kategori) = bulundu
                                     {
-                                        Some(ust_kategori) =>
-                                            {
-                                                yeni_kategori.ust_kategori = Some(Box::new(ust_kategori.clone()));
-                                                yeni_kategori.ust_kategori_isim = ust_kategori.isim;
-                                            }
-                                        None =>{}
+                                        yeni_kategori.ust_kategori = Some(Box::new(ust_kategori.clone()));
+                                        yeni_kategori.ust_kategori_isim = ust_kategori.isim;
                                     }
                             }
                         Err(bulunamadi) =>
@@ -292,13 +287,9 @@ impl Kategori
                                     {
                                         while bulundu.advance().await.unwrap()
                                             {
-                                                match bulundu.deserialize_current()
+                                                if let Ok(urun_eski) = bulundu.deserialize_current()
                                                     {
-                                                        Ok(urun_eski) =>
-                                                            {
-                                                                Urun::duzenle(Path((urun_eski.isim.clone(), urun_eski.isim.clone(), yeni_kategori.isim.clone())), axum::extract::State(state.clone())).await;
-                                                            }
-                                                        Err(_) =>{}
+                                                        Urun::duzenle(Path((urun_eski.isim.clone(), urun_eski.isim.clone(), yeni_kategori.isim.clone())), axum::extract::State(state.clone())).await;
                                                     }
                                             }
                                         return (StatusCode::OK, Json(serde_json::json!("iyisin")));
@@ -591,7 +582,7 @@ impl Gunluk
                     }
                 
             }
-        async fn ekle(Path((urun_string, personel_sayisi_string, hedeflenen_string, ulasilan_string, atilan_string, stok_string, sevk_string, stoktan_sevke_string, stoktan_silinen_string, tarih_string)):Path<(String, String, String, String, String, String, String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
+        async fn ekle(Path((urun_string, personel_sayisi_string, hedeflenen_string, ulasilan_string, atilan_string, stok_string, sevk_string, stoktan_sevke_string, stoktan_silinen_string, tarih_string)):GunlukEkleString, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", urun_string);
                 println!("{}", personel_sayisi_string);
@@ -665,7 +656,7 @@ impl Gunluk
                 //TO-DO ya ürün yoksa ?
                 return Gunluk::hata_ayiklayici(state.gunluk_collection.find_one_and_delete(doc! {"urun_isim":urun_string, "tarih":tarih_string}, None).await).await;
             }
-        async fn duzenle(Path((urun_string, tarih_string, yeni_urun_string, yeni_personel_sayisi_string, yeni_hedeflenen_string, yeni_ulasilan_string, yeni_atilan_string, yeni_stok_string, yeni_sevk_string, yeni_stoktan_sevke_string, yeni_stoktan_silinen_string, yeni_tarih_string)):Path<(String, String, String, String, String, String, String, String, String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
+        async fn duzenle(Path((urun_string, tarih_string, yeni_urun_string, yeni_personel_sayisi_string, yeni_hedeflenen_string, yeni_ulasilan_string, yeni_atilan_string, yeni_stok_string, yeni_sevk_string, yeni_stoktan_sevke_string, yeni_stoktan_silinen_string, yeni_tarih_string)):GunlukDuzenleString, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
                 println!("{}", urun_string);
                 println!("{}", tarih_string);
