@@ -25,7 +25,10 @@ package-lock.json
 *.sln
 *.sw?
 
-
-
-
-
+# Cargo
+debug/
+target/
+Cargo.lock
+**/*.rs.bk
+*.pdb
+/target
