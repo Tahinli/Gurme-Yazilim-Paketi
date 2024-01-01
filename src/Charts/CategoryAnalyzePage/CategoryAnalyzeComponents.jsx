@@ -177,10 +177,11 @@ async function monthlyBarChart(){
 
     let todayValues=getTodayDate().split('.')
     const date1=new Date(`${todayValues[2]}-${todayValues[1]}-${todayValues[0]}`)
-    const tempDate=new Date()
     for(let i=0;i<30;i++){
-        date1.setDate(tempDate.getDate()-i)
+        if(i!==0)
+            date1.setDate(date1.getDate()-1)
         let lastDay=date1.toLocaleString('tr-TR', { year: 'numeric', month: '2-digit', day: '2-digit' })
+
         const rangeLog = logList.filter(gunluk =>gunluk.tarih=== lastDay&&gunluk.hedeflenen!==0&&(gunluk.stok!==0||gunluk.sevk!==0)&&gunluk.personel_sayisi!==0);
         for (let j = 0; j < catList.length; j++) {
             let tempVal=0
@@ -207,7 +208,7 @@ async function filterByCatWeek()
 
     let todayValues=getTodayDate().split('.')
     const date1=new Date(`${todayValues[2]}-${todayValues[1]}-${todayValues[0]}`)
-    date1.setDate(date1.getDate()-(datePerc))
+    date1.setDate(date1.getDate()-(datePerc)+1)
     date1.setHours(3,0)
 
     const date2=new Date(date1)
