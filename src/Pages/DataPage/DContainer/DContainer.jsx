@@ -755,7 +755,7 @@ const handleAdd = async () => {
                       color='danger'
                       orientation="horizontal"
                       size="lg"
-                      variant='soft'
+                      variant='outlined'
              >
                 <div className='div_div'>
                   <EditCalendarIcon size='small'/>
@@ -797,7 +797,7 @@ const handleAdd = async () => {
             fixedHeaderContent={fixedHeaderContent}
             itemContent={rowContent}
 
-            sx={{ zIndex: 0 ,backgroundColor:'rgb(206, 250, 236)'}}
+            sx={{ zIndex: 0 ,backgroundColor:'rgb(222, 231, 220)'}}
           />
         </Paper>
         {/* ADD-BUTTON*/}

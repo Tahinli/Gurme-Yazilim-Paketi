@@ -15,9 +15,8 @@ a {
   max-height: 65px;
   width: 100% auto;
   min-width: 400px;
-  background-color: #1b722f;
   color: white;
-  background: linear-gradient(132deg, #455f49  80%, #334236 50%);
+  background: linear-gradient(132deg, #467046  80%, #254d25 50%);
 }
 .navbar h1 {
   font-size: 25px;
