@@ -3,11 +3,12 @@
 }
 .Data_containerbody{
     min-height: 100vh;
-    background-image: url("src/assets/img/genel.png");
-    background-position: 92.8% 15%;
+    background-color: rgba(69, 26, 26, 0.25) !important;
+    background-image: url("src/assets/img/background_img5.jpg");
+    
     background-attachment: fixed;
-    background-repeat:repeat-y;
-    background-color: rgb(48, 47, 47);
+    background-repeat:no-repeat;
+    background-size: cover;
     padding-top: 3rem;
 }
 .input_card{
@@ -15,6 +16,7 @@
     margin-bottom: 3rem;
     margin-left: 5rem;
     width: 91.5%;
+    
 }
 .autocomplete{
     display: flex;

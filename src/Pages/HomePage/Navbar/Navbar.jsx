@@ -106,7 +106,7 @@ const Navbar = () => {
                           sx={{
                             width: 40,
                             height: 40,
-                            backgroundColor: "#305630",
+                            backgroundColor: "transparent",
                           }}
                         ></Avatar>
                       </IconButton>

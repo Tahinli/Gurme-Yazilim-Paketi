@@ -17,7 +17,7 @@ a {
   min-width: 400px;
   background-color: #1b722f;
   color: white;
-  
+  background: linear-gradient(132deg, #455f49  80%, #334236 50%);
 }
 .navbar h1 {
   font-size: 25px;
@@ -38,7 +38,7 @@ a:hover {
 }
 
 .login_symbol:hover {
-  background-color: rgb(104, 193, 96);
+  background-color: rgb(102, 174, 96);
   transform: scale(1.2,1.2);
 }
 .login_button:hover{
