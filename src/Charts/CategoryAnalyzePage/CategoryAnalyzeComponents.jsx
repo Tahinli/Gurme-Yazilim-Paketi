@@ -97,7 +97,7 @@ async function filterTopFive()
     todayLog.map(async (rLog) => {
         let totalVal = 0;
     for(let x=0;x<productList.length;x++){
-        if (productList[x].isim===rLog.urun_isim&&rLog.stok!==0&&rLog.sevk!==0&&rLog.personel_sayisi!==0) {
+        if (productList[x].isim===rLog.urun_isim) {
 
             totalVal += rLog.ulasilan / rLog.hedeflenen;
         }
@@ -120,7 +120,7 @@ async function filterTopFive()
     }
 
 
-    console.log((arrTopProduct[0][0]))
+
 
 
 
