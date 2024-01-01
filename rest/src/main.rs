@@ -56,16 +56,10 @@ impl Kullanici
             }
         async fn kullanici(Path(id):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", id);
                 Kullanici::hata_ayiklayici(state.kullanici_collection.find_one(doc! {"id":id}, None).await).await
             }
         async fn ekle(Path((isim, soyisim, id, sifre)):Path<(String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", isim);
-                println!("{}", soyisim);
-                println!("{}", id);
-                println!("{}", sifre);
-                //TO-DO var olan kullanıcıyı ekleme
                 let kullanici = Kullanici
                     {
                         isim,
@@ -88,17 +82,10 @@ impl Kullanici
             }
         async fn sil(Path(id):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", id);
                 Kullanici::hata_ayiklayici(state.kullanici_collection.find_one_and_delete(doc! {"id":id}, None).await).await
             }
         async fn duzenle(Path((id, yeni_isim, yeni_soyisim, yeni_id, yeni_sifre)):Path<(String, String, String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", id);
-                println!("{}", yeni_isim);
-                println!("{}", yeni_soyisim);
-                println!("{}", yeni_id);
-                println!("{}", yeni_sifre);
-                //TO-DO kullanıcı ya yoksa ?
                 let yeni_kullanici = Kullanici
                     {
                         isim:yeni_isim,
@@ -187,14 +174,10 @@ impl Kategori
             }
         async fn kategori(Path(isim):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", isim);
                 Kategori::hata_ayiklayici(state.kategori_collection.find_one(doc! {"isim":isim}, None).await).await
             }
         async fn ekle(Path((isim, ust_kategori)):Path<(String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("Kategori Ekle");
-                println!("{}", isim);
-                println!("{}", ust_kategori);
                 let mut kategori:Kategori = Kategori
                     {
                         isim,
@@ -234,9 +217,6 @@ impl Kategori
             }
         async fn sil(Path(isim):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", isim);
-
-                //TO-DO ya kategori yoksa, ya alt ürünler varsa
                 if Urun::hata_ayiklayici(state.urun_collection.find_one(doc! {"kategori_isim":isim.clone()}, None).await).await.0 == StatusCode::OK
                     {
                         return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Kategoriye ait ürün var silemezsiniz.")));
@@ -249,10 +229,6 @@ impl Kategori
             }
         async fn duzenle(Path((isim, yeni_isim, yeni_ust_kategori)):Path<(String, String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", isim);
-                println!("{}", yeni_isim);
-                println!("{}", yeni_ust_kategori);
-
                 let mut yeni_kategori:Kategori = Kategori
                     {
                         isim:yeni_isim,
@@ -381,14 +357,10 @@ impl Urun
             }
         async fn urun(Path(isim):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", isim);
                 Urun::hata_ayiklayici(state.urun_collection.find_one(doc! {"isim":isim}, None).await).await
             }
         async fn ekle(Path((isim, kategori)):Path<(String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", isim);
-                println!("{}", kategori);
-
                 match state.kategori_collection.find_one(doc! {"isim":kategori}, None).await
                     {
                         Ok(bulundu) =>
@@ -430,17 +402,10 @@ impl Urun
             }
         async fn sil(Path(isim):Path<String>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", isim);
-                //TO-DO ya yoksa?
                 Urun::hata_ayiklayici(state.urun_collection.find_one_and_delete(doc!{"isim":isim}, None).await).await
             }
         async fn duzenle(Path((isim, yeni_isim, yeni_kategori)):Path<(String, String, String)>, State(state):State<AppState>) -> impl IntoResponse
             {
-                println!("{}", isim);
-                println!("{}", yeni_isim);
-                println!("{}", yeni_kategori);
-                
-                //TO-DO ya ürün ya da kategori yoksa
                 match state.kategori_collection.find_one(doc! {"isim":yeni_kategori}, None).await
                     {
                         Ok(bulundu) =>
@@ -556,9 +521,10 @@ impl Gunluk
             }
         async fn gunluk(Path((urun_string, tarih_string)):Path<(String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", urun_string);
-                println!("{}", tarih_string);
-                //TO-DO tarihi tarih mi diye bak
+                if !tarih_kontrol(tarih_string.clone()).await
+                    {
+                        return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Tarih Uygun Değil")));
+                    }
                 match state.urun_collection.find_one(doc! {"isim": urun_string}, None).await
                     {
                         Ok(bulundu) =>
@@ -584,18 +550,6 @@ impl Gunluk
             }
         async fn ekle(Path((urun_string, personel_sayisi_string, hedeflenen_string, ulasilan_string, atilan_string, stok_string, sevk_string, stoktan_sevke_string, stoktan_silinen_string, tarih_string)):GunlukEkleString, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", urun_string);
-                println!("{}", personel_sayisi_string);
-                println!("{}", hedeflenen_string);
-                println!("{}", ulasilan_string);
-                println!("{}", atilan_string);
-                println!("{}", stok_string);
-                println!("{}", sevk_string);
-                println!("{}", stoktan_sevke_string);
-                println!("{}", stoktan_silinen_string);
-                println!("{}", tarih_string);
-                
-                //TO-DO tarihi tarih mi diye bak
                 if !tarih_kontrol(tarih_string.clone()).await
                     {
                         return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Tarih Uygun Değil")));
@@ -650,27 +604,10 @@ impl Gunluk
             }
         async fn sil(Path((urun_string, tarih_string)):Path<(String, String)>, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", urun_string);
-                println!("{}", tarih_string);
-
-                //TO-DO ya ürün yoksa ?
                 Gunluk::hata_ayiklayici(state.gunluk_collection.find_one_and_delete(doc! {"urun_isim":urun_string, "tarih":tarih_string}, None).await).await
             }
         async fn duzenle(Path((urun_string, tarih_string, yeni_urun_string, yeni_personel_sayisi_string, yeni_hedeflenen_string, yeni_ulasilan_string, yeni_atilan_string, yeni_stok_string, yeni_sevk_string, yeni_stoktan_sevke_string, yeni_stoktan_silinen_string, yeni_tarih_string)):GunlukDuzenleString, State(state):State<AppState>) -> (StatusCode, Json<Value>)
             {
-                println!("{}", urun_string);
-                println!("{}", tarih_string);
-                println!("{}", yeni_urun_string);
-                println!("{}", yeni_personel_sayisi_string);
-                println!("{}", yeni_hedeflenen_string);
-                println!("{}", yeni_ulasilan_string);
-                println!("{}", yeni_atilan_string);
-                println!("{}", yeni_stok_string);
-                println!("{}", yeni_sevk_string);
-                println!("{}", yeni_stoktan_sevke_string);
-                println!("{}", yeni_stoktan_silinen_string);
-                println!("{}", yeni_tarih_string);
-
                 if !tarih_kontrol(yeni_tarih_string.clone()).await
                     {
                         return (StatusCode::IM_A_TEAPOT, Json(serde_json::json!("Tarih Uygun Değil")));
@@ -757,17 +694,9 @@ impl Gunluk
     }
 async fn collection_hata_ayiklama(sonuc:Result<CreateIndexResult, Error>)
     {
-        match sonuc
+        if let Err(hata_degeri) = sonuc
             {
-                Ok(sonuc_degeri) =>
-                    {
-                        println!("{:#?}", sonuc_degeri);
-                    }
-                Err(hata_degeri) =>
-                    {
-                        println!("{:#?}", hata_degeri);
-                        panic!("Collection");
-                    }
+                panic!("Collection = {}", hata_degeri);
             }
     }
 async fn kullanicilar_collection_structure(db:Database) -> Collection<Kullanici>
@@ -880,14 +809,12 @@ async fn tarih_kontrol(tarih_string:String) -> bool
     {
         match NaiveDate::parse_from_str(&tarih_string, "%d.%m.%Y")
             {
-                Ok(date) =>
+                Ok(_) =>
                     {
-                        println!("{}", date);
                         true
                     }
-                Err(err_val) =>
+                Err(_) =>
                     {
-                        println!("{}", err_val);
                         false
                     }
             }
