@@ -14,11 +14,12 @@
   right: 0;
   bottom: 0;
   left: 0;
-  background-image: url("src/assets/img/sevk.jpg");
-  background-position: 100% 100%;
+  background: linear-gradient(132deg, #ded099  0%, #9ce8c5 100%);
+  background-position: 50% 50%;
   background-repeat: no-repeat;
   background-size: cover;
-  opacity: 0.8; /* Görünürlüğü ayarlamak için değeri değiştirin (0.0 ile 1.0 arasında) */
+ 
+  opacity: 1; /* Görünürlüğü ayarlamak için değeri değiştirin (0.0 ile 1.0 arasında) */
 }
 
 

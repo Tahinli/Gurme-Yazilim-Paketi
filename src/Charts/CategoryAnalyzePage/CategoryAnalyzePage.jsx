@@ -23,35 +23,31 @@ export function CategoryAnalyzeP(){
      setDetails(!showDetails);
     }
     return (
-        <div >
-
-
-            <Card
-                className={"pie_card"}
-                color="success"
-                invertedColors={false}
-                orientation="vertical"
-                size="lg"
-                variant="outlined"
-                sx={{minimumWidth: '30%', paddingRight: '10px', height: '20%', width: '27.5%',minHeight:'20%'}}
-            >
+        <div>
+            <div className="top_five">
+                <Card
+                 className={"pie_card"}
+                 color="success"
+                 invertedColors={false}
+                 orientation="vertical"
+                 size="lg"
+                 variant="soft"
+                 sx={{width:'28%',minWidth:332}}
+                >
                 <TopFiveProduct/>
             </Card>
 
-
             <br/>
+            </div>
+            
             <div>
-
-            <ControllableStates/>
-
-
+                <ControllableStates/>
             </div>
 
                 <DateRangeP />
 
 
             <div className="pie_charts">
-
 
                 <Card className={"pie_card"}
                       color="neutral"

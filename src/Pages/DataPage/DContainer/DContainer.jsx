@@ -755,7 +755,7 @@ const handleAdd = async () => {
                       color='danger'
                       orientation="horizontal"
                       size="lg"
-                      variant='outlined'
+                      variant='soft'
              >
                 <div className='div_div'>
                   <EditCalendarIcon size='small'/>
@@ -788,8 +788,7 @@ const handleAdd = async () => {
 
 
       <div className='add_table' >
-        <Stack className="add" sx={{ backgroundColor: '#28342b' }}></Stack>
-
+        
         <Paper className="table">
           <TableVirtuoso
             // {...rows.sort((a, b) => b.id - a.id)}  // <--- SIRALAMA
@@ -798,7 +797,7 @@ const handleAdd = async () => {
             fixedHeaderContent={fixedHeaderContent}
             itemContent={rowContent}
 
-            sx={{ zIndex: 0 }}
+            sx={{ zIndex: 0 ,backgroundColor:'rgb(206, 250, 236)'}}
           />
         </Paper>
         {/* ADD-BUTTON*/}
