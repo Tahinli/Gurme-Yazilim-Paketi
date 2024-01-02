@@ -13,13 +13,11 @@
     right: 0;
     bottom: 0;
     left: 0;
-    background-image: url("src/assets/img/abs.avif");
+    background-image: url("src/assets/img/stock1.avif");
     background-position: 100% 100%;
     background-repeat: no-repeat;
     background-size: cover;
-   
-    
-    opacity: 0.8; /* Görünürlüğü ayarlamak için değeri değiştirin (0.0 ile 1.0 arasında) */
+    opacity: 0.6; /* Görünürlüğü ayarlamak için değeri değiştirin (0.0 ile 1.0 arasında) */
 
   }
   .input_card2 {

@@ -159,7 +159,7 @@ export  function PieAnimation() {
                       variant="solid"
                 >
               
-              <h4 className="sevkislem_2">SEVK ANALİZİ</h4>
+              <h4 className="sevkislem_2" style={{}}>SEVK ANALİZİ</h4>
             Filtrele:
             <div className={"dateArea"} style={{display:'flex'}}>
                 <DatePicker
