@@ -425,8 +425,8 @@ export function TopFiveProduct(){
             {rows.map((row) => (
                 <tr key={row.name}>
                     <td>{row.name}</td>
-                    <td>{row.kategori}</td>
                     <td>{row.verimlilik}</td>
+                    <td>{row.kategori}</td>
                 </tr>
             ))}
             </tbody>
