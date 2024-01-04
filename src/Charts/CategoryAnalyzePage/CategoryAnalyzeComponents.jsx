@@ -413,11 +413,11 @@ export function BarAnimation() {
 }
 export function TopFiveProduct(){
     return (
-        <Table sx={{ '& thead th:nth-child(1)': { width: '40%'} }}>
+        <Table sx={{ '& thead th:nth-child()': { width: '40%'}}}>
             <thead style={{textAlign: 'left'}}>
             <tr>
-                <th style={{width: '30%'}}>Ürün</th>
-                <th style={{width: '25%'}}>Kategori</th>
+                <th style={{width: '25%'}}>Ürün</th>
+                <th style={{width: '30%'}}>Kategori</th>
                 <th style={{width: '20%'}}>Verimlilik</th>
             </tr>
             </thead>

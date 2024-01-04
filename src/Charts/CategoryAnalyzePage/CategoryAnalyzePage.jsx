@@ -5,6 +5,9 @@ import ArrowCircleDownIcon from '@mui/icons-material/ArrowCircleDown';
 import ArrowCircleUpIcon from '@mui/icons-material/ArrowCircleUp';
 import './CategoryAnalyze.css';
 import { useState } from 'react';
+import CardOverflow from "@mui/joy/CardOverflow";
+import AspectRatio from "@mui/joy/AspectRatio";
+import StarsTwoToneIcon from '@mui/icons-material/StarsTwoTone';
 
 import {
     BarAnimation,
@@ -27,13 +30,37 @@ export function CategoryAnalyzeP(){
             <div className="top_five">
                 <Card
                  className={"pie_card"}
-                 color="success"
+                 color="danger"
                  invertedColors={false}
                  orientation="vertical"
                  size="lg"
-                 variant="soft"
-                 sx={{width:'28%',minWidth:332}}
+                 variant="outlined"
+                 sx={{width:'25.5%',minWidth:332,borderBlockWidth:15,
+                 "--icon-size": "80px", alignSelf:'center'}}
                 >
+                <CardOverflow variant="soft" color="warning">
+                
+                  <AspectRatio
+                    variant="outlined"
+                    color="danger"
+                    ratio="1.2"
+                    sx={{
+                      m: "auto",
+                      transform: "translateY(10%)",
+                      borderRadius: "50%",
+                      width: "var(--icon-size)",
+                      boxShadow: "lg",
+                      bgcolor: "background.surface",
+                      
+                    }}
+                  >
+                    <div>
+                      <StarsTwoToneIcon color="danger" sx={{ fontSize: "3.5rem" }} />
+                    
+                    </div>
+                  </AspectRatio>
+                  <p style={{fontSize:22,textAlign:'center',textShadow: '0.8px 0.8px red', textDecoration: 'overline',textDecorationStyle: 'double'}}>Verimliliği En Yüksek Ürünler</p>
+                </CardOverflow>
                 <TopFiveProduct/>
             </Card>
 
